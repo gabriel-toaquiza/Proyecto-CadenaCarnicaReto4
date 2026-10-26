@@ -3,7 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>¿De dónde viene tu carne? · LF-2026-0188</title>
+<title>¿De dónde viene tu carne? · Camal Metropolitano</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Caveat:wght@600&display=swap">
 
 <script src="https://cdn.jsdelivr.net/npm/ethers@6.13.2/dist/ethers.umd.min.js"></script>
 <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
@@ -11,142 +15,185 @@
 <style>
 *{box-sizing:border-box}
 
+/* =====================================================
+   CAMAL METROPOLITANO · CONSULTA DEL CONSUMIDOR
+   Encabezado verde con foto, contenido claro, tarjetas blancas.
+===================================================== */
+
 :root{
---bg:#061d3b;
---panel:#0d3157;
---border:#24557d;
---blue:#159cf0;
---white:#f4f8ff;
---muted:#aec7e3;
---green:#35e89a;
---red:#d65b76;
+--verde-900:#0c2a20;
+--verde-800:#123628;
+--verde-700:#1d5a42;
+--verde-600:#2a7552;
+--verde-300:#7ed39a;
+--verde-100:#e7f4ec;
+--fondo:#f2f5f3;
+--tarjeta:#ffffff;
+--borde:#e1e9e4;
+--texto:#14231d;
+--tenue:#61756c;
+--rojo:#b8443a;
+--rojo-100:#fbeceb;
+--fuente:"Poppins","Segoe UI",Arial,sans-serif;
+--mono:Consolas,"Courier New",monospace;
+--sombra:0 6px 22px rgba(16,42,32,.08);
 }
 
 body{
 margin:0;
-font-family:Arial,Helvetica,sans-serif;
-color:var(--white);
-background:
-radial-gradient(ellipse at 80% 0%,#194d81 0%,transparent 45%),
-linear-gradient(135deg,#061b37,#09294e 48%,#123f70);
+font-family:var(--fuente);
+color:var(--texto);
+background:var(--fondo);
 min-height:100vh;
-padding:18px 12px 35px;
+padding:0 0 35px;
 }
 
 .container{
 width:100%;
 max-width:560px;
 margin:auto;
+padding:0 14px;
 }
 
+/* Encabezado con foto: encabezado.jpg en la misma carpeta.
+   Si no existe, queda el fondo verde. */
 .header{
-text-align:center;
-padding:12px 0 22px;
+margin:0 -14px 18px;
+padding:26px 22px 30px;
+color:#ffffff;
+background:
+linear-gradient(180deg,rgba(9,33,25,.55) 0%,rgba(9,33,25,.92) 75%),
+url("encabezado.jpg") center 30%/cover no-repeat,
+linear-gradient(140deg,var(--verde-800),var(--verde-700));
+border-radius:0 0 24px 24px;
 }
 
-.logo-fallback{
-width:70px;
-height:70px;
-margin:0 auto 12px;
-border:2px solid white;
-border-radius:16px;
+.marca{
 display:flex;
 align-items:center;
-justify-content:center;
-font-size:30px;
+gap:10px;
+margin-bottom:26px;
+}
+
+.marca-logo{
+width:40px;
+height:40px;
+flex-shrink:0;
+}
+
+.marca-nombre{
+font-size:16px;
+font-weight:700;
+line-height:1.1;
+}
+
+.marca-nombre span{
+color:var(--verde-300);
+}
+
+.marca-sub{
+font-size:11px;
+color:#bcd5c8;
+margin-top:2px;
 }
 
 h1{
-font-size:23px;
-line-height:1.2;
+font-size:27px;
+line-height:1.15;
 margin:0;
-font-weight:800;
+font-weight:700;
+text-wrap:balance;
+}
+
+h1 span{
+color:var(--verde-300);
 }
 
 .subtitle{
-color:var(--muted);
-font-size:12px;
-margin:8px 0 0;
-line-height:1.5;
+color:#d3e4da;
+font-size:13px;
+margin:10px 0 0;
+line-height:1.55;
 }
 
 .network{
 display:inline-flex;
 align-items:center;
 gap:7px;
-margin-top:13px;
-padding:7px 12px;
-border:1px solid #28618b;
+margin-top:16px;
+padding:7px 13px;
 border-radius:30px;
-background:#0a2c4e;
-font-size:11px;
-color:#cce6ff;
+background:rgba(255,255,255,.12);
+border:1px solid rgba(255,255,255,.25);
+font-size:11.5px;
+color:#ffffff;
 }
 
 .dot{
 width:8px;
 height:8px;
-background:var(--green);
+background:var(--verde-300);
 border-radius:50%;
-box-shadow:0 0 10px var(--green);
+box-shadow:0 0 10px var(--verde-300);
 }
 
 .card{
-background:linear-gradient(135deg,rgba(38,91,143,.62),rgba(13,49,88,.82));
-border:1px solid var(--border);
+background:var(--tarjeta);
+border:1px solid var(--borde);
 border-radius:18px;
 padding:20px;
 margin-bottom:14px;
-box-shadow:0 10px 30px #0002;
+box-shadow:var(--sombra);
 }
 
 .card h2{
 font-size:18px;
 margin:0 0 6px;
+font-weight:600;
 }
 
 .card p{
-font-size:12px;
-color:var(--muted);
-line-height:1.5;
+font-size:12.5px;
+color:var(--tenue);
+line-height:1.55;
 margin:0 0 15px;
 }
 
 .section-label{
-font-size:10px;
-font-weight:bold;
-letter-spacing:1.5px;
-color:#81bce9;
+font-size:10.5px;
+font-weight:600;
+letter-spacing:1.6px;
+color:var(--verde-600);
 margin-bottom:8px;
 }
 
 label{
 display:block;
-font-size:12px;
-color:#d5e5f6;
+font-size:12.5px;
+color:var(--texto);
 margin-bottom:7px;
-font-weight:bold;
+font-weight:600;
 }
 
 input{
 width:100%;
-background:#092b4d;
-border:1px solid #39719b;
+background:#fbfdfc;
+border:1px solid #d5e0da;
 border-radius:11px;
 padding:14px;
 font-size:16px;
-color:white;
+color:var(--texto);
 outline:none;
 font-family:inherit;
 }
 
 input::placeholder{
-color:#7e9fbd;
+color:#93a69c;
 }
 
 input:focus{
-border-color:#29aafa;
-box-shadow:0 0 0 3px #159cf01c;
+border-color:var(--verde-600);
+box-shadow:0 0 0 3px rgba(42,117,82,.15);
 }
 
 .btn{
@@ -156,22 +203,32 @@ margin-top:11px;
 border:0;
 border-radius:11px;
 font-size:14px;
-font-weight:bold;
+font-weight:600;
+font-family:inherit;
 color:white;
 cursor:pointer;
-background:linear-gradient(100deg,#1ca5f5,#087bcf);
+background:linear-gradient(100deg,var(--verde-600),var(--verde-700));
+box-shadow:0 6px 16px rgba(29,90,66,.25);
 }
 
 .btn:active{
 transform:scale(.99);
 }
 
+.btn:focus-visible{
+outline:3px solid var(--verde-300);
+outline-offset:2px;
+}
+
 .btn-green{
-background:linear-gradient(100deg,#159dca,#0878bd);
+background:linear-gradient(100deg,#3a8f66,var(--verde-600));
 }
 
 .btn-gray{
-background:#315572;
+background:#ffffff;
+color:var(--verde-700);
+border:1.5px solid var(--verde-700);
+box-shadow:none;
 }
 
 .btn:disabled{
@@ -184,7 +241,7 @@ display:none;
 margin-top:12px;
 padding:12px;
 border-radius:10px;
-font-size:12px;
+font-size:12.5px;
 line-height:1.5;
 white-space:pre-wrap;
 overflow-wrap:anywhere;
@@ -192,23 +249,23 @@ overflow-wrap:anywhere;
 
 .exito{
 display:block;
-background:#18825925;
-border:1px solid #31c991;
-color:#b8ffdf;
+background:var(--verde-100);
+border:1px solid #9fd8b4;
+color:#17583d;
 }
 
 .error{
 display:block;
-background:#89233935;
-border:1px solid #d65b76;
-color:#ffd4dc;
+background:var(--rojo-100);
+border:1px solid #e8b0aa;
+color:#8d2f26;
 }
 
 .info{
 display:block;
-background:#177cc725;
-border:1px solid #4aadee;
-color:#c8e9ff;
+background:#eef5fb;
+border:1px solid #bdd6ea;
+color:#285473;
 }
 
 #reader{
@@ -216,7 +273,7 @@ width:100%;
 margin-top:14px;
 border-radius:12px;
 overflow:hidden;
-background:#061b37;
+background:var(--verde-900);
 }
 
 #reader video{
@@ -230,7 +287,7 @@ margin-top:15px;
 /* ---------- Resultado de la consulta ---------- */
 
 .alerta{
-border-radius:14px;
+border-radius:16px;
 padding:18px;
 margin-bottom:14px;
 line-height:1.5;
@@ -238,8 +295,8 @@ line-height:1.5;
 
 .alerta h3{
 margin:0 0 8px;
-font-size:19px;
-letter-spacing:.5px;
+font-size:18px;
+letter-spacing:.3px;
 }
 
 .alerta p{
@@ -249,55 +306,61 @@ color:inherit;
 }
 
 .alerta.retiro{
-background:#6d1730;
-border:2px solid #ff7d97;
-color:#fff0f3;
+background:linear-gradient(140deg,#a63a2e,#7d2a22);
+border:2px solid #e98b7f;
+color:#ffffff;
+box-shadow:0 10px 26px rgba(125,42,34,.3);
 }
 
 .alerta.retiro .grande{
 font-size:22px;
-font-weight:800;
+font-weight:700;
 }
 
 .alerta.sin-retiro{
-background:#11553d;
-border:1px solid #35e89a;
-color:#dcfff0;
+background:var(--verde-100);
+border:1px solid #9fd8b4;
+color:#17583d;
 }
 
 .lote-info{
-background:#031c392e;
-border:1px solid #39719b55;
-border-radius:12px;
-padding:14px;
+background:#f8fbf9;
+border:1px solid var(--borde);
+border-radius:14px;
+padding:15px;
 margin-bottom:14px;
 overflow-wrap:anywhere;
 }
 
 .lote-info h3{
-font-size:15px;
+font-size:13px;
+letter-spacing:1px;
 margin:0 0 11px;
+color:var(--verde-700);
 }
 
 .lote-info p{
 font-size:13px;
 margin:8px 0;
-color:#bdd3e9;
-line-height:1.45;
+color:var(--texto);
+line-height:1.5;
 }
 
 .lote-info strong{
-color:white;
+color:var(--texto);
 }
 
 .evento{
-border-left:4px solid var(--blue);
-background:#16538455;
+border-left:4px solid var(--verde-600);
+background:#ffffff;
+border-top:1px solid var(--borde);
+border-right:1px solid var(--borde);
+border-bottom:1px solid var(--borde);
 border-radius:0 12px 12px 0;
 padding:13px;
 margin:10px 0;
 font-size:12.5px;
-line-height:1.6;
+line-height:1.7;
 overflow-wrap:anywhere;
 }
 
@@ -306,51 +369,55 @@ display:inline-block;
 padding:2px 9px;
 border-radius:20px;
 font-size:11px;
-font-weight:bold;
+font-weight:600;
 margin-left:4px;
 }
 
 .badge.ok{
-background:#18825940;
-color:#9ff5cf;
-border:1px solid #31c991;
+background:var(--verde-100);
+color:#17583d;
+border:1px solid #9fd8b4;
 }
 
 .badge.mal{
-background:#89233955;
-color:#ffc2cf;
-border:1px solid #d65b76;
+background:var(--rojo-100);
+color:#8d2f26;
+border:1px solid #e8b0aa;
 }
 
 .hash{
-font-family:Consolas,monospace;
+font-family:var(--mono);
 font-size:11px;
 word-break:break-all;
-color:#9fd2ff;
+color:#3e6b58;
 }
 
 .verificar a{
-color:#7cc8ff;
+color:var(--verde-600);
+font-weight:600;
 }
 
 .verificar ol{
 margin:6px 0 0;
 padding-left:18px;
 font-size:12.5px;
-color:#bdd3e9;
+color:var(--texto);
 line-height:1.6;
 }
 
 .footer{
 text-align:center;
-color:#7f9fbd;
-font-size:10px;
+color:var(--tenue);
+font-size:10.5px;
 line-height:1.6;
 padding:10px;
 }
 
-@media(min-width:600px){
-body{padding-top:35px}
+.lema{
+font-family:"Caveat","Segoe Script",cursive;
+font-size:22px;
+color:var(--verde-700);
+margin-bottom:4px;
 }
 </style>
 </head>
@@ -361,12 +428,22 @@ body{padding-top:35px}
 
 <header class="header">
 
-<div class="logo-fallback">⬡</div>
+<div class="marca">
+<svg class="marca-logo" viewBox="0 0 48 48" aria-hidden="true">
+<path d="M24 3l17 6.5v12.5c0 10.5-7.2 19-17 23C14.2 41 7 32.5 7 22V9.5z" fill="#1d5a42" stroke="#7ed39a" stroke-width="2"/>
+<path d="M16 24.5l6 6 11.5-12.5" fill="none" stroke="#ffffff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+<div>
+<div class="marca-nombre">Camal <span>Metropolitano</span></div>
+<div class="marca-sub">San Ramón de Altamira · del campo a tu mesa</div>
+</div>
+</div>
 
-<h1>¿De dónde viene tu carne?</h1>
+<h1>¿De dónde viene <span>tu carne?</span></h1>
 
 <p class="subtitle">
-Consulta pública del lote LF-2026-0188 · Camal Metropolitano de San Ramón de Altamira
+Consulta pública del lote LF-2026-0188: origen, dictamen sanitario, fecha real
+de empaque y cadena de frío, verificados en la blockchain.
 </p>
 
 <div class="network">
@@ -436,6 +513,7 @@ Detener cámara
 </section>
 
 <footer class="footer">
+<div class="lema">La confianza también se traza</div>
 Blockchain · Transparencia · Trazabilidad<br>
 Datos sintéticos de ejercicio · Reto 04 · Caso San Ramón de Altamira
 </footer>
