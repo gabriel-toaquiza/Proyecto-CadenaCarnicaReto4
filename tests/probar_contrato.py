@@ -1,8 +1,9 @@
-"""Prueba de punta a punta del contrato CadenaCarnica con el lote LF-2026-0188.
+"""Prueba de punta a punta de los contratos con el lote LF-2026-0188.
 
-Despliega el contrato en una EVM local (eth-tester), carga el lote completo
+Despliega CadenaCarnica en una EVM local (eth-tester), carga el lote completo
 por grupos con la misma lógica que la App Admin y comprueba los cinco
-criterios del Nivel 1.
+criterios del Nivel 1. Después despliega RetirosSanitarios, registra la orden
+RS-2026-004 y comprueba lo que necesita la consulta del consumidor (Nivel 2).
 
 Requiere:  pip install py-solc-x web3 py-evm eth-tester
 Uso:       python tests/probar_contrato.py
@@ -21,7 +22,7 @@ from web3 import Web3
 from web3.exceptions import ContractLogicError
 
 RAIZ = Path(__file__).resolve().parent.parent
-CONTRATO = RAIZ / "contracts" / "CadenaCarnica.sol"
+CONTRATOS = RAIZ / "contracts"
 LOTE = RAIZ / "app" / "lote_nivel1.json"
 
 fallos = []
@@ -33,19 +34,20 @@ def comprobar(condicion, mensaje):
         fallos.append(mensaje)
 
 
-def compilar():
+def compilar(nombre):
     solcx.install_solc("0.8.20")
+    archivo = nombre + ".sol"
     salida = solcx.compile_standard({
         "language": "Solidity",
-        "sources": {"CadenaCarnica.sol": {"content": CONTRATO.read_text(encoding="utf-8")}},
+        "sources": {archivo: {"content": (CONTRATOS / archivo).read_text(encoding="utf-8")}},
         "settings": {
             "optimizer": {"enabled": True, "runs": 200},
             "outputSelection": {"*": {"*": ["abi", "evm.bytecode.object", "evm.deployedBytecode.object"]}},
         },
     }, solc_version="0.8.20")
-    c = salida["contracts"]["CadenaCarnica.sol"]["CadenaCarnica"]
+    c = salida["contracts"][archivo][nombre]
     tamano = len(c["evm"]["deployedBytecode"]["object"]) // 2
-    comprobar(tamano <= 24576, f"tamaño del contrato con optimizador: {tamano} bytes (límite 24576)")
+    comprobar(tamano <= 24576, f"tamaño de {nombre} con optimizador: {tamano} bytes (límite 24576)")
     return c["abi"], c["evm"]["bytecode"]["object"]
 
 
@@ -123,7 +125,7 @@ def motivo(funcion):
 
 
 def main():
-    abi, bytecode = compilar()
+    abi, bytecode = compilar("CadenaCarnica")
     w3 = Web3(Web3.EthereumTesterProvider())
     w3.eth.default_account = w3.eth.accounts[0]
     tx = w3.eth.contract(abi=abi, bytecode=bytecode).constructor().transact()
@@ -261,6 +263,42 @@ def main():
     comprobar(not encontrados, f"{len(sensibles)} nombres/direcciones buscados en la cadena: {len(encontrados)} encontrados")
     venta = contrato.functions.verificarCompra(keccak(text="QR-0294-1639")).call()
     comprobar(venta[1] == 294, f"el código QR-0294-1639 lleva a la caja CJ-0188-{venta[1]:04d}")
+
+    print("\nNivel 2 · retiro sanitario RS-2026-004 en un contrato aparte")
+    abi_r, bytecode_r = compilar("RetirosSanitarios")
+    tx = w3.eth.contract(abi=abi_r, bytecode=bytecode_r).constructor(direccion).transact()
+    retiros = w3.eth.contract(address=w3.eth.wait_for_transaction_receipt(tx).contractAddress, abi=abi_r)
+    orden = lote["retiros"][0]
+    argumentos = (orden["codigo"], orden["canal"], orden["fechaNotificacion"], orden["fechaOrden"],
+                  keccak(text=orden["resultado"]))
+    razon = motivo(retiros.functions.registrarRetiro(*argumentos))
+    otra = w3.eth.accounts[1]
+    try:
+        retiros.functions.registrarRetiro(*argumentos).call({"from": otra})
+        ajena = None
+    except (ContractLogicError, TransactionFailed) as e:
+        ajena = str(e).replace("execution reverted: ", "")
+    comprobar(ajena == "SOLO LA AUTORIDAD SANITARIA", f"otra wallet no puede registrar retiros: {ajena}")
+    comprobar(razon is None, "la autoridad registra la orden")
+    enviar(retiros.functions.registrarRetiro(*argumentos))
+    comprobar(motivo(retiros.functions.registrarRetiro(*argumentos)) == "CANAL YA RETIRADA",
+              "la misma canal no se puede retirar dos veces")
+
+    alcanzada, por_mezcla, retiro = retiros.functions.cajaBajoRetiro(294).call()
+    comprobar(alcanzada and not por_mezcla and retiro[0] == "RS-2026-004",
+              f"CJ-0188-0294 bajo retiro {retiro[0]} (directa)")
+    molida = next(c["numero"] for c in lote["cajas"] if c["corte"] == 15 and 12 not in c["canales"])
+    alcanzada, por_mezcla, _ = retiros.functions.cajaBajoRetiro(molida).call()
+    comprobar(alcanzada and por_mezcla, f"molida CJ-0188-{molida:04d} (sin pieza de CN-012) alcanzada por mezcla")
+    comprobar(not retiros.functions.cajaBajoRetiro(1).call()[0], "CJ-0188-0001 (canales 1–5) no está alcanzada")
+
+    alcanzadas = [n for n in contrato.functions.listarCajas().call() if retiros.functions.cajaBajoRetiro(n).call()[0]]
+    comprobar(len(alcanzadas) == 69, f"{len(alcanzadas)} cajas alcanzadas (14 directas + 55 de molida)")
+    tardias = sorted((v["codigoConsulta"], v["caja"]) for v in lote["ventas"]
+                     if v["caja"] in alcanzadas and v["fecha"] > orden["fechaOrden"])
+    directas_tardias = [t for t in tardias if t[1] in (3, 15, 34, 56, 83, 108, 128, 147, 158, 189, 225, 251, 276, 294)]
+    comprobar(len(directas_tardias) == 3, f"ventas de cajas directas después de la orden: {directas_tardias}")
+    print(f"        ventas de molida después de la orden: {len(tardias) - len(directas_tardias)}")
 
     print("\nResultado:", "TODO OK" if not fallos else f"{len(fallos)} FALLAS")
     sys.exit(1 if fallos else 0)

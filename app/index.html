@@ -928,6 +928,11 @@ Cargar lote
 5 · Privacidad
 </button>
 
+<button onclick="mostrarSeccion('retiro',this)">
+<span class="menu-icon">⚠</span>
+Retiro sanitario
+</button>
+
 </nav>
 </aside>
 
@@ -1310,6 +1315,45 @@ trayecto fuera de rango o con minutos sin lectura.
 
 </section>
 
+<!-- =====================================================
+     NIVEL 2 · RETIRO SANITARIO
+===================================================== -->
+
+<section id="retiro" class="section">
+
+<div class="card">
+
+<div class="section-title">
+<div class="number">⚠</div>
+<div>
+<h2>Retiro sanitario</h2>
+<p>Registra la orden de retiro en el contrato RetirosSanitarios para que la consulta del consumidor la muestre.</p>
+</div>
+</div>
+
+<p>
+Solo la wallet que desplegó RetirosSanitarios (la autoridad sanitaria) puede registrar retiros.
+El registro no bloquea ventas: deja la orden en la cadena para que cualquiera la consulte.
+</p>
+
+<div id="datosRetiro" class="lote-info"></div>
+
+<button class="btn btn-red" onclick="registrarRetiroSanitario()">
+⚠ &nbsp; Registrar orden de retiro en Sepolia
+</button>
+
+<div id="estadoRetiro" class="estado"></div>
+
+<button class="btn btn-gray" onclick="consultarRetiros()">
+⟳ &nbsp; Ver retiros registrados
+</button>
+
+<div id="resultadoRetiros"></div>
+
+</div>
+
+</section>
+
 </main>
 
 <script>
@@ -1382,6 +1426,20 @@ const abi=[
 "function verificarCompra(bytes32) view returns (tuple(bytes32 codigoHash, uint16 caja, uint16 minorista, uint32 fecha, uint8 unidades))"
 ];
 
+// Contrato del Nivel 2: pega aquí la dirección de RetirosSanitarios
+const contratoRetirosDireccion =
+"0x4dAFa0621745559a636333898726A85Dee48c7Ec";
+
+const abiRetiros=[
+
+"function autoridad() view returns (address)",
+
+"function listarRetiros() view returns (tuple(string codigo, uint8 canal, uint32 fechaNotificacion, uint32 fechaOrden, bytes32 hashResultado)[])",
+
+"function registrarRetiro(string, uint8, uint32, uint32, bytes32)"
+
+];
+
 const RED_SEPOLIA=11155111;
 
 const ARCHIVO_LOTE="lote_nivel1.json";
@@ -1434,7 +1492,7 @@ boton.classList.add("active");
 
 }else{
 
-const ids=["blockchain","inicio","cargar","atras","adelante","balance","frio","privacidad"];
+const ids=["blockchain","inicio","cargar","atras","adelante","balance","frio","privacidad","retiro"];
 
 const botones=document.querySelectorAll(".menu button");
 
@@ -1448,6 +1506,10 @@ botones[index].classList.add("active");
 
 if(id==="inicio"){
 actualizarTotales();
+}
+
+if(id==="retiro"){
+mostrarDatosRetiro();
 }
 
 }
@@ -2944,6 +3006,133 @@ console.error(error);
 document.getElementById("resultadoCompra").innerHTML="";
 
 mostrarEstado("estadoCompra","No se pudo verificar:\n"+obtenerMensajeError(error),"error");
+
+}
+
+}
+
+/* =====================================================
+   NIVEL 2 · RETIRO SANITARIO
+===================================================== */
+
+async function mostrarDatosRetiro(){
+
+try{
+
+await cargarDatosLote();
+
+const r=lote.retiros[0];
+
+document.getElementById("datosRetiro").innerHTML=`
+<h3>ORDEN ${escaparHTML(r.codigo)}</h3>
+<p><strong>Canal afectada:</strong> ${codigoCanal(r.canal)}</p>
+<p><strong>Motivo:</strong> ${escaparHTML(r.motivo)}</p>
+<p><strong>Notificación del laboratorio:</strong> ${formatearFecha(r.fechaNotificacion)}</p>
+<p><strong>Orden de retiro:</strong> ${formatearFecha(r.fechaOrden)}</p>
+<p><strong>Resultado (se ancla solo su huella):</strong> <span class="hash">${escaparHTML(r.resultado)}</span></p>
+`;
+
+}catch(error){
+
+console.error(error);
+
+mostrarEstado("estadoRetiro",obtenerMensajeError(error),"error");
+
+}
+
+}
+
+function contratoRetiros(runner){
+
+if(!ethers.isAddress(contratoRetirosDireccion)){
+
+throw new Error("Falta la dirección de RetirosSanitarios: pégala en contratoRetirosDireccion.");
+
+}
+
+return new ethers.Contract(contratoRetirosDireccion,abiRetiros,runner);
+
+}
+
+async function registrarRetiroSanitario(){
+
+try{
+
+if(!signer){
+
+mostrarEstado("estadoRetiro","Primero conecta MetaMask.","error");
+
+return;
+
+}
+
+await cargarDatosLote();
+
+const r=lote.retiros[0];
+
+const retiros=contratoRetiros(signer);
+
+const argumentos=[r.codigo,r.canal,r.fechaNotificacion,r.fechaOrden,ethers.id(r.resultado)];
+
+// El contrato dice primero si acepta el registro (autoridad, canal ya retirada...)
+await retiros.registrarRetiro.staticCall(...argumentos);
+
+mostrarEstado("estadoRetiro","Confirma la transacción en MetaMask...","info");
+
+const tx=await retiros.registrarRetiro(...argumentos);
+
+mostrarEstado("estadoRetiro","Esperando confirmación de blockchain...","info");
+
+await tx.wait();
+
+mostrarEstado("estadoRetiro","Orden "+r.codigo+" registrada.
+Hash: "+tx.hash,"exito");
+
+consultarRetiros();
+
+}catch(error){
+
+console.error(error);
+
+mostrarEstado("estadoRetiro","No se pudo registrar el retiro:
+"+obtenerMensajeError(error),"error");
+
+}
+
+}
+
+async function consultarRetiros(){
+
+try{
+
+const lectura=await obtenerContratoLectura();
+
+const retiros=contratoRetiros(lectura.runner);
+
+const lista=await retiros.listarRetiros();
+
+if(lista.length===0){
+
+document.getElementById("resultadoRetiros").innerHTML=
+"<p class='empty'>No hay retiros registrados en la cadena.</p>";
+
+return;
+
+}
+
+document.getElementById("resultadoRetiros").innerHTML=lista.map(r=>`
+<div class="evento">
+<strong>${escaparHTML(r.codigo)}</strong> · canal ${codigoCanal(r.canal)}<br>
+<strong>Orden:</strong> ${formatearFecha(r.fechaOrden)}<br>
+<strong>Huella del resultado:</strong> <span class="hash">${r.hashResultado}</span>
+</div>
+`).join("");
+
+}catch(error){
+
+console.error(error);
+
+mostrarEstado("estadoRetiro",obtenerMensajeError(error),"error");
 
 }
 

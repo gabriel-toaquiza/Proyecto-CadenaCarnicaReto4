@@ -1,0 +1,1201 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>¿De dónde viene tu carne? · LF-2026-0188</title>
+
+<script src="https://cdn.jsdelivr.net/npm/ethers@6.13.2/dist/ethers.umd.min.js"></script>
+<script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+
+<style>
+*{box-sizing:border-box}
+
+:root{
+--bg:#061d3b;
+--panel:#0d3157;
+--border:#24557d;
+--blue:#159cf0;
+--white:#f4f8ff;
+--muted:#aec7e3;
+--green:#35e89a;
+--red:#d65b76;
+}
+
+body{
+margin:0;
+font-family:Arial,Helvetica,sans-serif;
+color:var(--white);
+background:
+radial-gradient(ellipse at 80% 0%,#194d81 0%,transparent 45%),
+linear-gradient(135deg,#061b37,#09294e 48%,#123f70);
+min-height:100vh;
+padding:18px 12px 35px;
+}
+
+.container{
+width:100%;
+max-width:560px;
+margin:auto;
+}
+
+.header{
+text-align:center;
+padding:12px 0 22px;
+}
+
+.logo-fallback{
+width:70px;
+height:70px;
+margin:0 auto 12px;
+border:2px solid white;
+border-radius:16px;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:30px;
+}
+
+h1{
+font-size:23px;
+line-height:1.2;
+margin:0;
+font-weight:800;
+}
+
+.subtitle{
+color:var(--muted);
+font-size:12px;
+margin:8px 0 0;
+line-height:1.5;
+}
+
+.network{
+display:inline-flex;
+align-items:center;
+gap:7px;
+margin-top:13px;
+padding:7px 12px;
+border:1px solid #28618b;
+border-radius:30px;
+background:#0a2c4e;
+font-size:11px;
+color:#cce6ff;
+}
+
+.dot{
+width:8px;
+height:8px;
+background:var(--green);
+border-radius:50%;
+box-shadow:0 0 10px var(--green);
+}
+
+.card{
+background:linear-gradient(135deg,rgba(38,91,143,.62),rgba(13,49,88,.82));
+border:1px solid var(--border);
+border-radius:18px;
+padding:20px;
+margin-bottom:14px;
+box-shadow:0 10px 30px #0002;
+}
+
+.card h2{
+font-size:18px;
+margin:0 0 6px;
+}
+
+.card p{
+font-size:12px;
+color:var(--muted);
+line-height:1.5;
+margin:0 0 15px;
+}
+
+.section-label{
+font-size:10px;
+font-weight:bold;
+letter-spacing:1.5px;
+color:#81bce9;
+margin-bottom:8px;
+}
+
+label{
+display:block;
+font-size:12px;
+color:#d5e5f6;
+margin-bottom:7px;
+font-weight:bold;
+}
+
+input{
+width:100%;
+background:#092b4d;
+border:1px solid #39719b;
+border-radius:11px;
+padding:14px;
+font-size:16px;
+color:white;
+outline:none;
+font-family:inherit;
+}
+
+input::placeholder{
+color:#7e9fbd;
+}
+
+input:focus{
+border-color:#29aafa;
+box-shadow:0 0 0 3px #159cf01c;
+}
+
+.btn{
+width:100%;
+padding:14px;
+margin-top:11px;
+border:0;
+border-radius:11px;
+font-size:14px;
+font-weight:bold;
+color:white;
+cursor:pointer;
+background:linear-gradient(100deg,#1ca5f5,#087bcf);
+}
+
+.btn:active{
+transform:scale(.99);
+}
+
+.btn-green{
+background:linear-gradient(100deg,#159dca,#0878bd);
+}
+
+.btn-gray{
+background:#315572;
+}
+
+.btn:disabled{
+opacity:.55;
+cursor:not-allowed;
+}
+
+.estado{
+display:none;
+margin-top:12px;
+padding:12px;
+border-radius:10px;
+font-size:12px;
+line-height:1.5;
+white-space:pre-wrap;
+overflow-wrap:anywhere;
+}
+
+.exito{
+display:block;
+background:#18825925;
+border:1px solid #31c991;
+color:#b8ffdf;
+}
+
+.error{
+display:block;
+background:#89233935;
+border:1px solid #d65b76;
+color:#ffd4dc;
+}
+
+.info{
+display:block;
+background:#177cc725;
+border:1px solid #4aadee;
+color:#c8e9ff;
+}
+
+#reader{
+width:100%;
+margin-top:14px;
+border-radius:12px;
+overflow:hidden;
+background:#061b37;
+}
+
+#reader video{
+border-radius:12px;
+}
+
+#resultado{
+margin-top:15px;
+}
+
+/* ---------- Resultado de la consulta ---------- */
+
+.alerta{
+border-radius:14px;
+padding:18px;
+margin-bottom:14px;
+line-height:1.5;
+}
+
+.alerta h3{
+margin:0 0 8px;
+font-size:19px;
+letter-spacing:.5px;
+}
+
+.alerta p{
+margin:6px 0;
+font-size:13px;
+}
+
+.alerta.retiro{
+background:#6d1730;
+border:2px solid #ff7d97;
+color:#fff0f3;
+}
+
+.alerta.retiro .grande{
+font-size:22px;
+font-weight:800;
+}
+
+.alerta.sin-retiro{
+background:#11553d;
+border:1px solid #35e89a;
+color:#dcfff0;
+}
+
+.lote-info{
+background:#031c392e;
+border:1px solid #39719b55;
+border-radius:12px;
+padding:14px;
+margin-bottom:14px;
+overflow-wrap:anywhere;
+}
+
+.lote-info h3{
+font-size:15px;
+margin:0 0 11px;
+}
+
+.lote-info p{
+font-size:13px;
+margin:8px 0;
+color:#bdd3e9;
+line-height:1.45;
+}
+
+.lote-info strong{
+color:white;
+}
+
+.evento{
+border-left:4px solid var(--blue);
+background:#16538455;
+border-radius:0 12px 12px 0;
+padding:13px;
+margin:10px 0;
+font-size:12.5px;
+line-height:1.6;
+overflow-wrap:anywhere;
+}
+
+.badge{
+display:inline-block;
+padding:2px 9px;
+border-radius:20px;
+font-size:11px;
+font-weight:bold;
+margin-left:4px;
+}
+
+.badge.ok{
+background:#18825940;
+color:#9ff5cf;
+border:1px solid #31c991;
+}
+
+.badge.mal{
+background:#89233955;
+color:#ffc2cf;
+border:1px solid #d65b76;
+}
+
+.hash{
+font-family:Consolas,monospace;
+font-size:11px;
+word-break:break-all;
+color:#9fd2ff;
+}
+
+.verificar a{
+color:#7cc8ff;
+}
+
+.verificar ol{
+margin:6px 0 0;
+padding-left:18px;
+font-size:12.5px;
+color:#bdd3e9;
+line-height:1.6;
+}
+
+.footer{
+text-align:center;
+color:#7f9fbd;
+font-size:10px;
+line-height:1.6;
+padding:10px;
+}
+
+@media(min-width:600px){
+body{padding-top:35px}
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<header class="header">
+
+<div class="logo-fallback">⬡</div>
+
+<h1>¿De dónde viene tu carne?</h1>
+
+<p class="subtitle">
+Consulta pública del lote LF-2026-0188 · Camal Metropolitano de San Ramón de Altamira
+</p>
+
+<div class="network">
+<span class="dot"></span>
+Ethereum Sepolia · Sin cuenta ni wallet
+</div>
+
+</header>
+
+<!-- CONSULTAR POR CÓDIGO -->
+
+<section class="card">
+
+<div class="section-label">CONSULTA DEL CONSUMIDOR</div>
+
+<h2>Código de tu etiqueta</h2>
+
+<p>
+Escribe el código de consulta impreso en la etiqueta (por ejemplo QR-0294-1639). La información
+se lee directo de la blockchain, no del servidor del camal.
+</p>
+
+<label for="codigoConsulta">Código de consulta</label>
+
+<input
+id="codigoConsulta"
+type="text"
+placeholder="Ej. QR-0294-1639"
+autocomplete="off"
+>
+
+<button class="btn" id="btnConsultar" onclick="consultarProducto()">
+Consultar mi carne
+</button>
+
+<div id="estadoConsulta" class="estado"></div>
+
+<div id="resultado"></div>
+
+</section>
+
+<!-- ESCANEAR QR -->
+
+<section class="card">
+
+<div class="section-label">LECTOR QR</div>
+
+<h2>Escanear la etiqueta</h2>
+
+<p>
+Apunta la cámara de tu celular al código QR de la etiqueta.
+</p>
+
+<button class="btn btn-green" id="btnEscanear" onclick="iniciarEscaner()">
+Escanear QR con cámara
+</button>
+
+<div id="reader"></div>
+
+<div id="estadoQR" class="estado"></div>
+
+<button class="btn btn-gray" id="btnDetener"
+onclick="detenerEscaner()" style="display:none">
+Detener cámara
+</button>
+
+</section>
+
+<footer class="footer">
+Blockchain · Transparencia · Trazabilidad<br>
+Datos sintéticos de ejercicio · Reto 04 · Caso San Ramón de Altamira
+</footer>
+
+</div>
+
+<script>
+
+/* ==========================================
+   CONFIGURACIÓN BLOCKCHAIN
+========================================== */
+
+// Contrato del Nivel 1: custodia del lote
+const contratoCadena =
+"0xE78e4382984014D8b15B001ff9054aE9790a79ce";
+
+// Contrato del Nivel 2: retiros sanitarios
+const contratoRetiros =
+"0x4dAFa0621745559a636333898726A85Dee48c7Ec";
+
+const abiCadena=[
+
+"function trazarCaja(uint16) view returns (tuple(uint16 numero, uint8 corte, bool mezclaDeLote, uint64 canales, uint32 pesoG, uint32 fechaEmpaqueReal, uint16 operario, uint16 despacho, uint16 minorista, uint32 fechaRedistribucion) caja, tuple(uint16 numero, uint16 cliente, uint32 salida, uint32 llegada, int16 tempMaxDecimas, uint16 minutosFuera, uint16 minutosSinLectura, uint16 lecturas, bool cumpleDeclarado, uint16 despachador, bytes32 hashLecturas, uint16[] cajas) despacho, tuple(uint8 numero, uint64 arete, uint32 fechaSacrificio, uint32 pesoCalienteG, uint8 dictamenPM, uint16 mviPM, uint32 codigoSello, uint32 fechaSello, uint16 actor, int16[5] curvaDecimas)[] canalesOrigen, tuple(uint64 arete, uint16 predio, uint32 fechaIngreso, uint32 pesoVivoG, uint8 dictamenAM, uint16 mviAM, uint16 actor, bytes32 hashDocumentos)[] animalesOrigen, uint32[] pesosPieza, uint16[] operariosPieza)",
+
+"function verificarCompra(bytes32) view returns (tuple(bytes32 codigoHash, uint16 caja, uint16 minorista, uint32 fecha, uint8 unidades))"
+
+];
+
+const abiRetiros=[
+
+"function cajaBajoRetiro(uint16) view returns (bool alcanzada, bool porMezcla, tuple(string codigo, uint8 canal, uint32 fechaNotificacion, uint32 fechaOrden, bytes32 hashResultado) retiro)"
+
+];
+
+const RED_SEPOLIA=11155111;
+
+const ARCHIVO_DATOS="datos_publicos.json";
+
+const EXPLORADOR="https://sepolia.etherscan.io/address/";
+
+const DICTAMEN_AM=["","APTO","RETENIDO","DECOMISO"];
+
+const DICTAMEN_PM=["","APROBADA","DECOMISO PARCIAL","DECOMISO TOTAL"];
+
+
+/* ==========================================
+   RPC SEPOLIA CON RESPALDO
+========================================== */
+
+/*
+   La app probará estos servidores en orden.
+   Si uno falla, intentará el siguiente.
+*/
+
+const RPC_URLS = [
+
+"https://ethereum-sepolia-rpc.publicnode.com",
+
+"https://rpc.sepolia.org",
+
+"https://1rpc.io/sepolia"
+
+];
+
+const RPC_TIMEOUT = 12000;
+
+
+/* ==========================================
+   VARIABLES
+========================================== */
+
+let cadena;
+let retiros;
+let datos;
+let html5QrCode=null;
+let consultando=false;
+
+
+/* ==========================================
+   ESTADOS
+========================================== */
+
+function mostrarEstado(id,mensaje,tipo="info"){
+
+const elemento=document.getElementById(id);
+
+elemento.innerText=mensaje;
+
+elemento.className="estado "+tipo;
+
+}
+
+
+/* ==========================================
+   CONEXIÓN DE LECTURA (SIN WALLET)
+========================================== */
+
+async function prepararContratos(){
+
+if(cadena&&retiros)return;
+
+if(!window.ethers){
+
+throw new Error("No se cargó la librería blockchain.");
+
+}
+
+if(!ethers.isAddress(contratoRetiros)){
+
+throw new Error("Falta la dirección del contrato de retiros: pégala en contratoRetiros.");
+
+}
+
+let ultimoError;
+
+for(const rpc of RPC_URLS){
+
+try{
+
+console.log("Probando RPC:",rpc);
+
+const provider=new ethers.JsonRpcProvider(rpc,RED_SEPOLIA,{staticNetwork:true});
+
+await Promise.race([
+
+provider.getBlockNumber(),
+
+new Promise((_,reject)=>
+
+setTimeout(
+
+()=>reject(new Error("Tiempo de espera agotado")),
+
+RPC_TIMEOUT
+
+)
+
+)
+
+]);
+
+console.log("RPC funcionando:",rpc);
+
+cadena=new ethers.Contract(contratoCadena,abiCadena,provider);
+
+retiros=new ethers.Contract(contratoRetiros,abiRetiros,provider);
+
+return;
+
+}catch(error){
+
+console.warn("RPC falló:",rpc,error);
+
+ultimoError=error;
+
+}
+
+}
+
+throw new Error(
+"No se pudo conectar a Ethereum Sepolia. " +
+"Revisa tu conexión e intenta nuevamente."
+);
+
+}
+
+async function cargarDatosPublicos(){
+
+if(datos)return datos;
+
+const respuesta=await fetch(ARCHIVO_DATOS);
+
+if(!respuesta.ok){
+
+throw new Error("No se encontró "+ARCHIVO_DATOS+".");
+
+}
+
+datos=await respuesta.json();
+
+return datos;
+
+}
+
+
+/* ==========================================
+   CÓDIGOS, UNIDADES Y FECHAS
+========================================== */
+
+function rellenar(n,cifras){
+
+return String(Number(n)).padStart(cifras,"0");
+
+}
+
+function codigoCaja(n){return "CJ-0188-"+rellenar(n,4);}
+
+function codigoCanal(n){return "CN-0188-"+rellenar(n,3);}
+
+function codigoDespacho(n){return "DSP-0188-"+rellenar(n,3);}
+
+function codigoMinorista(n){return "CL-R"+rellenar(Number(n)-2000,2);}
+
+function codigoVeterinario(n){return "MV-"+rellenar(Number(n)-100,2);}
+
+function kg(gramos){
+
+return (Number(gramos)/1000).toLocaleString("es-EC",{minimumFractionDigits:2,maximumFractionDigits:2})+" kg";
+
+}
+
+function grados(decimas){
+
+return (Number(decimas)/10).toFixed(1)+" °C";
+
+}
+
+function formatearFecha(timestamp){
+
+return new Date(Number(timestamp)*1000)
+.toLocaleString("es-EC",{timeZone:"America/Guayaquil"});
+
+}
+
+function soloFecha(timestamp){
+
+return new Date(Number(timestamp)*1000)
+.toLocaleDateString("es-EC",{timeZone:"America/Guayaquil"});
+
+}
+
+function unix(texto){
+
+return Math.floor(new Date(texto).getTime()/1000);
+
+}
+
+function escaparHTML(texto){
+
+return String(texto)
+
+.replace(/&/g,"&amp;")
+
+.replace(/</g,"&lt;")
+
+.replace(/>/g,"&gt;")
+
+.replace(/"/g,"&quot;")
+
+.replace(/'/g,"&#039;");
+
+}
+
+
+/* ==========================================
+   CADENA DE FRÍO DEL TRAYECTO
+   Mismo cálculo que el camal usó al anclar:
+   tramos de más de 15 min sin dato = minutos sin lectura.
+   La huella se recalcula aquí, en el teléfono.
+========================================== */
+
+function resumenFrio(salida,llegada,lecturas){
+
+const tiempos=[Number(salida)]
+.concat(lecturas.map(r=>unix(r[1])))
+.concat([Number(llegada)]);
+
+let sinLectura=0;
+
+for(let i=1;i<tiempos.length;i++){
+
+const hueco=Math.floor((tiempos[i]-tiempos[i-1])/60);
+
+if(hueco>15)sinLectura+=hueco-15;
+
+}
+
+const fuera=15*lecturas.filter(r=>parseFloat(r[2])>parseFloat(r[3])).length;
+
+let maxima=0;
+
+lecturas.forEach(r=>{maxima=Math.max(maxima,Math.round(parseFloat(r[2])*10));});
+
+return {
+minutosFuera:fuera,
+minutosSinLectura:sinLectura,
+tempMaxDecimas:maxima,
+hashLecturas:ethers.id(lecturas.map(r=>r.join("|")).join("\n"))
+};
+
+}
+
+
+/* ==========================================
+   CONSULTAR PRODUCTO
+========================================== */
+
+async function consultarProducto(){
+
+if(consultando)return;
+
+const codigo=document
+.getElementById("codigoConsulta")
+.value.trim().toUpperCase();
+
+if(!codigo){
+
+mostrarEstado("estadoConsulta","Ingresa el código de tu etiqueta.","error");
+
+return;
+
+}
+
+consultando=true;
+
+document.getElementById("btnConsultar").disabled=true;
+
+mostrarEstado("estadoConsulta","Consultando blockchain...","info");
+
+document.getElementById("resultado").innerHTML="";
+
+try{
+
+await prepararContratos();
+
+await cargarDatosPublicos();
+
+// En la cadena solo está la huella del código, nunca el código
+const huella=ethers.id(codigo);
+
+let venta;
+
+try{
+
+venta=await cadena.verificarCompra(huella);
+
+}catch(error){
+
+throw new Error("Este código no corresponde a ninguna venta registrada. Revisa que esté bien escrito.");
+
+}
+
+const numeroCaja=Number(venta.caja);
+
+const [traza,estadoRetiro]=await Promise.all([
+
+cadena.trazarCaja(numeroCaja),
+
+retiros.cajaBajoRetiro(numeroCaja)
+
+]);
+
+document.getElementById("resultado").innerHTML=
+generarHTMLAlerta(estadoRetiro,venta)+
+generarHTMLProducto(traza,venta)+
+generarHTMLOrigen(traza)+
+generarHTMLFrio(traza)+
+generarHTMLVerificacion(huella,numeroCaja);
+
+mostrarEstado(
+"estadoConsulta",
+estadoRetiro.alcanzada?"Atención: este producto está bajo retiro sanitario.":"Consulta realizada correctamente.",
+estadoRetiro.alcanzada?"error":"exito"
+);
+
+}catch(error){
+
+console.error(error);
+
+mostrarEstado("estadoConsulta","No se pudo consultar:\n"+obtenerMensajeError(error),"error");
+
+}finally{
+
+consultando=false;
+
+document.getElementById("btnConsultar").disabled=false;
+
+}
+
+}
+
+
+/* ==========================================
+   1. ALERTA DE RETIRO SANITARIO
+========================================== */
+
+function generarHTMLAlerta(estado,venta){
+
+if(!estado.alcanzada){
+
+return `
+<div class="alerta sin-retiro">
+<h3>Sin retiros sanitarios</h3>
+<p>No hay ninguna orden de retiro registrada en la blockchain que alcance a este producto.</p>
+</div>
+`;
+
+}
+
+const r=estado.retiro;
+
+const vendidaDespues=Number(venta.fecha)>Number(r.fechaOrden);
+
+return `
+<div class="alerta retiro">
+<h3>⚠ RETIRO SANITARIO ${escaparHTML(r.codigo)}</h3>
+<p class="grande">No consumas este producto.</p>
+<p>Devuélvelo al lugar donde lo compraste.</p>
+<p><strong>Motivo:</strong> resultado de laboratorio desfavorable en la canal ${codigoCanal(r.canal)}.
+${estado.porMezcla?"Este producto es carne molida, mezcla de varias canales del lote; una de ellas está bajo retiro.":"Este producto contiene carne de esa canal."}</p>
+<p><strong>Orden de retiro:</strong> ${formatearFecha(r.fechaOrden)}</p>
+${vendidaDespues?`<p><strong>Tu compra se registró el ${formatearFecha(venta.fecha)}, después de ordenado el retiro.</strong> El registro comercial dice que la venta se concretó, pero el producto no debía venderse.</p>`:""}
+</div>
+`;
+
+}
+
+
+/* ==========================================
+   2. EL PRODUCTO
+========================================== */
+
+function generarHTMLProducto(traza,venta){
+
+const caja=traza.caja;
+
+const corte=datos.cortes[Number(caja.corte)];
+
+return `
+<div class="lote-info">
+<h3>TU PRODUCTO</h3>
+<p><strong>Corte:</strong> ${escaparHTML(corte.nombre)} (${escaparHTML(corte.codigo)})</p>
+<p><strong>Caja de origen:</strong> ${codigoCaja(caja.numero)} · ${kg(caja.pesoG)} · lote ${escaparHTML(datos.lote)}</p>
+<p><strong>Empacado de verdad el:</strong> ${formatearFecha(caja.fechaEmpaqueReal)}
+<br><span class="hash">Fecha real de empaque registrada en la blockchain. La vida útil se cuenta desde esta fecha, aunque la etiqueta diga otra.</span></p>
+<p><strong>Comprado en:</strong> ${codigoMinorista(venta.minorista)} · ${formatearFecha(venta.fecha)} · ${venta.unidades} porciones</p>
+</div>
+`;
+
+}
+
+
+/* ==========================================
+   3. ORIGEN Y DICTAMEN SANITARIO
+========================================== */
+
+function generarHTMLOrigen(traza){
+
+let html=`<div class="lote-info"><h3>DE DÓNDE VIENE</h3>`;
+
+if(traza.caja.mezclaDeLote){
+
+html+=`<p>Es carne molida: una mezcla autorizada de las canales del lote ${escaparHTML(datos.lote)}.
+No se puede remontar a un solo animal; abajo está la canal de la pieza registrada en esta caja.</p>`;
+
+}else{
+
+html+=`<p>Esta caja reúne piezas de ${traza.canalesOrigen.length} animal(es).</p>`;
+
+}
+
+traza.canalesOrigen.forEach((canal,i)=>{
+
+const animal=traza.animalesOrigen[i];
+
+const predio=datos.predios[Number(animal.predio)];
+
+const aprobada=Number(canal.dictamenPM)===1;
+
+html+=`
+<div class="evento">
+<strong>Predio:</strong> ${predio?escaparHTML(predio.nombre)+" · "+escaparHTML(predio.ubicacion):"PR-"+rellenar(animal.predio,3)}<br>
+<strong>Animal:</strong> arete ${animal.arete} · ingresó el ${soloFecha(animal.fechaIngreso)}<br>
+<strong>Faenado el:</strong> ${formatearFecha(canal.fechaSacrificio)} · canal ${codigoCanal(canal.numero)}<br>
+<strong>Antes del sacrificio:</strong> ${DICTAMEN_AM[Number(animal.dictamenAM)]} (${codigoVeterinario(animal.mviAM)})<br>
+<strong>Inspección de la canal:</strong> ${DICTAMEN_PM[Number(canal.dictamenPM)]}
+<span class="badge ${aprobada?"ok":"mal"}">${aprobada?"APROBADA":"OBSERVADA"}</span>
+· sello SL-${rellenar(Number(canal.codigoSello)/1000|0,2)}-${rellenar(Number(canal.codigoSello)%1000,3)} (${codigoVeterinario(canal.mviPM)})
+</div>
+`;
+
+});
+
+return html+"</div>";
+
+}
+
+
+/* ==========================================
+   4. CADENA DE FRÍO
+========================================== */
+
+function generarHTMLFrio(traza){
+
+let html=`<div class="lote-info"><h3>¿SE MANTUVO EL FRÍO?</h3>`;
+
+traza.canalesOrigen.forEach(canal=>{
+
+const a24=Number(canal.curvaDecimas[4]);
+
+const ok=a24<=70;
+
+html+=`<p><strong>${codigoCanal(canal.numero)} en cámara:</strong> ${grados(canal.curvaDecimas[0])} → ${grados(a24)} a las 24 h
+<span class="badge ${ok?"ok":"mal"}">${ok?"≤ 7 °C":"NO LLEGÓ A 7 °C"}</span></p>`;
+
+});
+
+const despacho=traza.despacho;
+
+if(Number(despacho.numero)===0){
+
+return html+"<p>Esta caja no tiene un despacho registrado.</p></div>";
+
+}
+
+const lecturas=datos.lecturas[Number(despacho.numero)]||[];
+
+const r=resumenFrio(despacho.salida,despacho.llegada,lecturas);
+
+const huellaOk=r.hashLecturas===despacho.hashLecturas;
+
+const cumple=huellaOk&&r.minutosFuera===0&&r.minutosSinLectura===0;
+
+html+=`
+<p><strong>Transporte ${codigoDespacho(despacho.numero)}:</strong>
+${formatearFecha(despacho.salida)} → ${formatearFecha(despacho.llegada)}</p>
+<p>${lecturas.length} lecturas del sensor · máxima ${grados(r.tempMaxDecimas)} ·
+${r.minutosFuera} min fuera de rango · ${r.minutosSinLectura} min sin lectura
+<span class="badge ${cumple?"ok":"mal"}">${cumple?"FRÍO MANTENIDO":"FRÍO NO DEMOSTRADO"}</span></p>
+<p><strong>Lecturas auténticas:</strong>
+<span class="badge ${huellaOk?"ok":"mal"}">${huellaOk?"LA HUELLA COINCIDE":"LA HUELLA NO COINCIDE"}</span>
+<br><span class="hash">Recalculada en tu teléfono: ${r.hashLecturas}</span>
+<br><span class="hash">Anclada en la blockchain: ${despacho.hashLecturas}</span></p>
+`;
+
+return html+"</div>";
+
+}
+
+
+/* ==========================================
+   5. COMPRUÉBALO TÚ MISMO
+========================================== */
+
+function generarHTMLVerificacion(huella,numeroCaja){
+
+return `
+<div class="lote-info verificar">
+<h3>COMPRUÉBALO TÚ MISMO</h3>
+<p>Esta página solo lee la blockchain pública; no depende del camal. Cualquiera puede repetir la consulta:</p>
+<ol>
+<li>Abre el contrato de custodia en
+<a href="${EXPLORADOR}${contratoCadena}#readContract" target="_blank" rel="noopener">Etherscan</a>
+y consulta <code>verificarCompra</code> con la huella de tu código:
+<br><span class="hash">${huella}</span></li>
+<li>Consulta <code>trazarCaja(${numeroCaja})</code> para ver la historia completa de la caja.</li>
+<li>Abre el contrato de retiros en
+<a href="${EXPLORADOR}${contratoRetiros}#readContract" target="_blank" rel="noopener">Etherscan</a>
+y consulta <code>cajaBajoRetiro(${numeroCaja})</code>.</li>
+</ol>
+</div>
+`;
+
+}
+
+
+/* ==========================================
+   ESCÁNER QR
+========================================== */
+
+async function iniciarEscaner(){
+
+try{
+
+if(html5QrCode){
+
+mostrarEstado("estadoQR","El escáner ya está activo.","info");
+
+return;
+
+}
+
+if(!window.isSecureContext){
+
+mostrarEstado(
+"estadoQR",
+"La cámara requiere HTTPS o un entorno seguro. Abre el sistema desde Live Server o un hosting con HTTPS.",
+"error"
+);
+
+return;
+
+}
+
+if(typeof Html5Qrcode==="undefined"){
+
+throw new Error("No se cargó la librería del lector QR.");
+
+}
+
+html5QrCode=new Html5Qrcode("reader");
+
+document.getElementById("btnEscanear").disabled=true;
+
+document.getElementById("btnDetener").style.display="block";
+
+await html5QrCode.start(
+
+{facingMode:"environment"},
+
+{
+fps:10,
+qrbox:{width:240,height:240}
+},
+
+mensaje=>{
+
+procesarCodigoQR(mensaje);
+
+},
+
+errorMessage=>{
+
+}
+
+);
+
+mostrarEstado("estadoQR","Cámara activa. Apunta al código QR de la etiqueta.","info");
+
+}catch(error){
+
+console.error(error);
+
+html5QrCode=null;
+
+document.getElementById("btnEscanear").disabled=false;
+
+document.getElementById("btnDetener").style.display="none";
+
+mostrarEstado("estadoQR","No se pudo abrir la cámara.\n"+obtenerMensajeError(error),"error");
+
+}
+
+}
+
+
+/* ==========================================
+   PROCESAR QR
+   El QR puede traer la URL con ?codigo= o el código directo
+========================================== */
+
+async function procesarCodigoQR(mensaje){
+
+await detenerEscaner();
+
+let codigo=mensaje;
+
+try{
+
+const url=new URL(mensaje);
+
+const parametro=url.searchParams.get("codigo");
+
+if(parametro)codigo=parametro;
+
+}catch(error){
+
+console.log("El QR contiene texto directo.");
+
+}
+
+codigo=String(codigo).trim();
+
+if(!codigo)return;
+
+document.getElementById("codigoConsulta").value=codigo;
+
+mostrarEstado("estadoQR","Código detectado: "+codigo,"exito");
+
+consultarProducto();
+
+}
+
+
+/* ==========================================
+   DETENER ESCÁNER
+========================================== */
+
+async function detenerEscaner(){
+
+if(html5QrCode){
+
+try{
+
+await html5QrCode.stop();
+
+await html5QrCode.clear();
+
+}catch(error){
+
+console.error(error);
+
+}
+
+html5QrCode=null;
+
+}
+
+document.getElementById("btnEscanear").disabled=false;
+
+document.getElementById("btnDetener").style.display="none";
+
+}
+
+
+/* ==========================================
+   MENSAJE DE ERROR
+========================================== */
+
+function obtenerMensajeError(error){
+
+if(!error)return "Error desconocido.";
+
+if(error.code==="NETWORK_ERROR"){
+
+return "Error de conexión con Ethereum Sepolia.";
+
+}
+
+if(error.message){
+
+return error.message;
+
+}
+
+return String(error);
+
+}
+
+
+/* ==========================================
+   CARGAR CÓDIGO DESDE LA URL DEL QR
+========================================== */
+
+window.onload=function(){
+
+const parametros=new URLSearchParams(window.location.search);
+
+const codigo=parametros.get("codigo");
+
+if(codigo){
+
+document.getElementById("codigoConsulta").value=codigo;
+
+consultarProducto();
+
+}
+
+};
+
+</script>
+
+</body>
+</html>

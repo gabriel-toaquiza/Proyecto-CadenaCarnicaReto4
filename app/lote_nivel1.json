@@ -12454,6 +12454,16 @@
    "unidades": 19
   }
  ],
+ "retiros": [
+  {
+   "codigo": "RS-2026-004",
+   "canal": 12,
+   "fechaNotificacion": 1786735200,
+   "fechaOrden": 1786741200,
+   "resultado": "LAB-2026-0911|CN-0188-012|Microbiológico — Salmonella spp.|POSITIVO|2026-08-14",
+   "motivo": "Resultado positivo a Salmonella spp. en análisis LAB-2026-0911"
+  }
+ ],
  "fueraDeCadena": {
   "personal": {
    "101": {

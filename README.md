@@ -1,20 +1,24 @@
-# De la vaca al plato, sin perder el hilo · Reto 04 · Nivel 1
+# De la vaca al plato, sin perder el hilo · Reto 04 · Niveles 1 y 2
 
 Registro de custodia de la cadena cárnica en blockchain para el lote de faenamiento **LF-2026-0188**
 (Hackathon Blockchain · caso ficticio San Ramón de Altamira). Cada traspaso —arete → canal → pieza →
 caja → despacho → cliente— queda anclado con su actor, y el contrato **rechaza lo físicamente
-imposible**: no puede salir más carne de la que entró.
+imposible**: no puede salir más carne de la que entró. Una página pública le permite al consumidor
+consultar y comprobar su compra desde el código de la etiqueta, y le advierte si el producto está bajo
+retiro sanitario.
 
 > Todos los datos son sintéticos (predios, animales, personas y clientes no existen).
 
-## Contrato desplegado
+## Contratos desplegados (Ethereum Sepolia, chainId 11155111)
 
-| | |
-|---|---|
-| Red | Ethereum **Sepolia** (chainId 11155111) |
-| Dirección | [`0xE78e4382984014D8b15B001ff9054aE9790a79ce`](https://sepolia.etherscan.io/address/0xE78e4382984014D8b15B001ff9054aE9790a79ce) |
-| Compilador | solc 0.8.34, optimizador activado (200 runs) |
-| Estado | Lote cargado: 60 animales · 57 canales (55 despostadas) · 364 cajas · 12 despachos · 264 ventas |
+| Contrato | Dirección | Contenido |
+|---|---|---|
+| `CadenaCarnica` (Nivel 1) | [`0xE78e4382984014D8b15B001ff9054aE9790a79ce`](https://sepolia.etherscan.io/address/0xE78e4382984014D8b15B001ff9054aE9790a79ce) | Lote cargado: 60 animales · 57 canales (55 despostadas) · 364 cajas · 12 despachos · 264 ventas |
+| `RetirosSanitarios` (Nivel 2) | [`0x4dAFa0621745559a636333898726A85Dee48c7Ec`](https://sepolia.etherscan.io/address/0x4dAFa0621745559a636333898726A85Dee48c7Ec) | Orden RS-2026-004 sobre la canal CN-0188-012 |
+
+Compilados con solc 0.8.34 y el optimizador activado (200 runs).
+
+**Consulta del consumidor:** pendiente de publicación. Ejemplo de caja retirada: `?codigo=QR-0294-1639`.
 
 ## Los cinco criterios del Nivel 1
 
@@ -25,6 +29,30 @@ imposible**: no puede salir más carne de la que entró.
 | 3 | **Balance de masa**: rechazar las 6 cajas de lomo fino sin piezas | El contrato revierte con `CAJA SIN PIEZAS`; juntas sumarían 278 kg contra un tope físico del lote de 205 kg (`topeCorte(1)`) |
 | 4 | **Cadena de frío** recalculada desde la telemetría | Por despacho se ancla la huella (hash) de las lecturas y su resumen; la app recalcula desde las lecturas y marca en rojo `DSP-0188-006` (135 min sin lectura, aunque declara cumplir) |
 | 5 | **Privacidad** | La cadena solo guarda números, códigos seudónimos y hashes. La app audita la historia de las 364 cajas buscando 98 nombres y direcciones: 0 encontrados. El consumidor verifica su compra con el código de la etiqueta (`verificarCompra(keccak256("QR-0294-1639"))`) |
+
+## Nivel 2: la consulta del consumidor
+
+`consulta/index.html` se abre desde el código de la etiqueta (`?codigo=QR-0294-1639`, con el lector QR
+o escribiéndolo), **sin instalar nada, sin cuenta y sin wallet**. Lee directo de la blockchain con un RPC
+público y responde:
+
+- **Retiro sanitario primero:** si la caja está alcanzada por una orden de retiro, una alerta roja dice que
+  no se consuma. Si la venta se registró después de la orden, lo dice: "el registro comercial dice que la
+  venta se concretó, pero el producto no debía venderse". Es el criterio de aceptación del Nivel 2.
+- De dónde vino (predio), cuándo se faenó, el dictamen ante y post-mortem, la **fecha real de empaque** y
+  si se mantuvo el frío.
+- **Comprobación propia:** la página recalcula en el teléfono la huella de las lecturas de frío y la compara
+  con la anclada, e indica qué funciones consultar en Etherscan para repetir la verificación sin pasar por el camal.
+
+El retiro vive en un contrato aparte, `RetirosSanitarios`, que **lee** `CadenaCarnica` sin modificarlo.
+Solo la wallet que lo despliega (la autoridad) puede registrar órdenes, y `cajaBajoRetiro(caja)` decide
+en la cadena si una caja está alcanzada: si contiene una pieza de la canal retirada o si es carne molida
+cuya mezcla la incluye. Con el lote real alcanza **69 cajas** (14 directas + 55 de molida). De las 14
+directas, 3 se vendieron después de la orden (CJ-0251, CJ-0276 y CJ-0294), y también 38 ventas de molida.
+No bloquea ventas: el retiro automático es el Nivel 3.
+
+`consulta/datos_publicos.json` trae solo lo publicable (cortes, predios y lecturas de frío): ningún
+nombre de persona ni de cliente ni dirección.
 
 ## Cómo maneja la división y la mezcla
 
@@ -43,11 +71,14 @@ imposible**: no puede salir más carne de la que entró.
 ## Estructura
 
 ```
-contracts/CadenaCarnica.sol   contrato (Solidity ^0.8.20)
-app/index.html                App Admin: conexión, carga del lote y los 5 criterios
-app/lote_nivel1.json          datos del lote listos para el contrato (generado)
-scripts/preparar_lote.py      genera lote_nivel1.json desde los CSV del reto
-tests/probar_contrato.py      prueba de punta a punta del contrato con el lote real
+contracts/CadenaCarnica.sol       Nivel 1: custodia y regla física (Solidity ^0.8.20)
+contracts/RetirosSanitarios.sol   Nivel 2: órdenes de retiro sobre el lote
+app/index.html                    App Admin: conexión, carga del lote, los 5 criterios y el retiro
+app/lote_nivel1.json              datos del lote para la App Admin (generado; incluye nombres, no se publica)
+consulta/index.html               página pública del consumidor (Nivel 2)
+consulta/datos_publicos.json      datos publicables para la consulta (generado)
+scripts/preparar_lote.py          genera los dos JSON desde los CSV del reto
+tests/probar_contrato.py          prueba de punta a punta de ambos contratos con el lote real
 docs/                         láminas de arquitectura y honestidad, y guion de la demo
 Reto 04 - Camal/              manual, brief y dataset del reto
 ```
@@ -68,18 +99,24 @@ Reto 04 - Camal/              manual, brief y dataset del reto
    desde `app/`, junto a `lote_nivel1.json`.
 4. **Cargar el lote** (solo en un contrato nuevo): *Conectar MetaMask* → *Cargar lote* (unas 37
    transacciones, unos 58 M de gas). La carga es reanudable.
-5. **Demo**: recorrer las secciones 1 a 5 del menú. Las consultas funcionan sin wallet (RPC público).
+5. **Demo del Nivel 1**: recorrer las secciones 1 a 5 del menú. Las consultas funcionan sin wallet (RPC público).
+6. **Nivel 2**: desplegar `contracts/RetirosSanitarios.sol` en Remix (optimizador activado), pasándole en
+   el constructor la dirección de `CadenaCarnica`. Pegar su dirección en `contratoRetirosDireccion`
+   (`app/index.html`) y en `contratoRetiros` (`consulta/index.html`). En la App Admin, sección *Retiro
+   sanitario* → registrar la orden, con la misma wallet que desplegó el contrato.
+7. **Publicar la consulta**: arrastrar la carpeta `consulta/` a [Netlify Drop](https://app.netlify.com/drop)
+   y abrir `https://<sitio>.netlify.app/?codigo=QR-0294-1639` desde el celular.
 
 **Prueba automática del contrato:**
 ```
 pip install -r tests/requirements.txt
 python tests/probar_contrato.py
 ```
-Despliega el contrato en una EVM local, carga el lote completo con la misma lógica que la app y
-comprueba los cinco criterios.
+Despliega los contratos en una EVM local, carga el lote completo con la misma lógica que la app,
+comprueba los cinco criterios del Nivel 1, registra el retiro y verifica qué cajas alcanza.
 
 ## Alcance
 
-Este repositorio implementa **solo el Nivel 1** del brief. Quedan fuera la página del consumidor sin
-wallet (Nivel 2) y los sensores firmados, la habilitación en origen y el retiro automático (Nivel 3).
+Este repositorio implementa los **Niveles 1 y 2** del brief. Queda fuera el Nivel 3: sensores que firman,
+habilitación en origen y retiro automático.
 Supuestos, limitaciones y costos: ver [docs/laminas.md](docs/laminas.md).

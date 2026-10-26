@@ -17,6 +17,7 @@ from pathlib import Path
 RAIZ = Path(__file__).resolve().parent.parent
 DATOS = RAIZ / "Reto 04 - Camal" / "datos"
 SALIDA = RAIZ / "app" / "lote_nivel1.json"
+SALIDA_PUBLICA = RAIZ / "consulta" / "datos_publicos.json"
 
 DICTAMEN_AM = {"APTO": 1, "RETENIDO": 2, "DECOMISO": 3}
 DICTAMEN_PM = {"APROBADA": 1, "DECOMISO PARCIAL": 2, "DECOMISO TOTAL": 3}
@@ -187,6 +188,21 @@ def main():
         "unidades": int(v["unidades_fraccionadas"]),
     } for v in leer("ventas_consumidor.csv")]
 
+    # ---------------- Nivel 2: orden de retiro sanitario y su resultado de laboratorio
+    laboratorio = {a["analisis_id"]: a for a in leer("analisis_laboratorio.csv")}
+    retiros = []
+    for r in leer("retiro_sanitario.csv"):
+        analisis = laboratorio[r["motivo"].split("análisis ")[-1].strip()]
+        retiros.append({
+            "codigo": r["orden_retiro_id"],
+            "canal": numero(r["canal_id"]),
+            "fechaNotificacion": unix(r["fecha_hora_notificacion"]),
+            "fechaOrden": unix(r["fecha_hora_orden"]),
+            "resultado": "|".join([analisis["analisis_id"], analisis["canal_id"], analisis["tipo"],
+                                   analisis["resultado"], analisis["fecha_resultado"]]),
+            "motivo": r["motivo"],
+        })
+
     # ---------------- Datos que NUNCA van a la cadena
     fuera = {
         "personal": {actor(p["persona_id"]): {"codigo": p["persona_id"], "nombre": p["nombre"],
@@ -213,6 +229,7 @@ def main():
         "despachos": despachos,
         "redistribuciones": redistribuciones,
         "ventas": ventas,
+        "retiros": retiros,
         "fueraDeCadena": fuera,
     }
 
@@ -220,7 +237,22 @@ def main():
     SALIDA.write_text(json.dumps(lote, ensure_ascii=False, indent=1), encoding="utf-8")
     print(f"{SALIDA}: {len(animales)} animales, {len(canales)} canales, {len(despostes)} despostes, "
           f"{len(cajas)} cajas, {len(despachos)} despachos, {len(redistribuciones)} redistribuciones, "
-          f"{len(ventas)} ventas")
+          f"{len(ventas)} ventas, {len(retiros)} retiros")
+
+    # ---------------- Nivel 2: datos públicos para la página del consumidor.
+    # Solo lo publicable: cortes, predios (fincas, no personas) y las lecturas
+    # de frío de cada despacho, para que el consumidor recalcule su huella.
+    # Sin nombres de operarios ni de clientes, ni direcciones.
+    publicos = {
+        "lote": "LF-2026-0188",
+        "cortes": lote["cortes"],
+        "predios": {n: {"codigo": p["codigo"], "nombre": p["nombre"], "ubicacion": p["ubicacion"]}
+                    for n, p in fuera["predios"].items()},
+        "lecturas": {d["numero"]: d["lecturas"] for d in despachos},
+    }
+    SALIDA_PUBLICA.parent.mkdir(exist_ok=True)
+    SALIDA_PUBLICA.write_text(json.dumps(publicos, ensure_ascii=False, indent=1), encoding="utf-8")
+    print(f"{SALIDA_PUBLICA}: {len(publicos['predios'])} predios, {len(publicos['lecturas'])} despachos con lecturas")
 
 
 if __name__ == "__main__":
