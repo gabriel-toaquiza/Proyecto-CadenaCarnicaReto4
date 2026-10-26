@@ -419,6 +419,212 @@ font-size:22px;
 color:var(--verde-700);
 margin-bottom:4px;
 }
+
+/* ---------- Experiencia de uso ---------- */
+
+.desde-qr .intro-consulta{
+display:none;
+}
+
+.btn.cargando{
+position:relative;
+color:transparent !important;
+}
+
+.btn.cargando::after,.giro{
+content:"";
+display:inline-block;
+width:18px;
+height:18px;
+border-radius:50%;
+border:2.5px solid rgba(255,255,255,.45);
+border-top-color:#ffffff;
+animation:girar .8s linear infinite;
+}
+
+.btn.cargando::after{
+position:absolute;
+left:50%;
+top:50%;
+margin:-9px 0 0 -9px;
+}
+
+.giro{
+border-color:rgba(29,90,66,.2);
+border-top-color:var(--verde-700);
+flex-shrink:0;
+}
+
+@keyframes girar{
+to{transform:rotate(360deg)}
+}
+
+@media (prefers-reduced-motion:reduce){
+.btn.cargando::after,.giro{animation-duration:2.4s}
+}
+
+.leyendo{
+display:flex;
+align-items:center;
+gap:12px;
+padding:18px;
+border-radius:14px;
+background:#f8fbf9;
+border:1px dashed #b9d9c6;
+font-size:13px;
+color:var(--verde-700);
+}
+
+/* Diagrama de etapas */
+
+.etapas{
+list-style:none;
+margin:0;
+padding:0;
+position:relative;
+}
+
+.etapa{
+display:flex;
+align-items:center;
+gap:14px;
+padding:8px 0;
+position:relative;
+}
+
+.etapa:not(:last-child)::before{
+content:"";
+position:absolute;
+left:21px;
+top:50px;
+bottom:-10px;
+width:2px;
+background:#cfe5d8;
+}
+
+.etapa-icono{
+position:relative;
+width:44px;
+height:44px;
+flex-shrink:0;
+border-radius:50%;
+display:flex;
+align-items:center;
+justify-content:center;
+background:var(--verde-100);
+border:2px solid #9fd8b4;
+color:var(--verde-700);
+z-index:1;
+}
+
+.etapa-icono svg{
+width:21px;
+height:21px;
+fill:none;
+stroke:currentColor;
+stroke-width:1.8;
+stroke-linecap:round;
+stroke-linejoin:round;
+}
+
+.etapa-marca{
+position:absolute;
+right:-4px;
+bottom:-4px;
+width:19px;
+height:19px;
+border-radius:50%;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:11px;
+font-weight:700;
+color:#ffffff;
+background:var(--verde-600);
+border:2px solid #ffffff;
+}
+
+.etapa.mal .etapa-icono{
+background:#fff6e6;
+border-color:#e9c17c;
+color:#9a6612;
+}
+
+.etapa.mal .etapa-marca{
+background:#c98a2b;
+}
+
+.etapa.aviso .etapa-icono{
+background:var(--rojo-100);
+border-color:#e8a59c;
+color:var(--rojo);
+}
+
+.etapa.aviso .etapa-marca{
+background:var(--rojo);
+}
+
+.etapa-texto{
+display:flex;
+flex-direction:column;
+gap:1px;
+font-size:12.5px;
+line-height:1.4;
+}
+
+.etapa-texto strong{
+font-size:13.5px;
+color:var(--texto);
+}
+
+.etapa-texto span{
+color:var(--tenue);
+}
+
+.etapa.aviso .etapa-texto span{
+color:var(--rojo);
+font-weight:600;
+}
+
+/* Códigos explicados */
+
+.codigos{
+background:#ffffff;
+border:1px solid var(--borde);
+border-radius:14px;
+padding:14px 15px;
+margin-bottom:14px;
+font-size:12.5px;
+}
+
+.codigos summary{
+cursor:pointer;
+font-weight:600;
+color:var(--verde-700);
+}
+
+.codigos dl{
+display:grid;
+grid-template-columns:52px 1fr;
+gap:6px 10px;
+margin:12px 0 8px;
+}
+
+.codigos dt{
+font-family:var(--mono);
+font-weight:700;
+color:var(--verde-700);
+}
+
+.codigos dd{
+margin:0;
+color:var(--texto);
+}
+
+.codigos p{
+margin:0;
+color:var(--tenue);
+}
 </style>
 </head>
 
@@ -461,7 +667,7 @@ Ethereum Sepolia · Sin cuenta ni wallet
 
 <h2>Código de tu etiqueta</h2>
 
-<p>
+<p class="intro-consulta">
 Escribe el código de consulta impreso en la etiqueta (por ejemplo QR-0294-1639). La información
 se lee directo de la blockchain, no del servidor del camal.
 </p>
@@ -734,7 +940,14 @@ return (Number(decimas)/10).toFixed(1)+" °C";
 function formatearFecha(timestamp){
 
 return new Date(Number(timestamp)*1000)
-.toLocaleString("es-EC",{timeZone:"America/Guayaquil"});
+.toLocaleString("es-EC",{
+timeZone:"America/Guayaquil",
+day:"numeric",
+month:"short",
+year:"numeric",
+hour:"2-digit",
+minute:"2-digit"
+});
 
 }
 
@@ -831,9 +1044,16 @@ consultando=true;
 
 document.getElementById("btnConsultar").disabled=true;
 
+document.getElementById("btnConsultar").classList.add("cargando");
+
 mostrarEstado("estadoConsulta","Consultando blockchain...","info");
 
-document.getElementById("resultado").innerHTML="";
+document.getElementById("resultado").innerHTML=`
+<div class="leyendo">
+<span class="giro"></span>
+Leyendo la blockchain de Ethereum Sepolia…
+</div>
+`;
 
 try{
 
@@ -868,10 +1088,19 @@ retiros.cajaBajoRetiro(numeroCaja)
 
 document.getElementById("resultado").innerHTML=
 generarHTMLAlerta(estadoRetiro,venta)+
+generarHTMLEtapas(traza,venta,estadoRetiro)+
 generarHTMLProducto(traza,venta)+
 generarHTMLOrigen(traza)+
 generarHTMLFrio(traza)+
-generarHTMLVerificacion(huella,numeroCaja);
+generarHTMLVerificacion(huella,numeroCaja)+
+generarHTMLCodigos();
+
+// Quien llega por el QR ve el resultado de inmediato
+if(document.body.classList.contains("desde-qr")){
+
+document.getElementById("resultado").scrollIntoView({behavior:"smooth",block:"start"});
+
+}
 
 mostrarEstado(
 "estadoConsulta",
@@ -883,6 +1112,8 @@ estadoRetiro.alcanzada?"error":"exito"
 
 console.error(error);
 
+document.getElementById("resultado").innerHTML="";
+
 mostrarEstado("estadoConsulta","No se pudo consultar:\n"+obtenerMensajeError(error),"error");
 
 }finally{
@@ -890,6 +1121,8 @@ mostrarEstado("estadoConsulta","No se pudo consultar:\n"+obtenerMensajeError(err
 consultando=false;
 
 document.getElementById("btnConsultar").disabled=false;
+
+document.getElementById("btnConsultar").classList.remove("cargando");
 
 }
 
@@ -1005,6 +1238,130 @@ return html+"</div>";
 /* ==========================================
    4. CADENA DE FRÍO
 ========================================== */
+
+/* ==========================================
+   DIAGRAMA DE ETAPAS
+   Del predio a tu mesa, con un check por etapa
+   comprobada en la blockchain.
+========================================== */
+
+function evaluarFrio(traza){
+
+const canalesOk=Array.from(traza.canalesOrigen).every(canal=>Number(canal.curvaDecimas[4])<=70);
+
+const despacho=traza.despacho;
+
+if(Number(despacho.numero)===0){
+
+return {canalesOk:canalesOk,despachoOk:false,sinDespacho:true};
+
+}
+
+const lecturas=datos.lecturas[Number(despacho.numero)]||[];
+
+const r=resumenFrio(despacho.salida,despacho.llegada,lecturas);
+
+const huellaOk=r.hashLecturas===despacho.hashLecturas;
+
+return {
+canalesOk:canalesOk,
+despachoOk:huellaOk&&r.minutosFuera===0&&r.minutosSinLectura===0,
+sinDespacho:false
+};
+
+}
+
+const ICONOS_ETAPA={
+predio:'<path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/>',
+inspeccion:'<path d="M12 3l8 3v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6z"/><path d="M9 12l2 2 4-4"/>',
+faena:'<path d="M7 4h10"/><path d="M12 4v4"/><path d="M8 8h8l-1 12H9z"/>',
+camara:'<path d="M12 2v20"/><path d="M4.9 7l14.2 10"/><path d="M4.9 17L19.1 7"/>',
+empaque:'<rect x="4" y="8" width="16" height="12" rx="1.5"/><path d="M4 12h16"/><path d="M10 8V4h4v4"/>',
+transporte:'<path d="M2 7h11v9H2z"/><path d="M13 10h4l3 3v3h-7"/><circle cx="6" cy="18" r="1.6"/><circle cx="17" cy="18" r="1.6"/>',
+venta:'<path d="M4 9h16l-1 11H5z"/><path d="M9 9V6a3 3 0 0 1 6 0v3"/>',
+sanidad:'<path d="M12 3l10 18H2z"/><path d="M12 10v5"/><path d="M12 18h.01"/>'
+};
+
+function etapa(icono,titulo,detalle,estado){
+
+const marca={ok:"✓",mal:"✕",aviso:"!"}[estado];
+
+return `
+<li class="etapa ${estado}">
+<span class="etapa-icono"><svg viewBox="0 0 24 24" aria-hidden="true">${ICONOS_ETAPA[icono]}</svg>
+<span class="etapa-marca" aria-label="${estado==="ok"?"comprobado":"atención"}">${marca}</span></span>
+<div class="etapa-texto"><strong>${titulo}</strong><span>${detalle}</span></div>
+</li>
+`;
+
+}
+
+function generarHTMLEtapas(traza,venta,estadoRetiro){
+
+const animales=Array.from(traza.animalesOrigen);
+
+const canales=Array.from(traza.canalesOrigen);
+
+const aptos=animales.every(a=>Number(a.dictamenAM)===1);
+
+const aprobadas=canales.every(c=>Number(c.dictamenPM)===1);
+
+const frio=evaluarFrio(traza);
+
+const predios=[...new Set(animales.map(a=>{
+const predio=datos.predios[Number(a.predio)];
+return predio?predio.nombre:"PR-"+rellenar(a.predio,3);
+}))];
+
+const faena=canales.map(c=>Number(c.fechaSacrificio)).sort()[0];
+
+let html=`<div class="lote-info"><h3>DEL PREDIO A TU MESA</h3><ol class="etapas">`;
+
+html+=etapa("predio","Origen",escaparHTML(predios.join(" · ")),"ok");
+
+html+=etapa("inspeccion","Inspección antes del sacrificio",aptos?"Animal apto":"Con observaciones",aptos?"ok":"mal");
+
+html+=etapa("faena","Faena y sello sanitario",(aprobadas?"Canal aprobada":"Canal observada")+" · "+soloFecha(faena),aprobadas?"ok":"mal");
+
+html+=etapa("camara","Frío en cámara",frio.canalesOk?"Bajó a 7 °C o menos en 24 h":"No llegó a 7 °C en 24 h",frio.canalesOk?"ok":"mal");
+
+html+=etapa("empaque","Empaque",formatearFecha(traza.caja.fechaEmpaqueReal),"ok");
+
+html+=etapa("transporte","Transporte en frío",frio.sinDespacho?"Sin despacho registrado":(frio.despachoOk?"Frío demostrado por el sensor":"Frío no demostrado"),frio.despachoOk?"ok":"mal");
+
+html+=etapa("venta","Venta",formatearFecha(venta.fecha),"ok");
+
+html+=estadoRetiro.alcanzada
+?etapa("sanidad","Estado sanitario","Bajo retiro "+escaparHTML(estadoRetiro.retiro.codigo)+": no consumir","aviso")
+:etapa("sanidad","Estado sanitario","Sin retiros registrados","ok");
+
+return html+"</ol></div>";
+
+}
+
+/* ==========================================
+   QUÉ SIGNIFICAN LOS CÓDIGOS
+========================================== */
+
+function generarHTMLCodigos(){
+
+return `
+<details class="codigos">
+<summary>¿Qué significan los códigos?</summary>
+<dl>
+<dt>CJ</dt><dd>Caja empacada en el camal.</dd>
+<dt>CN</dt><dd>Canal: el animal faenado, identificado por su arete.</dd>
+<dt>MV</dt><dd>Médico veterinario inspector que firmó el dictamen.</dd>
+<dt>SL</dt><dd>Sello sanitario puesto en la canal aprobada.</dd>
+<dt>DSP</dt><dd>Despacho en vehículo refrigerado.</dd>
+<dt>CL-R</dt><dd>Punto de venta minorista donde se compró.</dd>
+</dl>
+<p>Los nombres de personas y negocios no se publican en la blockchain: solo sus códigos.</p>
+</details>
+`;
+
+}
+
 
 function generarHTMLFrio(traza){
 
@@ -1260,11 +1617,27 @@ return String(error);
 
 window.onload=function(){
 
+document.getElementById("codigoConsulta").addEventListener("keydown",evento=>{
+
+if(evento.key==="Enter"){
+
+evento.preventDefault();
+
+consultarProducto();
+
+}
+
+});
+
+document.getElementById("estadoConsulta").setAttribute("aria-live","polite");
+
 const parametros=new URLSearchParams(window.location.search);
 
 const codigo=parametros.get("codigo");
 
 if(codigo){
+
+document.body.classList.add("desde-qr");
 
 document.getElementById("codigoConsulta").value=codigo;
 

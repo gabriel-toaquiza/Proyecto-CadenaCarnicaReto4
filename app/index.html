@@ -1299,6 +1299,244 @@ flex:none;
 
 .login-tarjeta{padding:26px 20px}
 }
+
+/* =====================================================
+   EXPERIENCIA DE USO
+===================================================== */
+
+/* Fuera de Inicio, la franja superior se vuelve una barra compacta */
+
+body:not([data-seccion="inicio"]) .topbar{
+min-height:0;
+padding:14px 22px;
+align-items:center;
+margin-bottom:18px;
+}
+
+body:not([data-seccion="inicio"]) .topbar .eyebrow,
+body:not([data-seccion="inicio"]) .topbar .subtitle{
+display:none;
+}
+
+body:not([data-seccion="inicio"]) .topbar h1{
+font-size:18px;
+}
+
+.status span.sin-red .dot{
+background:#e2a03f;
+box-shadow:0 0 10px #e2a03f;
+}
+
+/* Botón ocupado */
+
+.btn.cargando{
+position:relative;
+color:transparent !important;
+pointer-events:none;
+}
+
+.btn.cargando::after{
+content:"";
+position:absolute;
+left:50%;
+top:50%;
+width:18px;
+height:18px;
+margin:-9px 0 0 -9px;
+border-radius:50%;
+border:2.5px solid rgba(255,255,255,.45);
+border-top-color:#ffffff;
+animation:girar .8s linear infinite;
+}
+
+.btn-gray.cargando::after{
+border-color:rgba(29,90,66,.25);
+border-top-color:var(--verde-700);
+}
+
+@keyframes girar{
+to{transform:rotate(360deg)}
+}
+
+@media (prefers-reduced-motion:reduce){
+.btn.cargando::after{animation-duration:2.4s}
+}
+
+/* Avance de la carga del lote */
+
+.avance{
+margin-top:14px;
+}
+
+.avance-barra{
+height:10px;
+border-radius:10px;
+background:var(--verde-100);
+overflow:hidden;
+}
+
+.avance-barra span{
+display:block;
+height:100%;
+width:0;
+border-radius:10px;
+background:linear-gradient(90deg,var(--verde-600),var(--verde-300));
+transition:width .4s ease;
+}
+
+.avance-texto{
+font-size:12.5px;
+font-weight:600;
+color:var(--verde-700);
+margin-top:7px;
+}
+
+/* Tablas: el nombre interno va debajo del código, sin ensanchar la tabla */
+
+.tabla-wrap td .fuera{
+display:block;
+white-space:normal;
+max-width:240px;
+margin-top:2px;
+line-height:1.35;
+}
+
+/* Hacia atrás: caja y despacho lado a lado, tarjeta por canal */
+
+.resumen-dos{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+gap:16px;
+margin-top:16px;
+}
+
+.resumen-dos .lote-info{
+margin-bottom:0;
+}
+
+.subtitulo-resultado{
+margin:24px 0 12px !important;
+}
+
+.canales-grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+gap:16px;
+}
+
+.canal-card{
+background:#ffffff;
+border:1px solid var(--borde);
+border-radius:14px;
+overflow:hidden;
+display:flex;
+flex-direction:column;
+}
+
+.canal-card header{
+display:flex;
+justify-content:space-between;
+align-items:baseline;
+gap:10px;
+padding:12px 16px;
+background:var(--verde-100);
+border-bottom:1px solid var(--borde);
+}
+
+.canal-card header strong{
+color:var(--verde-700);
+font-size:15px;
+}
+
+.canal-card header span{
+font-size:12px;
+color:var(--tenue);
+font-variant-numeric:tabular-nums;
+}
+
+.datos{
+display:grid;
+grid-template-columns:96px 1fr;
+gap:8px 12px;
+margin:0;
+padding:14px 16px;
+font-size:12.5px;
+line-height:1.5;
+}
+
+.datos dt{
+color:var(--tenue);
+font-weight:600;
+font-size:11.5px;
+text-transform:uppercase;
+letter-spacing:.4px;
+padding-top:1px;
+}
+
+.datos dd{
+margin:0;
+color:var(--texto);
+overflow-wrap:anywhere;
+}
+
+.datos dd .fuera,
+.datos dd .linea{
+display:block;
+}
+
+.curva{
+margin-top:auto;
+padding:12px 16px 14px;
+border-top:1px solid var(--borde);
+background:#fbfdfc;
+}
+
+.curva-titulo{
+display:flex;
+justify-content:space-between;
+align-items:center;
+gap:8px;
+font-size:12px;
+font-weight:600;
+color:var(--texto);
+margin-bottom:6px;
+}
+
+.mini-curva{
+width:100%;
+max-width:100%;
+height:auto;
+display:block;
+}
+
+.mini-curva .rejilla{
+stroke:var(--borde);
+stroke-width:1;
+}
+
+.mini-curva .limite{
+stroke:var(--ambar);
+stroke-width:1.4;
+stroke-dasharray:4 3;
+}
+
+.mini-curva .eje{
+font-size:9.5px;
+fill:var(--tenue);
+font-family:var(--fuente);
+}
+
+.mini-curva .limite-texto{
+fill:var(--ambar);
+font-weight:600;
+}
+
+.mini-curva .valor{
+font-size:10.5px;
+font-weight:700;
+fill:var(--texto);
+font-family:var(--fuente);
+}
 </style>
 </head>
 
@@ -1512,8 +1750,7 @@ de la báscula de ingreso al consumidor, queda anclado con su responsable.
 </div>
 
 <div class="status">
-<span><i class="dot"></i>Sistema disponible</span>
-<span>Red: Sepolia</span>
+<span id="estadoRed"><i class="dot"></i>Comprobando conexión…</span>
 </div>
 
 </header>
@@ -1718,6 +1955,11 @@ Lo que el contrato rechaza queda anotado en rojo.
 </button>
 
 <div id="estadoCarga" class="estado"></div>
+
+<div id="avanceCarga" class="avance" hidden>
+<div class="avance-barra"><span id="avanceRelleno"></span></div>
+<div id="avanceTexto" class="avance-texto"></div>
+</div>
 
 <div id="registroCarga" class="registro" style="display:none"></div>
 
@@ -2271,7 +2513,14 @@ return (Number(decimas)/10).toFixed(1)+" °C";
 function formatearFecha(timestamp){
 
 return new Date(Number(timestamp)*1000)
-.toLocaleString("es-EC",{timeZone:"America/Guayaquil"});
+.toLocaleString("es-EC",{
+timeZone:"America/Guayaquil",
+day:"numeric",
+month:"short",
+year:"numeric",
+hour:"2-digit",
+minute:"2-digit"
+});
 
 }
 
@@ -2765,6 +3014,8 @@ await cargarDatosLote();
 
 /* 1. Ingreso de animales */
 
+avanceCarga(1,"Ingreso de animales");
+
 const aretes=new Set((await contrato.listarAretes()).map(a=>a.toString()));
 
 await enviarPorGrupos(
@@ -2777,6 +3028,8 @@ a=>a.codigo
 );
 
 /* 2. Faena y post-mortem */
+
+avanceCarga(2,"Faena y post-mortem");
 
 const registradas=await contrato.canalesRegistradas();
 
@@ -2791,6 +3044,8 @@ c=>c.codigo
 
 /* 3. Desposte con balance de masa */
 
+avanceCarga(3,"Desposte con balance de masa");
+
 const despostadas=await contrato.canalesDespostadas();
 
 await enviarPorGrupos(
@@ -2804,6 +3059,8 @@ d=>d.codigo
 
 /* 4. Empaque */
 
+avanceCarga(4,"Empaque en cajas");
+
 const cajas=new Set((await contrato.listarCajas()).map(Number));
 
 await enviarPorGrupos(
@@ -2816,6 +3073,8 @@ c=>c.codigo
 );
 
 /* 5. Despachos: el contrato decide qué cajas pueden salir */
+
+avanceCarga(5,"Despachos con su resumen de frío");
 
 const despachos=new Set((await contrato.listarDespachos()).map(Number));
 
@@ -2853,6 +3112,8 @@ await enviarTransaccion("Despacho "+d.codigo,"registrarDespacho",[tuplaDespacho(
 
 /* 6. Redistribución mayorista → minorista */
 
+avanceCarga(6,"Redistribución a minoristas");
+
 const redis=lote.redistribuciones;
 
 for(let i=0;i<redis.length;i+=75){
@@ -2879,6 +3140,8 @@ await enviarTransaccion(
 
 /* 7. Ventas al consumidor (se registran en orden) */
 
+avanceCarga(7,"Ventas al consumidor");
+
 const yaVendidas=Number(await contrato.totalVentas());
 
 await enviarPorGrupos(
@@ -2889,6 +3152,8 @@ lote.ventas.slice(yaVendidas),
 g=>[g.map(tuplaVenta)],
 v=>v.codigoConsulta
 );
+
+avanceCarga(8,"Lote completo");
 
 mostrarEstado("estadoCarga","Lote cargado. Revisa en rojo lo que el contrato rechazó.","exito");
 
@@ -2912,6 +3177,58 @@ boton.disabled=false;
    CRITERIO 1 · HACIA ATRÁS: caja → canales → animales
 ===================================================== */
 
+// Huella larga recortada: la completa queda en el title
+function huellaCorta(huella){
+
+return String(huella).slice(0,10)+"…"+String(huella).slice(-6);
+
+}
+
+// Mini gráfica de la curva de frío (0 a 24 h) con el límite de 7 °C
+function miniCurva(curvaDecimas){
+
+const ancho=260,alto=92,izq=30,der=10,arriba=10,abajo=20;
+
+const maximo=40;
+
+const x=k=>izq+k*(ancho-izq-der)/4;
+
+const y=t=>arriba+(maximo-t)*(alto-arriba-abajo)/maximo;
+
+const valores=Array.from(curvaDecimas).map(t=>Number(t)/10);
+
+const puntos=valores.map((t,k)=>x(k).toFixed(1)+","+y(t).toFixed(1)).join(" ");
+
+const final=valores[4];
+
+const color=final<=7?"var(--verde-600)":"var(--rojo)";
+
+let svg=`<svg class="mini-curva" viewBox="0 0 ${ancho} ${alto}" role="img"
+aria-label="Temperatura de la canal: ${valores.map((t,k)=>(k*6)+" h "+t.toFixed(1)+" °C").join(", ")}">`;
+
+[0,20,40].forEach(t=>{
+svg+=`<line x1="${izq}" x2="${ancho-der}" y1="${y(t)}" y2="${y(t)}" class="rejilla"/>`;
+svg+=`<text x="${izq-6}" y="${y(t)+3}" text-anchor="end" class="eje">${t}°</text>`;
+});
+
+svg+=`<line x1="${izq}" x2="${ancho-der}" y1="${y(7)}" y2="${y(7)}" class="limite"/>`;
+
+svg+=`<text x="${izq+4}" y="${y(7)-4}" text-anchor="start" class="eje limite-texto">límite 7 °C</text>`;
+
+svg+=`<polyline points="${puntos}" fill="none" stroke="${color}" stroke-width="2.4" stroke-linejoin="round"/>`;
+
+valores.forEach((t,k)=>{
+svg+=`<circle cx="${x(k)}" cy="${y(t)}" r="${k===4?4.5:2.8}" fill="${k===4?color:"#ffffff"}" stroke="${color}" stroke-width="2"/>`;
+svg+=`<text x="${x(k)}" y="${alto-5}" text-anchor="middle" class="eje">${k*6} h</text>`;
+});
+
+svg+=`<text x="${x(4)-8}" y="${y(final)-8}" text-anchor="end" class="valor">${final.toFixed(1)} °C</text>`;
+
+return svg+"</svg>";
+
+}
+
+
 async function consultarHaciaAtras(){
 
 try{
@@ -2932,7 +3249,7 @@ const caja=r.caja;
 
 const despacho=r.despacho;
 
-let html=`
+let html=`<div class="resumen-dos">
 
 <div class="lote-info">
 
@@ -2967,7 +3284,7 @@ html+=`
 
 <p><strong>Despachó:</strong> ${actorConNombre(despacho.despachador)}</p>
 
-<p><strong>Salida / llegada:</strong> ${formatearFecha(despacho.salida)} → ${formatearFecha(despacho.llegada)}</p>
+<p><strong>Salida:</strong> ${formatearFecha(despacho.salida)}<br><strong>Llegada:</strong> ${formatearFecha(despacho.llegada)}</p>
 
 <p><strong>Trayecto de frío:</strong> máx. ${grados(despacho.tempMaxDecimas)} ·
 ${despacho.minutosFuera} min fuera de rango · ${despacho.minutosSinLectura} min sin lectura
@@ -2981,7 +3298,11 @@ ${Number(caja.minorista)!==0?`<p><strong>Redistribuida a:</strong> ${actorConNom
 
 }
 
-html+=`<div class="eventos-title"><h3>Origen: ${r.canalesOrigen.length} canal(es)</h3></div>`;
+html+=`</div>
+
+<h3 class="subtitulo-resultado">Origen: ${r.canalesOrigen.length} animal(es)</h3>
+
+<div class="canales-grid">`;
 
 r.canalesOrigen.forEach((canal,i)=>{
 
@@ -2989,40 +3310,60 @@ const animal=r.animalesOrigen[i];
 
 const predio=lote.fueraDeCadena.predios[Number(animal.predio)];
 
-const curva=canal.curvaDecimas.map((t,k)=>(k*6)+" h: "+grados(t)).join(" · ");
-
 const ok24=Number(canal.curvaDecimas[4])<=70;
+
+const aprobada=Number(canal.dictamenPM)===1;
 
 html+=`
 
-<div class="evento">
+<article class="canal-card">
 
-<strong>${codigoCanal(canal.numero)} ← arete ${animal.arete}</strong><br>
+<header>
+<strong>${codigoCanal(canal.numero)}</strong>
+<span>arete ${animal.arete}</span>
+</header>
 
-<strong>Predio:</strong> ${codigoPredio(animal.predio)}
-${predio?'<span class="fuera">('+escaparHTML(predio.nombre)+' · registro interno)</span>':""}<br>
+<dl class="datos">
 
-<strong>Ingreso:</strong> ${formatearFecha(animal.fechaIngreso)} · peso vivo ${kg(animal.pesoVivoG)}<br>
+<dt>Predio</dt>
+<dd>${codigoPredio(animal.predio)}
+${predio?'<span class="fuera">'+escaparHTML(predio.nombre)+' · registro interno</span>':""}</dd>
 
-<strong>Documentos (huella):</strong> <span class="hash">${animal.hashDocumentos}</span><br>
+<dt>Ingreso</dt>
+<dd>${formatearFecha(animal.fechaIngreso)} · ${kg(animal.pesoVivoG)} en pie</dd>
 
-<strong>Ante-mortem:</strong> ${DICTAMEN_AM[Number(animal.dictamenAM)]} · ${actorConNombre(animal.mviAM)}<br>
+<dt>Ante-mortem</dt>
+<dd>${DICTAMEN_AM[Number(animal.dictamenAM)]} · ${actorConNombre(animal.mviAM)}</dd>
 
-<strong>Sacrificio:</strong> ${formatearFecha(canal.fechaSacrificio)} · peso caliente ${kg(canal.pesoCalienteG)}<br>
+<dt>Sacrificio</dt>
+<dd>${formatearFecha(canal.fechaSacrificio)} · ${kg(canal.pesoCalienteG)} en caliente</dd>
 
-<strong>Post-mortem:</strong> ${DICTAMEN_PM[Number(canal.dictamenPM)]} · ${actorConNombre(canal.mviPM)} ·
-sello SL-${rellenar(Number(canal.codigoSello)/1000|0,2)}-${rellenar(Number(canal.codigoSello)%1000,3)} · ${formatearFecha(canal.fechaSello)}<br>
+<dt>Post-mortem</dt>
+<dd><span class="badge ${aprobada?"ok":"mal"}">${DICTAMEN_PM[Number(canal.dictamenPM)]}</span>
+${actorConNombre(canal.mviPM)}
+<span class="linea">sello SL-${rellenar(Number(canal.codigoSello)/1000|0,2)}-${rellenar(Number(canal.codigoSello)%1000,3)} · ${formatearFecha(canal.fechaSello)}</span></dd>
 
-<strong>Curva de frío de la canal:</strong> ${curva}
-<span class="badge ${ok24?"ok":"mal"}">${ok24?"≤7 °C A LAS 24 h":"NO LLEGÓ A 7 °C"}</span><br>
+<dt>Documentos</dt>
+<dd><span class="hash" title="${animal.hashDocumentos}">${huellaCorta(animal.hashDocumentos)}</span></dd>
 
-<strong>Pieza en esta caja:</strong> ${kg(r.pesosPieza[i])} · despostó ${actorConNombre(r.operariosPieza[i])}
+<dt>Pieza</dt>
+<dd>${kg(r.pesosPieza[i])} · despostó ${actorConNombre(r.operariosPieza[i])}</dd>
 
+</dl>
+
+<div class="curva">
+<div class="curva-titulo">Frío de la canal en cámara
+<span class="badge ${ok24?"ok":"mal"}">${ok24?"≤7 °C A LAS 24 h":"NO LLEGÓ A 7 °C"}</span></div>
+${miniCurva(canal.curvaDecimas)}
 </div>
+
+</article>
 
 `;
 
 });
+
+html+="</div>";
 
 document.getElementById("resultadoAtras").innerHTML=html;
 
@@ -3858,6 +4199,10 @@ function abrirPanel(sesion){
 
 document.body.classList.remove("bloqueado");
 
+mostrarSeccion("inicio");
+
+revisarRed();
+
 document.getElementById("usuarioSesion").innerText=
 sesion.metodo==="wallet"
 ?"Wallet "+sesion.usuario.slice(0,6)+"…"+sesion.usuario.slice(-4)
@@ -4052,6 +4397,185 @@ if(sesion)abrirPanel(sesion);
 });
 
 </script>
+
+<script>
+
+/* =====================================================
+   EXPERIENCIA DE USO
+   Capa sobre las funciones existentes: no cambia qué
+   consultan ni qué registran, solo cómo se interactúa.
+===================================================== */
+
+/* Sección activa en el body: la franja grande solo se ve en Inicio */
+
+const mostrarSeccionBase=mostrarSeccion;
+
+mostrarSeccion=function(id,boton){
+
+mostrarSeccionBase(id,boton);
+
+document.body.dataset.seccion=id;
+
+window.scrollTo({top:0,behavior:"smooth"});
+
+};
+
+/* Botones ocupados: indicador de carga y sin doble clic */
+
+function conIndicador(nombre){
+
+const original=window[nombre];
+
+if(typeof original!=="function")return;
+
+window[nombre]=async function(...argumentos){
+
+const boton=document.querySelector('button[onclick^="'+nombre+'("]');
+
+if(boton&&boton.classList.contains("cargando"))return;
+
+if(boton){
+
+boton.classList.add("cargando");
+
+boton.disabled=true;
+
+boton.setAttribute("aria-busy","true");
+
+}
+
+try{
+
+return await original.apply(this,argumentos);
+
+}finally{
+
+if(boton){
+
+boton.classList.remove("cargando");
+
+boton.disabled=false;
+
+boton.removeAttribute("aria-busy");
+
+}
+
+}
+
+};
+
+}
+
+[
+"actualizarTotales",
+"consultarHaciaAtras",
+"consultarHaciaAdelante",
+"probarCajasLomo",
+"enviarCajaRechazada",
+"verificarFrio",
+"verDatosCrudos",
+"auditarPrivacidad",
+"verificarCompraConsumidor",
+"registrarRetiroSanitario",
+"consultarRetiros"
+].forEach(conIndicador);
+
+/* Enter en un campo ejecuta su consulta */
+
+const CONSULTA_DEL_CAMPO={
+codigoCaja:"consultarHaciaAtras",
+codigoCanal:"consultarHaciaAdelante",
+codigoCajaCruda:"verDatosCrudos",
+codigoConsulta:"verificarCompraConsumidor"
+};
+
+Object.entries(CONSULTA_DEL_CAMPO).forEach(([id,funcion])=>{
+
+const campo=document.getElementById(id);
+
+if(!campo)return;
+
+campo.addEventListener("keydown",evento=>{
+
+if(evento.key==="Enter"){
+
+evento.preventDefault();
+
+window[funcion]();
+
+}
+
+});
+
+});
+
+/* Avance de la carga del lote (7 pasos) */
+
+function avanceCarga(paso,texto){
+
+const total=7;
+
+const caja=document.getElementById("avanceCarga");
+
+caja.hidden=false;
+
+const hecho=Math.min(paso-1,total);
+
+document.getElementById("avanceRelleno").style.width=(hecho/total*100)+"%";
+
+document.getElementById("avanceTexto").innerText=
+paso>total?"7 de 7 pasos · "+texto:"Paso "+paso+" de "+total+" · "+texto;
+
+}
+
+/* Conexión real con Sepolia en el encabezado */
+
+async function revisarRed(){
+
+const indicador=document.getElementById("estadoRed");
+
+if(!indicador)return;
+
+try{
+
+const lectura=await obtenerContratoLectura();
+
+const bloque=await lectura.runner.provider.getBlockNumber();
+
+indicador.innerHTML='<i class="dot"></i>Sepolia · bloque '+bloque.toLocaleString("es-EC");
+
+indicador.classList.remove("sin-red");
+
+}catch(error){
+
+console.warn(error);
+
+indicador.innerHTML='<i class="dot"></i>Sin conexión con Sepolia';
+
+indicador.classList.add("sin-red");
+
+}
+
+}
+
+setInterval(()=>{
+
+if(!document.body.classList.contains("bloqueado"))revisarRed();
+
+},60000);
+
+/* Mensajes de estado anunciados a lectores de pantalla */
+
+document.querySelectorAll(".estado").forEach(elemento=>{
+
+elemento.setAttribute("role","status");
+
+elemento.setAttribute("aria-live","polite");
+
+});
+
+</script>
+
 
 
 </body>
