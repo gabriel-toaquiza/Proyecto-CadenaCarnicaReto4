@@ -1,0 +1,2 @@
+orden_retiro_id,lote_faenamiento,canal_id,motivo,fecha_hora_notificacion,fecha_hora_orden,plazo_horas,cajas_alcanzadas,cajas_retiradas,estado,responsable
+RS-2026-004,LF-2026-0188,CN-0188-012,Resultado positivo a Salmonella spp. en análisis LAB-2026-0911,2026-08-14T14:20:00-05:00,2026-08-14T16:00:00-05:00,24,14,11,EJECUTADO,Gerencia General EPM-RASRA

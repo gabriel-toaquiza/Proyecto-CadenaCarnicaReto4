@@ -1,0 +1,2968 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CADENA CÁRNICA | LF-2026-0188</title>
+
+<script src="https://cdn.jsdelivr.net/npm/ethers@6.13.2/dist/ethers.umd.min.js"></script>
+
+<style>
+*{box-sizing:border-box}
+
+:root{
+--bg:#061d3b;
+--panel:rgba(30,76,124,.48);
+--panel2:rgba(8,37,70,.65);
+--border:rgba(119,181,231,.38);
+--white:#f4f8ff;
+--muted:#aec7e3;
+--blue:#159cf0;
+--blue2:#0879ce;
+--red:#8e304d;
+--red2:#b23c5b;
+}
+
+body{
+margin:0;
+font-family:Arial,Helvetica,sans-serif;
+color:var(--white);
+background:
+radial-gradient(ellipse at 85% 5%,#194d81 0%,transparent 38%),
+linear-gradient(135deg,#061b37,#09294e 48%,#123f70);
+min-height:100vh;
+display:flex;
+}
+
+/* MENU */
+
+.sidebar{
+width:220px;
+min-height:100vh;
+background:rgba(3,24,52,.68);
+border-right:1px solid rgba(126,184,231,.25);
+padding:24px 12px;
+flex-shrink:0;
+}
+
+.logo{
+text-align:center;
+margin-bottom:30px;
+}
+
+.logo-icon {
+    width: 150px;
+    height: 150px;
+    border: none;
+    border-radius: 0;
+    margin: 0 auto 10px;
+    display: block;
+    object-fit: contain;
+}
+
+.logo h2{
+font-size:21px;
+line-height:1.1;
+margin:0;
+font-weight:800;
+}
+
+.logo p{
+font-size:11px;
+color:var(--muted);
+margin-top:10px;
+}
+
+.menu{
+display:flex;
+flex-direction:column;
+gap:5px;
+}
+
+.menu button{
+width:100%;
+border:0;
+background:transparent;
+color:#d7e6f7;
+padding:13px 15px;
+border-radius:12px;
+font-size:14px;
+font-weight:bold;
+text-align:left;
+cursor:pointer;
+display:flex;
+align-items:center;
+gap:12px;
+transition:.2s;
+}
+
+.menu button:hover{
+background:rgba(24,133,220,.2);
+}
+
+.menu button.active{
+background:linear-gradient(110deg,#128ee3,#116bb4);
+color:white;
+}
+
+.menu-icon{
+width:20px;
+text-align:center;
+font-size:18px;
+}
+
+/* CONTENIDO */
+
+.main{
+flex:1;
+min-width:0;
+padding:24px 30px 35px;
+}
+
+.topbar{
+display:flex;
+justify-content:space-between;
+align-items:center;
+gap:20px;
+margin-bottom:22px;
+}
+
+.eyebrow{
+color:#81bce9;
+font-size:12px;
+font-weight:bold;
+letter-spacing:2px;
+margin-bottom:5px;
+}
+
+h1{
+font-size:31px;
+margin:0;
+font-weight:800;
+letter-spacing:-.5px;
+}
+
+.subtitle{
+color:#b5cce5;
+font-size:15px;
+margin:8px 0 0;
+}
+
+.status{
+display:flex;
+gap:8px;
+flex-wrap:wrap;
+justify-content:flex-end;
+}
+
+.status span{
+background:rgba(14,60,103,.55);
+border:1px solid rgba(125,183,229,.45);
+padding:10px 14px;
+border-radius:13px;
+font-size:13px;
+white-space:nowrap;
+}
+
+.dot{
+display:inline-block;
+width:9px;
+height:9px;
+background:#35e89a;
+border-radius:50%;
+margin-right:8px;
+box-shadow:0 0 12px #35e89a;
+}
+
+/* SECCIONES */
+
+.section{
+display:none;
+animation:fade .25s ease;
+}
+
+.section.active{
+display:block;
+}
+
+@keyframes fade{
+from{opacity:0;transform:translateY(8px)}
+to{opacity:1;transform:translateY(0)}
+}
+
+.card{
+background:linear-gradient(135deg,rgba(38,91,143,.58),rgba(13,49,88,.72));
+border:1px solid var(--border);
+border-radius:18px;
+padding:20px;
+margin-bottom:18px;
+box-shadow:0 15px 45px #00000016;
+backdrop-filter:blur(18px);
+}
+
+.card h2{
+font-size:23px;
+margin:0 0 8px;
+}
+
+.card h3{
+font-size:19px;
+margin:0 0 15px;
+}
+
+.card p{
+color:#bdd3e9;
+font-size:14px;
+line-height:1.45;
+}
+
+.section-title{
+display:flex;
+align-items:center;
+gap:12px;
+margin-bottom:20px;
+}
+
+.number{
+width:48px;
+height:48px;
+border-radius:50%;
+background:linear-gradient(135deg,#29b0fa,#087bd5);
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:25px;
+font-weight:bold;
+flex-shrink:0;
+}
+
+.section-title h2{
+margin:0;
+font-size:23px;
+}
+
+.section-title p{
+margin:4px 0 0;
+font-size:14px;
+}
+
+/* CAMPOS */
+
+.form-grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:12px;
+}
+
+.field label{
+display:block;
+font-size:14px;
+color:#d5e5f6;
+margin-bottom:6px;
+}
+
+input,select,textarea{
+width:100%;
+background:rgba(20,71,115,.70);
+border:1px solid rgba(117,182,232,.45);
+border-radius:11px;
+padding:12px 14px;
+font-size:15px;
+color:white;
+outline:none;
+font-family:inherit;
+}
+
+input::placeholder,textarea::placeholder{
+color:#a9c4df;
+}
+
+input:focus,select:focus,textarea:focus{
+border-color:#29aafa;
+box-shadow:0 0 0 3px #159cf01c;
+}
+
+select option{
+background:#10375e;
+color:white;
+}
+
+textarea{
+min-height:85px;
+resize:vertical;
+}
+
+.btn{
+width:100%;
+padding:13px 16px;
+margin-top:12px;
+border:0;
+border-radius:11px;
+font-size:15px;
+font-weight:bold;
+color:white;
+cursor:pointer;
+transition:.2s;
+background:linear-gradient(100deg,#1ca5f5,#087bcf);
+box-shadow:0 5px 15px #001d381f;
+}
+
+.btn:hover{
+filter:brightness(1.12);
+transform:translateY(-1px);
+}
+
+.btn:disabled{
+opacity:.5;
+cursor:not-allowed;
+}
+
+.btn-red{
+background:linear-gradient(100deg,#a43a59,#70243f);
+}
+
+.btn-gray{
+background:rgba(89,119,146,.55);
+}
+
+.btn-green{
+background:linear-gradient(100deg,#159dca,#0878bd);
+}
+
+hr{
+border:0;
+border-top:1px solid rgba(164,203,237,.65);
+margin:20px 0;
+}
+
+.qr-title{
+font-size:19px;
+margin:0 0 14px;
+}
+
+#qrcode{
+background:white;
+border-radius:14px;
+padding:12px;
+width:max-content;
+max-width:100%;
+margin:15px auto 0;
+text-align:center;
+}
+
+#qrcode img{
+max-width:100%;
+height:auto;
+}
+
+#qrcode p{
+color:#152d49;
+font-weight:bold;
+font-size:13px;
+margin:12px 0 0;
+}
+
+/* ESTADOS */
+
+.estado{
+display:none;
+margin-top:12px;
+padding:12px 14px;
+border-radius:13px;
+overflow-wrap:anywhere;
+white-space:pre-wrap;
+line-height:1.5;
+font-size:13px;
+}
+
+.exito{
+background:rgba(24,130,89,.25);
+border:1px solid #31c991;
+color:#b8ffdf;
+}
+
+.error{
+background:rgba(137,35,57,.35);
+border:1px solid #d65b76;
+color:#ffd4dc;
+}
+
+.info{
+background:rgba(23,124,197,.25);
+border:1px solid #4aadee;
+color:#c8e9ff;
+}
+
+/* WALLET */
+
+.wallet{
+background:rgba(2,24,48,.38);
+border:1px solid rgba(130,184,225,.25);
+border-radius:11px;
+padding:13px;
+word-break:break-all;
+color:#d5e8fa;
+font-size:13px;
+line-height:1.6;
+}
+
+.wallet-title{
+font-size:15px;
+font-weight:bold;
+margin-bottom:9px;
+}
+
+/* ANIMACIÓN CONEXIÓN */
+
+.connection-box{
+text-align:center;
+padding:28px 20px;
+background:rgba(2,24,48,.25);
+border:1px solid rgba(119,181,231,.25);
+border-radius:16px;
+margin-bottom:18px;
+}
+
+.connection-circle{
+width:76px;
+height:76px;
+margin:0 auto 16px;
+border-radius:50%;
+border:2px solid #218ed8;
+display:flex;
+align-items:center;
+justify-content:center;
+position:relative;
+background:rgba(20,115,190,.13);
+}
+
+.connection-circle::before{
+content:"";
+position:absolute;
+inset:-7px;
+border:2px solid rgba(33,142,216,.25);
+border-radius:50%;
+animation:pulseConnection 2s infinite;
+}
+
+.connection-circle svg{
+width:34px;
+height:34px;
+fill:none;
+stroke:#42b8ff;
+stroke-width:2;
+}
+
+.connection-status{
+font-size:17px;
+font-weight:bold;
+margin:0 0 6px;
+}
+
+.connection-description{
+color:#9fbad4;
+font-size:13px;
+margin:0;
+}
+
+.connection-indicator{
+display:inline-block;
+width:9px;
+height:9px;
+border-radius:50%;
+background:#f0ad4e;
+margin-right:7px;
+}
+
+.connection-indicator.connected{
+background:#35e89a;
+box-shadow:0 0 12px #35e89a;
+}
+
+.connection-circle.connected{
+border-color:#35e89a;
+background:rgba(53,232,154,.10);
+}
+
+.connection-circle.connected svg{
+stroke:#35e89a;
+}
+
+@keyframes pulseConnection{
+0%{transform:scale(.9);opacity:.8}
+70%{transform:scale(1.18);opacity:0}
+100%{transform:scale(1.18);opacity:0}
+}
+
+/* CONSULTAS */
+
+.lote-info{
+background:rgba(3,28,57,.35);
+border:1px solid rgba(116,178,229,.27);
+border-radius:13px;
+padding:16px;
+margin-bottom:16px;
+overflow-wrap:anywhere;
+}
+
+.lote-info h3{
+font-size:18px;
+margin-bottom:15px;
+}
+
+.lote-info p{
+font-size:13px;
+margin:8px 0;
+}
+
+.lote-info strong{
+color:#fff;
+}
+
+.evento{
+border-left:5px solid #159cf0;
+background:rgba(22,83,132,.38);
+border-radius:0 14px 14px 0;
+padding:14px;
+margin-bottom:10px;
+overflow-wrap:anywhere;
+font-size:13px;
+}
+
+.evento strong{
+color:#eaf5ff;
+}
+
+.lote-card{
+border:1px solid rgba(117,182,232,.32);
+border-radius:14px;
+padding:17px;
+margin:12px 0;
+background:rgba(11,47,84,.48);
+}
+
+.lote-card h3{
+font-size:19px;
+margin-bottom:15px;
+}
+
+.lote-card p{
+font-size:13px;
+margin:8px 0;
+}
+
+.hash{
+word-break:break-all;
+font-size:12px;
+}
+
+.empty{
+text-align:center;
+color:#a9c7e3;
+padding:25px;
+}
+
+/* DASHBOARD */
+
+.dashboard-grid{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:12px;
+margin-bottom:20px;
+}
+
+.metric{
+background:rgba(26,80,125,.45);
+border:1px solid rgba(114,181,230,.3);
+border-radius:13px;
+padding:16px;
+}
+
+.metric-label{
+font-size:12px;
+color:#a9c7e3;
+margin-bottom:10px;
+}
+
+.metric-value{
+font-size:29px;
+font-weight:800;
+color:white;
+overflow-wrap:anywhere;
+}
+
+.metric.blue .metric-value{
+color:#39b5ff;
+}
+
+.metric.red .metric-value{
+color:#e16b87;
+}
+
+.metric.green .metric-value{
+color:#42d7a0;
+}
+
+.total-number{
+font-size:52px;
+font-weight:800;
+text-align:center;
+color:#39b5ff;
+margin:10px 0;
+}
+
+#reader{
+width:100%;
+margin-top:12px;
+border-radius:14px;
+overflow:hidden;
+}
+
+#reader video{
+border-radius:12px;
+}
+
+/* RESPONSIVE */
+
+@media(max-width:1100px){
+.sidebar{width:200px}
+.main{padding:22px}
+h1{font-size:28px}
+.subtitle{font-size:14px}
+.status span{padding:9px 12px;font-size:12px}
+}
+
+@media(max-width:760px){
+body{display:block}
+
+.sidebar{
+width:100%;
+min-height:auto;
+padding:18px 12px;
+border-right:0;
+border-bottom:1px solid rgba(126,184,231,.25);
+}
+
+.logo{margin-bottom:20px}
+
+.logo-icon{
+width:56px;
+height:56px;
+font-size:27px;
+}
+
+.logo h2{font-size:20px}
+
+.menu{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:6px;
+}
+
+.menu button{
+padding:12px 9px;
+font-size:12px;
+gap:7px;
+border-radius:11px;
+}
+
+.menu-icon{
+font-size:16px;
+width:19px;
+}
+
+.main{padding:20px 14px 30px}
+
+.topbar{
+display:block;
+margin-bottom:20px;
+}
+
+.eyebrow{font-size:11px}
+
+h1{
+font-size:27px;
+line-height:1.15;
+}
+
+.subtitle{
+font-size:14px;
+line-height:1.5;
+}
+
+.status{
+justify-content:flex-start;
+margin-top:15px;
+gap:7px;
+}
+
+.status span{
+font-size:11px;
+padding:9px 11px;
+}
+
+.card{
+padding:17px;
+border-radius:17px;
+}
+
+.card h2{font-size:22px}
+.card h3{font-size:18px}
+
+.section-title{
+gap:10px;
+margin-bottom:18px;
+}
+
+.number{
+width:44px;
+height:44px;
+font-size:23px;
+}
+
+.section-title h2{font-size:22px}
+.section-title p{font-size:13px}
+
+.form-grid{
+grid-template-columns:1fr;
+gap:11px;
+}
+
+input,select,textarea{
+font-size:15px;
+padding:12px;
+}
+
+.btn{
+font-size:14px;
+padding:13px;
+}
+
+.dashboard-grid{
+grid-template-columns:1fr 1fr;
+gap:9px;
+}
+
+.metric{
+padding:13px;
+}
+
+.metric-value{
+font-size:25px;
+}
+
+.metric-label{
+font-size:11px;
+}
+
+.total-number{font-size:48px}
+}
+
+@media(max-width:380px){
+.menu button{
+font-size:11px;
+padding:11px 7px;
+}
+
+.dashboard-grid{
+grid-template-columns:1fr;
+}
+}
+
+/* =====================================================
+   ESTILOS DEL NIVEL 1 (tablas, insignias y registro)
+===================================================== */
+
+.tabla-wrap{
+overflow-x:auto;
+margin-top:14px;
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+font-size:13px;
+}
+
+th,td{
+padding:9px 10px;
+border-bottom:1px solid rgba(116,178,229,.2);
+text-align:left;
+white-space:nowrap;
+}
+
+th{
+color:#9fd2ff;
+font-size:11px;
+letter-spacing:1px;
+text-transform:uppercase;
+}
+
+.fila-roja td{
+background:rgba(214,91,118,.2);
+color:#ffd4dc;
+}
+
+.badge{
+display:inline-block;
+padding:3px 9px;
+border-radius:20px;
+font-size:11px;
+font-weight:bold;
+}
+
+.badge.ok{
+background:rgba(24,130,89,.25);
+color:#9ff5cf;
+border:1px solid #31c991;
+}
+
+.badge.mal{
+background:rgba(137,35,57,.35);
+color:#ffc2cf;
+border:1px solid #d65b76;
+}
+
+.fuera{
+color:var(--muted);
+font-size:11px;
+font-style:italic;
+}
+
+.registro{
+background:rgba(3,28,57,.55);
+border:1px solid rgba(116,178,229,.27);
+border-radius:12px;
+padding:12px;
+font-family:Consolas,monospace;
+font-size:12px;
+line-height:1.6;
+max-height:360px;
+overflow-y:auto;
+white-space:pre-wrap;
+margin-top:14px;
+}
+
+.registro .rechazo{
+color:#ff9fb3;
+}
+
+.registro .listo{
+color:#9ff5cf;
+}
+
+details{
+margin-top:14px;
+}
+
+summary{
+cursor:pointer;
+font-weight:bold;
+color:#cfe6ff;
+}
+
+pre.crudo{
+background:rgba(3,28,57,.55);
+border:1px solid rgba(116,178,229,.27);
+border-radius:12px;
+padding:12px;
+font-size:12px;
+overflow-x:auto;
+max-height:360px;
+}
+</style>
+</head>
+
+<body>
+
+<!-- =====================================================
+     MENU LATERAL
+===================================================== -->
+
+<aside class="sidebar">
+
+<div class="logo">
+<h2 style="text-align:center;">CADENA<br>CÁRNICA</h2>
+<p>Lote LF-2026-0188 · Nivel 1</p>
+</div>
+
+<nav class="menu">
+
+<button class="active" onclick="mostrarSeccion('blockchain',this)">
+<span class="menu-icon">↗</span>
+Blockchain
+</button>
+
+<button onclick="mostrarSeccion('inicio',this)">
+<span class="menu-icon">⌂</span>
+Inicio
+</button>
+
+<button onclick="mostrarSeccion('cargar',this)">
+<span class="menu-icon">＋</span>
+Cargar lote
+</button>
+
+<button onclick="mostrarSeccion('atras',this)">
+<span class="menu-icon">←</span>
+1 · Hacia atrás
+</button>
+
+<button onclick="mostrarSeccion('adelante',this)">
+<span class="menu-icon">→</span>
+2 · Hacia adelante
+</button>
+
+<button onclick="mostrarSeccion('balance',this)">
+<span class="menu-icon">⚖</span>
+3 · Balance de masa
+</button>
+
+<button onclick="mostrarSeccion('frio',this)">
+<span class="menu-icon">❄</span>
+4 · Cadena de frío
+</button>
+
+<button onclick="mostrarSeccion('privacidad',this)">
+<span class="menu-icon">⌕</span>
+5 · Privacidad
+</button>
+
+</nav>
+</aside>
+
+<!-- =====================================================
+     CONTENIDO PRINCIPAL
+===================================================== -->
+
+<main class="main">
+
+<header class="topbar">
+
+<div>
+<div class="eyebrow"> TRAZABILIDAD CÁRNICA · RETO 04 </div>
+<h1>De la vaca al plato, sin perder el hilo</h1>
+<p class="subtitle">
+Registro de custodia del lote LF-2026-0188 en Ethereum Sepolia.
+</p>
+</div>
+
+<div class="status">
+<span><i class="dot"></i>Sistema disponible</span>
+<span>Red: Sepolia</span>
+</div>
+
+</header>
+
+<!-- =====================================================
+     CONEXIÓN BLOCKCHAIN
+===================================================== -->
+
+<section id="blockchain" class="section active">
+
+<div class="card">
+
+<div class="section-title">
+<div class="number">↗</div>
+<div>
+<h2>Conexión Blockchain</h2>
+<p>Conecta MetaMask para cargar el lote. Las consultas funcionan sin wallet.</p>
+</div>
+</div>
+
+<div class="connection-box">
+
+<div class="connection-circle" id="connectionCircle">
+<svg viewBox="0 0 24 24">
+<path d="M12 2L4 6v12l8 4 8-4V6z"/>
+<path d="M12 2v20M4 6l8 4 8-4M4 18l8-4 8 4"/>
+</svg>
+</div>
+
+<h3 class="connection-status" id="connectionTitle">
+<span class="connection-indicator" id="connectionIndicator"></span>
+Wallet no conectada
+</h3>
+
+<p class="connection-description" id="connectionDescription">
+Conecta MetaMask para registrar el lote en blockchain.
+</p>
+
+</div>
+
+<div class="wallet-title">Estado de conexión</div>
+
+<div id="wallet" class="wallet">
+Wallet no conectada
+</div>
+
+<button class="btn" id="btnConectar" onclick="conectar()">
+↗ &nbsp; Conectar MetaMask
+</button>
+
+<div id="estadoConexion" class="estado"></div>
+
+<hr>
+
+<h3>Información de la red</h3>
+
+<div class="lote-info">
+<p><strong>Red:</strong> Ethereum Sepolia</p>
+<p><strong>Contrato:</strong></p>
+<p class="hash" id="direccionContrato"></p>
+</div>
+
+</div>
+
+</section>
+
+<!-- =====================================================
+     INICIO
+===================================================== -->
+
+<section id="inicio" class="section">
+
+<div class="card">
+
+<div class="section-title">
+<div class="number">⌂</div>
+<div>
+<h2>Estado del lote en la cadena</h2>
+<p>Lo que el contrato tiene registrado del lote LF-2026-0188.</p>
+</div>
+</div>
+
+<div class="dashboard-grid">
+
+<div class="metric blue">
+<div class="metric-label">ANIMALES</div>
+<div class="metric-value" id="totAnimales">—</div>
+</div>
+
+<div class="metric green">
+<div class="metric-label">CANALES / DESPOSTADAS</div>
+<div class="metric-value" id="totCanales">—</div>
+</div>
+
+<div class="metric red">
+<div class="metric-label">CAJAS</div>
+<div class="metric-value" id="totCajas">—</div>
+</div>
+
+<div class="metric blue">
+<div class="metric-label">DESPACHOS</div>
+<div class="metric-value" id="totDespachos">—</div>
+</div>
+
+<div class="metric green">
+<div class="metric-label">VENTAS</div>
+<div class="metric-value" id="totVentas">—</div>
+</div>
+
+</div>
+
+<button class="btn" onclick="actualizarTotales()">
+⟳ &nbsp; Actualizar
+</button>
+
+<div id="estadoInicio" class="estado"></div>
+
+</div>
+
+</section>
+
+<!-- =====================================================
+     CARGAR LOTE
+===================================================== -->
+
+<section id="cargar" class="section">
+
+<div class="card">
+
+<div class="section-title">
+<div class="number">＋</div>
+<div>
+<h2>Cargar el lote LF-2026-0188</h2>
+<p>Registra cada traspaso en el contrato, en grupos. Cada grupo es una transacción que se confirma en MetaMask.</p>
+</div>
+</div>
+
+<p>
+Orden: ingreso de animales → faena y post-mortem → desposte → empaque → despachos →
+redistribución → ventas. Si se interrumpe, vuelve a pulsar el botón: continúa donde quedó.
+Lo que el contrato rechaza queda anotado en rojo.
+</p>
+
+<button class="btn" id="btnCargar" onclick="cargarLote()">
+＋ &nbsp; Cargar lote en Sepolia
+</button>
+
+<div id="estadoCarga" class="estado"></div>
+
+<div id="registroCarga" class="registro" style="display:none"></div>
+
+</div>
+
+</section>
+
+<!-- =====================================================
+     CRITERIO 1 · HACIA ATRÁS
+===================================================== -->
+
+<section id="atras" class="section">
+
+<div class="card">
+
+<div class="section-title">
+<div class="number">1</div>
+<div>
+<h2>Hacia atrás: de la caja al animal</h2>
+<p>Reconstruye la historia completa de una caja hasta el arete de cada animal de origen.</p>
+</div>
+</div>
+
+<div class="field">
+<label>Código de la caja</label>
+<input id="codigoCaja" value="CJ-0188-0294">
+</div>
+
+<button class="btn" onclick="consultarHaciaAtras()">
+← &nbsp; Reconstruir historia
+</button>
+
+<div id="estadoAtras" class="estado"></div>
+
+<div id="resultadoAtras"></div>
+
+</div>
+
+</section>
+
+<!-- =====================================================
+     CRITERIO 2 · HACIA ADELANTE
+===================================================== -->
+
+<section id="adelante" class="section">
+
+<div class="card">
+
+<div class="section-title">
+<div class="number">2</div>
+<div>
+<h2>Hacia adelante: de la canal a los clientes</h2>
+<p>Lista todas las cajas que produjo una canal y quién las recibió. Es el retiro sanitario.</p>
+</div>
+</div>
+
+<div class="field">
+<label>Código de la canal</label>
+<input id="codigoCanal" value="CN-0188-012">
+</div>
+
+<button class="btn btn-red" onclick="consultarHaciaAdelante()">
+→ &nbsp; Buscar cajas y clientes
+</button>
+
+<div id="estadoAdelante" class="estado"></div>
+
+<div id="resultadoAdelante"></div>
+
+</div>
+
+</section>
+
+<!-- =====================================================
+     CRITERIO 3 · BALANCE DE MASA
+===================================================== -->
+
+<section id="balance" class="section">
+
+<div class="card">
+
+<div class="section-title">
+<div class="number">3</div>
+<div>
+<h2>Balance de masa: no sale más carne de la que entró</h2>
+<p>Intenta registrar las 6 cajas de lomo fino que no tienen piezas de respaldo.</p>
+</div>
+</div>
+
+<button class="btn" onclick="probarCajasLomo()">
+⚖ &nbsp; Intentar registrar las 6 cajas de lomo fino
+</button>
+
+<div id="estadoBalance" class="estado"></div>
+
+<div id="resultadoBalance"></div>
+
+<hr>
+
+<p>
+Opcional: enviar una de las cajas como transacción real, para que el rechazo quede
+también en el explorador de bloques.
+</p>
+
+<button class="btn btn-gray" onclick="enviarCajaRechazada()">
+↗ &nbsp; Enviar CJ-0188-0365 como transacción real
+</button>
+
+<div id="estadoEnvioRechazo" class="estado"></div>
+
+</div>
+
+</section>
+
+<!-- =====================================================
+     CRITERIO 4 · CADENA DE FRÍO
+===================================================== -->
+
+<section id="frio" class="section">
+
+<div class="card">
+
+<div class="section-title">
+<div class="number">4</div>
+<div>
+<h2>Cadena de frío recalculada desde la telemetría</h2>
+<p>Compara lo que cada despacho declara con lo que muestran las lecturas del sensor.</p>
+</div>
+</div>
+
+<p>
+Las lecturas no están en la cadena; está su huella (hash) y su resumen. La app recalcula
+desde las lecturas, comprueba que la huella coincide con la anclada y marca en rojo todo
+trayecto fuera de rango o con minutos sin lectura.
+</p>
+
+<button class="btn" onclick="verificarFrio()">
+❄ &nbsp; Recalcular cadena de frío
+</button>
+
+<div id="estadoFrio" class="estado"></div>
+
+<div id="resultadoFrio"></div>
+
+</div>
+
+</section>
+
+<!-- =====================================================
+     CRITERIO 5 · PRIVACIDAD
+===================================================== -->
+
+<section id="privacidad" class="section">
+
+<div class="card">
+
+<div class="section-title">
+<div class="number">5</div>
+<div>
+<h2>Privacidad: sin nombres en la cadena</h2>
+<p>La cadena solo guarda códigos y huellas. Los nombres viven en el registro interno del camal.</p>
+</div>
+</div>
+
+<h3>a) Lo que la cadena sabe de una caja</h3>
+
+<div class="field">
+<label>Código de la caja</label>
+<input id="codigoCajaCruda" value="CJ-0188-0294">
+</div>
+
+<button class="btn btn-gray" onclick="verDatosCrudos()">
+⌕ &nbsp; Ver datos crudos en la cadena
+</button>
+
+<div id="estadoCrudo" class="estado"></div>
+
+<div id="resultadoCrudo"></div>
+
+<hr>
+
+<h3>b) Buscar nombres y direcciones en toda la cadena</h3>
+
+<button class="btn btn-gray" onclick="auditarPrivacidad()">
+⌕ &nbsp; Auditar todas las cajas registradas
+</button>
+
+<div id="estadoAuditoria" class="estado"></div>
+
+<div id="resultadoAuditoria"></div>
+
+<hr>
+
+<h3>c) El consumidor verifica su compra</h3>
+
+<div class="field">
+<label>Código de consulta impreso en la etiqueta</label>
+<input id="codigoConsulta" value="QR-0294-1639">
+</div>
+
+<button class="btn" onclick="verificarCompraConsumidor()">
+✓ &nbsp; Verificar compra
+</button>
+
+<div id="estadoCompra" class="estado"></div>
+
+<div id="resultadoCompra"></div>
+
+</div>
+
+</section>
+
+</main>
+
+<script>
+
+/* =====================================================
+   CONFIGURACIÓN BLOCKCHAIN
+===================================================== */
+
+// Pega aquí la dirección del contrato desplegado en Sepolia
+const contratoDireccion =
+"0xE78e4382984014D8b15B001ff9054aE9790a79ce";
+
+const abi=[
+"function CORTE_MOLIDA() view returns (uint8)",
+
+"function LOTE() view returns (string)",
+
+"function TOLERANCIA_PB() view returns (uint256)",
+
+"function canalDeArete(uint64) view returns (uint8)",
+
+"function canalesDespostadas() view returns (uint64)",
+
+"function canalesRegistradas() view returns (uint64)",
+
+"function empacadoG(uint8) view returns (uint256)",
+
+"function listarAretes() view returns (uint64[])",
+
+"function listarCajas() view returns (uint16[])",
+
+"function listarDespachos() view returns (uint16[])",
+
+"function obtenerCaja(uint16) view returns (tuple(uint16 numero, uint8 corte, bool mezclaDeLote, uint64 canales, uint32 pesoG, uint32 fechaEmpaqueReal, uint16 operario, uint16 despacho, uint16 minorista, uint32 fechaRedistribucion))",
+
+"function obtenerDespacho(uint16) view returns (tuple(uint16 numero, uint16 cliente, uint32 salida, uint32 llegada, int16 tempMaxDecimas, uint16 minutosFuera, uint16 minutosSinLectura, uint16 lecturas, bool cumpleDeclarado, uint16 despachador, bytes32 hashLecturas, uint16[] cajas))",
+
+"function obtenerDesposte(uint8) view returns (tuple(uint32[15] pesosG, uint16[15] operarios, uint32 pesoFrioG, uint32 huesoG, uint32 grasaG, uint32 mermasG, uint32 fechaDesposte, uint16 actor))",
+
+"function pesoFrioDespostadoG() view returns (uint256)",
+
+"function piezasEmpacadas(uint8) view returns (uint64)",
+
+"function registrarAnimales(tuple(uint64 arete, uint16 predio, uint32 fechaIngreso, uint32 pesoVivoG, uint8 dictamenAM, uint16 mviAM, uint16 actor, bytes32 hashDocumentos)[])",
+
+"function registrarCajas(tuple(uint16 numero, uint8 corte, bool mezclaDeLote, uint64 canales, uint32 pesoG, uint32 fechaEmpaqueReal, uint16 operario, uint16 despacho, uint16 minorista, uint32 fechaRedistribucion)[])",
+
+"function registrarCanales(tuple(uint8 numero, uint64 arete, uint32 fechaSacrificio, uint32 pesoCalienteG, uint8 dictamenPM, uint16 mviPM, uint32 codigoSello, uint32 fechaSello, uint16 actor, int16[5] curvaDecimas)[])",
+
+"function registrarDespacho(tuple(uint16 numero, uint16 cliente, uint32 salida, uint32 llegada, int16 tempMaxDecimas, uint16 minutosFuera, uint16 minutosSinLectura, uint16 lecturas, bool cumpleDeclarado, uint16 despachador, bytes32 hashLecturas, uint16[] cajas))",
+
+"function registrarDespostes(uint8[], tuple(uint32[15] pesosG, uint16[15] operarios, uint32 pesoFrioG, uint32 huesoG, uint32 grasaG, uint32 mermasG, uint32 fechaDesposte, uint16 actor)[])",
+
+"function registrarRedistribuciones(uint16[], uint16[], uint32[])",
+
+"function registrarVentas(tuple(bytes32 codigoHash, uint16 caja, uint16 minorista, uint32 fecha, uint8 unidades)[])",
+
+"function rendimiento(uint256) view returns (uint16)",
+
+"function topeCorte(uint8) view returns (uint256 empacado, uint256 tope)",
+
+"function totalVentas() view returns (uint256)",
+
+"function totales() view returns (uint256 nAnimales, uint256 nCanales, uint256 nDespostadas, uint256 nCajas, uint256 nDespachos, uint256 nVentas)",
+
+"function trazarCaja(uint16) view returns (tuple(uint16 numero, uint8 corte, bool mezclaDeLote, uint64 canales, uint32 pesoG, uint32 fechaEmpaqueReal, uint16 operario, uint16 despacho, uint16 minorista, uint32 fechaRedistribucion) caja, tuple(uint16 numero, uint16 cliente, uint32 salida, uint32 llegada, int16 tempMaxDecimas, uint16 minutosFuera, uint16 minutosSinLectura, uint16 lecturas, bool cumpleDeclarado, uint16 despachador, bytes32 hashLecturas, uint16[] cajas) despacho, tuple(uint8 numero, uint64 arete, uint32 fechaSacrificio, uint32 pesoCalienteG, uint8 dictamenPM, uint16 mviPM, uint32 codigoSello, uint32 fechaSello, uint16 actor, int16[5] curvaDecimas)[] canalesOrigen, tuple(uint64 arete, uint16 predio, uint32 fechaIngreso, uint32 pesoVivoG, uint8 dictamenAM, uint16 mviAM, uint16 actor, bytes32 hashDocumentos)[] animalesOrigen, uint32[] pesosPieza, uint16[] operariosPieza)",
+
+"function trazarCanal(uint8) view returns (tuple(uint16 numero, uint8 corte, bool mezclaDeLote, uint64 canales, uint32 pesoG, uint32 fechaEmpaqueReal, uint16 operario, uint16 despacho, uint16 minorista, uint32 fechaRedistribucion)[] directas, uint16[] clientesDirectas, tuple(uint16 numero, uint8 corte, bool mezclaDeLote, uint64 canales, uint32 pesoG, uint32 fechaEmpaqueReal, uint16 operario, uint16 despacho, uint16 minorista, uint32 fechaRedistribucion)[] mezcla, uint16[] clientesMezcla)",
+
+"function verificarCompra(bytes32) view returns (tuple(bytes32 codigoHash, uint16 caja, uint16 minorista, uint32 fecha, uint8 unidades))"
+];
+
+const RED_SEPOLIA=11155111;
+
+const ARCHIVO_LOTE="lote_nivel1.json";
+
+const RPC_URLS=[
+
+"https://ethereum-sepolia-rpc.publicnode.com",
+
+"https://rpc.sepolia.org",
+
+"https://1rpc.io/sepolia"
+
+];
+
+const RPC_TIMEOUT=12000;
+
+const EXPLORADOR="https://sepolia.etherscan.io/tx/";
+
+const DICTAMEN_AM=["","APTO","RETENIDO","DECOMISO"];
+
+const DICTAMEN_PM=["","APROBADA","DECOMISO PARCIAL","DECOMISO TOTAL"];
+
+/* VARIABLES */
+
+let provider;
+let signer;
+let contrato;
+let contratoLectura;
+let lote;
+
+/* =====================================================
+   NAVEGACIÓN
+===================================================== */
+
+function mostrarSeccion(id,boton){
+
+document.querySelectorAll(".section")
+.forEach(s=>s.classList.remove("active"));
+
+const seccion=document.getElementById(id);
+
+if(seccion)seccion.classList.add("active");
+
+document.querySelectorAll(".menu button")
+.forEach(b=>b.classList.remove("active"));
+
+if(boton){
+
+boton.classList.add("active");
+
+}else{
+
+const ids=["blockchain","inicio","cargar","atras","adelante","balance","frio","privacidad"];
+
+const botones=document.querySelectorAll(".menu button");
+
+const index=ids.indexOf(id);
+
+if(index>=0&&botones[index]){
+botones[index].classList.add("active");
+}
+
+}
+
+if(id==="inicio"){
+actualizarTotales();
+}
+
+}
+
+/* =====================================================
+   ESTADOS Y ERRORES
+===================================================== */
+
+function mostrarEstado(id,mensaje,tipo="info"){
+
+const elemento=document.getElementById(id);
+
+elemento.innerText=mensaje;
+
+elemento.className="estado "+tipo;
+
+elemento.style.display="block";
+
+}
+
+function obtenerMensajeError(error){
+
+if(error?.revert?.args?.length)return error.revert.args[0];
+
+if(error?.reason)return error.reason;
+
+if(error?.shortMessage)return error.shortMessage;
+
+if(error?.info?.error?.message)
+return error.info.error.message;
+
+if(error?.message)return error.message;
+
+return "Error desconocido";
+
+}
+
+function escaparHTML(texto){
+
+return String(texto)
+
+.replace(/&/g,"&amp;")
+
+.replace(/</g,"&lt;")
+
+.replace(/>/g,"&gt;")
+
+.replace(/"/g,"&quot;")
+
+.replace(/'/g,"&#039;");
+
+}
+
+/* =====================================================
+   CÓDIGOS, UNIDADES Y FECHAS
+   El contrato solo conoce números; aquí se traducen.
+===================================================== */
+
+function rellenar(n,cifras){
+
+return String(Number(n)).padStart(cifras,"0");
+
+}
+
+function codigoCaja(n){return "CJ-0188-"+rellenar(n,4);}
+
+function codigoCanal(n){return "CN-0188-"+rellenar(n,3);}
+
+function codigoDespacho(n){return "DSP-0188-"+rellenar(n,3);}
+
+function codigoPredio(n){return "PR-"+rellenar(n,3);}
+
+function leerNumero(texto){
+
+const partes=String(texto).trim().split("-");
+
+const numero=parseInt(partes[partes.length-1],10);
+
+if(!numero)throw new Error("Código inválido: "+texto);
+
+return numero;
+
+}
+
+// 103 → MV-03 · 221 → OP-21 · 301 → DS-01 · 1003 → CL-M03 · 2005 → CL-R05
+function codigoActor(n){
+
+n=Number(n);
+
+if(n>=2000)return "CL-R"+rellenar(n-2000,2);
+
+if(n>=1000)return "CL-M"+rellenar(n-1000,2);
+
+if(n>400)return "EST-"+(n-400);
+
+if(n>=300)return "DS-"+rellenar(n-300,2);
+
+if(n>=200)return "OP-"+rellenar(n-200,2);
+
+if(n>=100)return "MV-"+rellenar(n-100,2);
+
+return "—";
+
+}
+
+// Nombre tomado del registro interno del camal (nunca de la cadena)
+function nombreInterno(n){
+
+const fuera=lote.fueraDeCadena;
+
+const persona=fuera.personal[n];
+
+if(persona)return persona.nombre;
+
+const cliente=fuera.clientes[n];
+
+if(cliente)return cliente.razonSocial;
+
+return fuera.estaciones[n]||"";
+
+}
+
+function actorConNombre(n){
+
+const nombre=nombreInterno(n);
+
+return escaparHTML(codigoActor(n))+
+(nombre?' <span class="fuera">('+escaparHTML(nombre)+' · registro interno)</span>':"");
+
+}
+
+function kg(gramos){
+
+return (Number(gramos)/1000).toLocaleString("es-EC",{minimumFractionDigits:2,maximumFractionDigits:2})+" kg";
+
+}
+
+function grados(decimas){
+
+return (Number(decimas)/10).toFixed(1)+" °C";
+
+}
+
+function formatearFecha(timestamp){
+
+return new Date(Number(timestamp)*1000)
+.toLocaleString("es-EC",{timeZone:"America/Guayaquil"});
+
+}
+
+function unix(texto){
+
+return Math.floor(new Date(texto).getTime()/1000);
+
+}
+
+function nombreCorte(n){
+
+const corte=lote.cortes[Number(n)];
+
+return corte.codigo+" "+corte.nombre;
+
+}
+
+/* =====================================================
+   CANALES DE ORIGEN COMO MÁSCARA DE BITS
+   bit n encendido = la caja tiene la pieza de la canal n
+===================================================== */
+
+function mascara(canales){
+
+let m=0n;
+
+canales.forEach(n=>{m|=1n<<BigInt(n);});
+
+return m;
+
+}
+
+function canalesDeMascara(m){
+
+const lista=[];
+
+for(let n=1;n<64;n++){
+
+if((BigInt(m)>>BigInt(n))&1n)lista.push(n);
+
+}
+
+return lista;
+
+}
+
+/* =====================================================
+   RESUMEN DE FRÍO DE UN DESPACHO
+   Se calcula igual al anclar y al verificar:
+   minutos sin lectura = tramos de más de 15 min sin dato
+===================================================== */
+
+function resumenFrio(despacho){
+
+const lecturas=despacho.lecturas;
+
+const tiempos=[despacho.salida]
+.concat(lecturas.map(r=>unix(r[1])))
+.concat([despacho.llegada]);
+
+let sinLectura=0;
+
+for(let i=1;i<tiempos.length;i++){
+
+const hueco=Math.floor((tiempos[i]-tiempos[i-1])/60);
+
+if(hueco>15)sinLectura+=hueco-15;
+
+}
+
+const fuera=15*lecturas.filter(r=>parseFloat(r[2])>parseFloat(r[3])).length;
+
+let maxima=0;
+
+lecturas.forEach(r=>{maxima=Math.max(maxima,Math.round(parseFloat(r[2])*10));});
+
+const texto=lecturas.map(r=>r.join("|")).join("\n");
+
+return {
+tempMaxDecimas:maxima,
+minutosFuera:fuera,
+minutosSinLectura:sinLectura,
+lecturas:lecturas.length,
+hashLecturas:ethers.id(texto)
+};
+
+}
+
+/* =====================================================
+   REGISTROS EN EL FORMATO DEL CONTRATO
+===================================================== */
+
+function tuplaAnimal(a){
+
+return {
+arete:a.arete,
+predio:a.predio,
+fechaIngreso:a.fechaIngreso,
+pesoVivoG:a.pesoVivoG,
+dictamenAM:a.dictamenAM,
+mviAM:a.mviAM,
+actor:a.actor,
+hashDocumentos:ethers.id(a.documentos)
+};
+
+}
+
+function tuplaCanal(c){
+
+return {
+numero:c.numero,
+arete:c.arete,
+fechaSacrificio:c.fechaSacrificio,
+pesoCalienteG:c.pesoCalienteG,
+dictamenPM:c.dictamenPM,
+mviPM:c.mviPM,
+codigoSello:c.codigoSello,
+fechaSello:c.fechaSello,
+actor:c.actor,
+curvaDecimas:c.curvaDecimas
+};
+
+}
+
+function tuplaDesposte(d){
+
+return {
+pesosG:d.pesosG,
+operarios:d.operarios,
+pesoFrioG:d.pesoFrioG,
+huesoG:d.huesoG,
+grasaG:d.grasaG,
+mermasG:d.mermasG,
+fechaDesposte:d.fechaDesposte,
+actor:d.actor
+};
+
+}
+
+function tuplaCaja(c){
+
+return {
+numero:c.numero,
+corte:c.corte,
+mezclaDeLote:false,
+canales:mascara(c.canales),
+pesoG:c.pesoG,
+fechaEmpaqueReal:c.fechaEmpaqueReal,
+operario:c.operario,
+despacho:0,
+minorista:0,
+fechaRedistribucion:0
+};
+
+}
+
+function tuplaDespacho(d,cajas){
+
+const r=resumenFrio(d);
+
+return {
+numero:d.numero,
+cliente:d.cliente,
+salida:d.salida,
+llegada:d.llegada,
+tempMaxDecimas:r.tempMaxDecimas,
+minutosFuera:r.minutosFuera,
+minutosSinLectura:r.minutosSinLectura,
+lecturas:r.lecturas,
+cumpleDeclarado:d.cumpleDeclarado,
+despachador:d.despachador,
+hashLecturas:r.hashLecturas,
+cajas:cajas
+};
+
+}
+
+function tuplaVenta(v){
+
+return {
+codigoHash:ethers.id(v.codigoConsulta),
+caja:v.caja,
+minorista:v.minorista,
+fecha:v.fecha,
+unidades:v.unidades
+};
+
+}
+
+/* =====================================================
+   DATOS DEL LOTE (archivo generado por preparar_lote.py)
+===================================================== */
+
+async function cargarDatosLote(){
+
+if(lote)return lote;
+
+const respuesta=await fetch(ARCHIVO_LOTE);
+
+if(!respuesta.ok){
+
+throw new Error("No se encontró "+ARCHIVO_LOTE+". Abre la app con Live Server desde la carpeta app/.");
+
+}
+
+lote=await respuesta.json();
+
+return lote;
+
+}
+
+/* =====================================================
+   CONEXIÓN METAMASK
+===================================================== */
+
+function direccionConfigurada(){
+
+return ethers.isAddress(contratoDireccion);
+
+}
+
+async function conectar(){
+
+try{
+
+if(!window.ethereum){
+
+mostrarEstado("estadoConexion","MetaMask no está instalada.","error");
+
+return;
+
+}
+
+if(!direccionConfigurada()){
+
+mostrarEstado("estadoConexion","Falta la dirección del contrato: pégala en la constante contratoDireccion.","error");
+
+return;
+
+}
+
+provider=new ethers.BrowserProvider(window.ethereum);
+
+await provider.send("eth_requestAccounts",[]);
+
+const network=await provider.getNetwork();
+
+if(Number(network.chainId)!==RED_SEPOLIA){
+
+mostrarEstado("estadoConexion","Cambia MetaMask a la red Ethereum Sepolia.","error");
+
+return;
+
+}
+
+signer=await provider.getSigner();
+
+contrato=new ethers.Contract(contratoDireccion,abi,signer);
+
+contratoLectura=new ethers.Contract(contratoDireccion,abi,provider);
+
+const direccion=await signer.getAddress();
+
+document.getElementById("wallet").innerText="Wallet conectada:\n"+direccion;
+
+document.getElementById("connectionTitle").innerHTML=
+'<span class="connection-indicator connected"></span>En línea';
+
+document.getElementById("connectionDescription").innerText=
+"Conexión establecida correctamente con Ethereum Sepolia.";
+
+document.getElementById("connectionCircle").classList.add("connected");
+
+document.getElementById("btnConectar").innerText="✓ En línea";
+
+document.getElementById("btnConectar").disabled=true;
+
+mostrarEstado("estadoConexion","Conectado correctamente a Ethereum Sepolia.","exito");
+
+}catch(error){
+
+console.error(error);
+
+mostrarEstado("estadoConexion",obtenerMensajeError(error),"error");
+
+}
+
+}
+
+/* =====================================================
+   CONTRATO DE LECTURA
+   Con MetaMask usa su conexión; sin wallet, un RPC público
+   (se prueban en orden hasta que uno responda).
+===================================================== */
+
+async function obtenerContratoLectura(){
+
+if(!direccionConfigurada()){
+
+throw new Error("Falta la dirección del contrato: pégala en la constante contratoDireccion.");
+
+}
+
+if(contratoLectura)return contratoLectura;
+
+let ultimoError;
+
+for(const rpc of RPC_URLS){
+
+try{
+
+const lectura=new ethers.JsonRpcProvider(rpc,RED_SEPOLIA,{staticNetwork:true});
+
+await Promise.race([
+lectura.getBlockNumber(),
+new Promise((_,reject)=>setTimeout(()=>reject(new Error("Tiempo de espera agotado")),RPC_TIMEOUT))
+]);
+
+contratoLectura=new ethers.Contract(contratoDireccion,abi,lectura);
+
+return contratoLectura;
+
+}catch(error){
+
+console.warn("RPC falló:",rpc,error);
+
+ultimoError=error;
+
+}
+
+}
+
+throw new Error("No se pudo conectar a Ethereum Sepolia. "+obtenerMensajeError(ultimoError));
+
+}
+
+/* =====================================================
+   INICIO · TOTALES
+===================================================== */
+
+async function actualizarTotales(){
+
+try{
+
+const lectura=await obtenerContratoLectura();
+
+const t=await lectura.totales();
+
+document.getElementById("totAnimales").innerText=t.nAnimales.toString();
+
+document.getElementById("totCanales").innerText=t.nCanales+" / "+t.nDespostadas;
+
+document.getElementById("totCajas").innerText=t.nCajas.toString();
+
+document.getElementById("totDespachos").innerText=t.nDespachos.toString();
+
+document.getElementById("totVentas").innerText=t.nVentas.toString();
+
+}catch(error){
+
+console.error(error);
+
+mostrarEstado("estadoInicio",obtenerMensajeError(error),"error");
+
+}
+
+}
+
+/* =====================================================
+   CARGAR LOTE
+   Cada grupo se prueba antes con staticCall: si el contrato
+   lo rechaza, se prueba ítem por ítem y solo se envían los
+   que el contrato acepta. Los rechazados quedan anotados.
+===================================================== */
+
+function anotar(texto,clase=""){
+
+const registro=document.getElementById("registroCarga");
+
+registro.style.display="block";
+
+const linea=document.createElement("div");
+
+linea.className=clase;
+
+linea.innerText=texto;
+
+registro.appendChild(linea);
+
+registro.scrollTop=registro.scrollHeight;
+
+}
+
+async function motivoRechazo(funcion,argumentos){
+
+try{
+
+await contrato[funcion].staticCall(...argumentos);
+
+return null;
+
+}catch(error){
+
+return obtenerMensajeError(error);
+
+}
+
+}
+
+async function enviarTransaccion(nombre,funcion,argumentos){
+
+anotar(nombre+": confirma la transacción en MetaMask...");
+
+const tx=await contrato[funcion](...argumentos);
+
+const recibo=await tx.wait();
+
+anotar(nombre+": confirmada · gas "+recibo.gasUsed+" · "+tx.hash,"listo");
+
+}
+
+async function enviarPorGrupos(nombre,items,tamano,funcion,armar,codigo){
+
+if(items.length===0){
+
+anotar(nombre+": ya registrados.","listo");
+
+return;
+
+}
+
+for(let i=0;i<items.length;i+=tamano){
+
+let grupo=items.slice(i,i+tamano);
+
+if(await motivoRechazo(funcion,armar(grupo))){
+
+const validos=[];
+
+for(const item of grupo){
+
+const motivo=await motivoRechazo(funcion,armar(validos.concat([item])));
+
+if(motivo){
+
+anotar("RECHAZADO POR EL CONTRATO · "+codigo(item)+": "+motivo,"rechazo");
+
+}else{
+
+validos.push(item);
+
+}
+
+}
+
+grupo=validos;
+
+}
+
+if(grupo.length>0){
+
+await enviarTransaccion(nombre+" "+(i+1)+"–"+(i+grupo.length),funcion,armar(grupo));
+
+}
+
+}
+
+}
+
+async function cargarLote(){
+
+const boton=document.getElementById("btnCargar");
+
+try{
+
+if(!contrato){
+
+mostrarEstado("estadoCarga","Primero conecta MetaMask.","error");
+
+return;
+
+}
+
+boton.disabled=true;
+
+document.getElementById("registroCarga").innerHTML="";
+
+mostrarEstado("estadoCarga","Cargando el lote. No cierres la página.","info");
+
+await cargarDatosLote();
+
+/* 1. Ingreso de animales */
+
+const aretes=new Set((await contrato.listarAretes()).map(a=>a.toString()));
+
+await enviarPorGrupos(
+"Animales",
+lote.animales.filter(a=>!aretes.has(String(a.arete))),
+30,
+"registrarAnimales",
+g=>[g.map(tuplaAnimal)],
+a=>a.codigo
+);
+
+/* 2. Faena y post-mortem */
+
+const registradas=await contrato.canalesRegistradas();
+
+await enviarPorGrupos(
+"Canales",
+lote.canales.filter(c=>!((registradas>>BigInt(c.numero))&1n)),
+20,
+"registrarCanales",
+g=>[g.map(tuplaCanal)],
+c=>c.codigo
+);
+
+/* 3. Desposte con balance de masa */
+
+const despostadas=await contrato.canalesDespostadas();
+
+await enviarPorGrupos(
+"Despostes",
+lote.despostes.filter(d=>!((despostadas>>BigInt(d.numero))&1n)),
+14,
+"registrarDespostes",
+g=>[g.map(d=>d.numero),g.map(tuplaDesposte)],
+d=>d.codigo
+);
+
+/* 4. Empaque */
+
+const cajas=new Set((await contrato.listarCajas()).map(Number));
+
+await enviarPorGrupos(
+"Cajas",
+lote.cajas.filter(c=>!cajas.has(c.numero)),
+40,
+"registrarCajas",
+g=>[g.map(tuplaCaja)],
+c=>c.codigo
+);
+
+/* 5. Despachos: el contrato decide qué cajas pueden salir */
+
+const despachos=new Set((await contrato.listarDespachos()).map(Number));
+
+for(const d of lote.despachos){
+
+if(despachos.has(d.numero))continue;
+
+let cajasValidas=d.cajas;
+
+if(await motivoRechazo("registrarDespacho",[tuplaDespacho(d,cajasValidas)])){
+
+cajasValidas=[];
+
+for(const n of d.cajas){
+
+const motivo=await motivoRechazo("registrarDespacho",[tuplaDespacho(d,cajasValidas.concat([n]))]);
+
+if(motivo){
+
+anotar("RECHAZADO POR EL CONTRATO · "+d.codigo+" · "+codigoCaja(n)+": "+motivo,"rechazo");
+
+}else{
+
+cajasValidas.push(n);
+
+}
+
+}
+
+}
+
+await enviarTransaccion("Despacho "+d.codigo,"registrarDespacho",[tuplaDespacho(d,cajasValidas)]);
+
+}
+
+/* 6. Redistribución mayorista → minorista */
+
+const redis=lote.redistribuciones;
+
+for(let i=0;i<redis.length;i+=75){
+
+const grupo=redis.slice(i,i+75);
+
+const primera=await contrato.obtenerCaja(grupo[0].caja);
+
+if(Number(primera.minorista)!==0){
+
+anotar("Redistribuciones "+(i+1)+"–"+(i+grupo.length)+": ya registradas.","listo");
+
+continue;
+
+}
+
+await enviarTransaccion(
+"Redistribuciones "+(i+1)+"–"+(i+grupo.length),
+"registrarRedistribuciones",
+[grupo.map(r=>r.caja),grupo.map(r=>r.minorista),grupo.map(r=>r.fecha)]
+);
+
+}
+
+/* 7. Ventas al consumidor (se registran en orden) */
+
+const yaVendidas=Number(await contrato.totalVentas());
+
+await enviarPorGrupos(
+"Ventas",
+lote.ventas.slice(yaVendidas),
+66,
+"registrarVentas",
+g=>[g.map(tuplaVenta)],
+v=>v.codigoConsulta
+);
+
+mostrarEstado("estadoCarga","Lote cargado. Revisa en rojo lo que el contrato rechazó.","exito");
+
+actualizarTotales();
+
+}catch(error){
+
+console.error(error);
+
+mostrarEstado("estadoCarga","La carga se detuvo:\n"+obtenerMensajeError(error)+"\nVuelve a pulsar el botón para continuar.","error");
+
+}finally{
+
+boton.disabled=false;
+
+}
+
+}
+
+/* =====================================================
+   CRITERIO 1 · HACIA ATRÁS: caja → canales → animales
+===================================================== */
+
+async function consultarHaciaAtras(){
+
+try{
+
+const numero=leerNumero(document.getElementById("codigoCaja").value);
+
+mostrarEstado("estadoAtras","Consultando blockchain...","info");
+
+document.getElementById("resultadoAtras").innerHTML="";
+
+await cargarDatosLote();
+
+const lectura=await obtenerContratoLectura();
+
+const r=await lectura.trazarCaja(numero);
+
+const caja=r.caja;
+
+const despacho=r.despacho;
+
+let html=`
+
+<div class="lote-info">
+
+<h3>CAJA ${codigoCaja(caja.numero)}</h3>
+
+<p><strong>Corte:</strong> ${escaparHTML(nombreCorte(caja.corte))}
+${caja.mezclaDeLote?'<span class="badge mal">MEZCLA DE LOTE</span>':""}</p>
+
+<p><strong>Peso:</strong> ${kg(caja.pesoG)}</p>
+
+<p><strong>Fecha real de empaque:</strong> ${formatearFecha(caja.fechaEmpaqueReal)}</p>
+
+<p><strong>Empacó:</strong> ${actorConNombre(caja.operario)}</p>
+
+<p><strong>Canales de origen:</strong> ${canalesDeMascara(caja.canales).map(codigoCanal).join(", ")}</p>
+
+</div>
+
+`;
+
+if(Number(caja.despacho)!==0){
+
+const cumple=Number(despacho.minutosFuera)===0&&Number(despacho.minutosSinLectura)===0;
+
+html+=`
+
+<div class="lote-info">
+
+<h3>DESPACHO ${codigoDespacho(despacho.numero)}</h3>
+
+<p><strong>Cliente:</strong> ${actorConNombre(despacho.cliente)}</p>
+
+<p><strong>Despachó:</strong> ${actorConNombre(despacho.despachador)}</p>
+
+<p><strong>Salida / llegada:</strong> ${formatearFecha(despacho.salida)} → ${formatearFecha(despacho.llegada)}</p>
+
+<p><strong>Trayecto de frío:</strong> máx. ${grados(despacho.tempMaxDecimas)} ·
+${despacho.minutosFuera} min fuera de rango · ${despacho.minutosSinLectura} min sin lectura
+<span class="badge ${cumple?"ok":"mal"}">${cumple?"CUMPLE":"NO CUMPLE"}</span></p>
+
+${Number(caja.minorista)!==0?`<p><strong>Redistribuida a:</strong> ${actorConNombre(caja.minorista)} · ${formatearFecha(caja.fechaRedistribucion)}</p>`:""}
+
+</div>
+
+`;
+
+}
+
+html+=`<div class="eventos-title"><h3>Origen: ${r.canalesOrigen.length} canal(es)</h3></div>`;
+
+r.canalesOrigen.forEach((canal,i)=>{
+
+const animal=r.animalesOrigen[i];
+
+const predio=lote.fueraDeCadena.predios[Number(animal.predio)];
+
+const curva=canal.curvaDecimas.map((t,k)=>(k*6)+" h: "+grados(t)).join(" · ");
+
+const ok24=Number(canal.curvaDecimas[4])<=70;
+
+html+=`
+
+<div class="evento">
+
+<strong>${codigoCanal(canal.numero)} ← arete ${animal.arete}</strong><br>
+
+<strong>Predio:</strong> ${codigoPredio(animal.predio)}
+${predio?'<span class="fuera">('+escaparHTML(predio.nombre)+' · registro interno)</span>':""}<br>
+
+<strong>Ingreso:</strong> ${formatearFecha(animal.fechaIngreso)} · peso vivo ${kg(animal.pesoVivoG)}<br>
+
+<strong>Documentos (huella):</strong> <span class="hash">${animal.hashDocumentos}</span><br>
+
+<strong>Ante-mortem:</strong> ${DICTAMEN_AM[Number(animal.dictamenAM)]} · ${actorConNombre(animal.mviAM)}<br>
+
+<strong>Sacrificio:</strong> ${formatearFecha(canal.fechaSacrificio)} · peso caliente ${kg(canal.pesoCalienteG)}<br>
+
+<strong>Post-mortem:</strong> ${DICTAMEN_PM[Number(canal.dictamenPM)]} · ${actorConNombre(canal.mviPM)} ·
+sello SL-${rellenar(Number(canal.codigoSello)/1000|0,2)}-${rellenar(Number(canal.codigoSello)%1000,3)} · ${formatearFecha(canal.fechaSello)}<br>
+
+<strong>Curva de frío de la canal:</strong> ${curva}
+<span class="badge ${ok24?"ok":"mal"}">${ok24?"≤7 °C A LAS 24 h":"NO LLEGÓ A 7 °C"}</span><br>
+
+<strong>Pieza en esta caja:</strong> ${kg(r.pesosPieza[i])} · despostó ${actorConNombre(r.operariosPieza[i])}
+
+</div>
+
+`;
+
+});
+
+document.getElementById("resultadoAtras").innerHTML=html;
+
+mostrarEstado("estadoAtras","Historia reconstruida desde la cadena.","exito");
+
+}catch(error){
+
+console.error(error);
+
+mostrarEstado("estadoAtras","No se pudo consultar la caja:\n"+obtenerMensajeError(error),"error");
+
+}
+
+}
+
+/* =====================================================
+   CRITERIO 2 · HACIA ADELANTE: canal → cajas → clientes
+===================================================== */
+
+function filaCaja(caja,cliente){
+
+return `
+<tr>
+<td>${codigoCaja(caja.numero)}</td>
+<td>${escaparHTML(nombreCorte(caja.corte))}</td>
+<td>${kg(caja.pesoG)}</td>
+<td>${Number(caja.despacho)?codigoDespacho(caja.despacho):"—"}</td>
+<td>${Number(cliente)?actorConNombre(cliente):"—"}</td>
+<td>${Number(caja.minorista)?actorConNombre(caja.minorista):"—"}</td>
+</tr>
+`;
+
+}
+
+function tablaCajas(cajas,clientes){
+
+let html=`
+<div class="tabla-wrap">
+<table>
+<tr><th>Caja</th><th>Corte</th><th>Peso</th><th>Despacho</th><th>Cliente</th><th>Redistribuida a</th></tr>
+`;
+
+cajas.forEach((caja,i)=>{html+=filaCaja(caja,clientes[i]);});
+
+return html+"</table></div>";
+
+}
+
+async function consultarHaciaAdelante(){
+
+try{
+
+const numero=leerNumero(document.getElementById("codigoCanal").value);
+
+mostrarEstado("estadoAdelante","Consultando blockchain...","info");
+
+document.getElementById("resultadoAdelante").innerHTML="";
+
+await cargarDatosLote();
+
+const lectura=await obtenerContratoLectura();
+
+const inicio=performance.now();
+
+const r=await lectura.trazarCanal(numero);
+
+const milisegundos=Math.round(performance.now()-inicio);
+
+const afectados=new Set();
+
+r.directas.forEach((c,i)=>{
+if(Number(r.clientesDirectas[i]))afectados.add(Number(r.clientesDirectas[i]));
+if(Number(c.minorista))afectados.add(Number(c.minorista));
+});
+
+r.mezcla.forEach((c,i)=>{
+if(Number(r.clientesMezcla[i]))afectados.add(Number(r.clientesMezcla[i]));
+if(Number(c.minorista))afectados.add(Number(c.minorista));
+});
+
+let html=`
+
+<div class="dashboard-grid">
+
+<div class="metric red">
+<div class="metric-label">CAJAS DIRECTAS</div>
+<div class="metric-value">${r.directas.length}</div>
+</div>
+
+<div class="metric blue">
+<div class="metric-label">CAJAS DE MEZCLA (MOLIDA)</div>
+<div class="metric-value">${r.mezcla.length}</div>
+</div>
+
+<div class="metric red">
+<div class="metric-label">CLIENTES A NOTIFICAR</div>
+<div class="metric-value">${afectados.size}</div>
+</div>
+
+<div class="metric green">
+<div class="metric-label">TIEMPO DE CONSULTA</div>
+<div class="metric-value">${milisegundos} ms</div>
+</div>
+
+</div>
+
+<h3>Cajas con pieza de ${codigoCanal(numero)}</h3>
+
+${tablaCajas(r.directas,r.clientesDirectas)}
+
+<details>
+<summary>${r.mezcla.length} cajas de carne molida: mezcla autorizada de lote, no se puede separar por animal</summary>
+${tablaCajas(r.mezcla,r.clientesMezcla)}
+</details>
+
+<h3 style="margin-top:20px">Clientes que recibieron producto de esta canal</h3>
+
+<div class="lote-info">
+${[...afectados].sort((a,b)=>a-b).map(c=>"<p>"+actorConNombre(c)+"</p>").join("")}
+</div>
+
+`;
+
+document.getElementById("resultadoAdelante").innerHTML=html;
+
+mostrarEstado("estadoAdelante","Consulta hacia adelante resuelta en "+milisegundos+" ms con una sola llamada al contrato.","exito");
+
+}catch(error){
+
+console.error(error);
+
+mostrarEstado("estadoAdelante","No se pudo consultar la canal:\n"+obtenerMensajeError(error),"error");
+
+}
+
+}
+
+/* =====================================================
+   CRITERIO 3 · BALANCE DE MASA
+   Se pide al contrato registrar las cajas (staticCall):
+   el contrato responde con el motivo del rechazo.
+===================================================== */
+
+function cajasLomoSinPiezas(){
+
+return lote.cajas.filter(c=>c.corte===1&&c.canales.length===0);
+
+}
+
+async function probarCajasLomo(){
+
+try{
+
+mostrarEstado("estadoBalance","Pidiendo al contrato que registre las cajas...","info");
+
+document.getElementById("resultadoBalance").innerHTML="";
+
+await cargarDatosLote();
+
+const lectura=await obtenerContratoLectura();
+
+const cajas=cajasLomoSinPiezas();
+
+let filas="";
+
+let rechazadas=0;
+
+for(const c of cajas){
+
+let motivo;
+
+try{
+
+await lectura.registrarCajas.staticCall([tuplaCaja(c)]);
+
+motivo=null;
+
+}catch(error){
+
+motivo=obtenerMensajeError(error);
+
+}
+
+if(motivo)rechazadas++;
+
+filas+=`
+<tr class="${motivo?"fila-roja":""}">
+<td>${escaparHTML(c.codigo)}</td>
+<td>${kg(c.pesoG)}</td>
+<td>${c.canales.length===0?"ninguna":c.canales.map(codigoCanal).join(", ")}</td>
+<td>${motivo?'<span class="badge mal">RECHAZADA</span> '+escaparHTML(motivo):'<span class="badge ok">ACEPTADA</span>'}</td>
+</tr>
+`;
+
+}
+
+const t=await lectura.topeCorte(1);
+
+const extra=cajas.reduce((s,c)=>s+c.pesoG,0);
+
+const total=Number(t.empacado)+extra;
+
+document.getElementById("resultadoBalance").innerHTML=`
+
+<div class="tabla-wrap">
+<table>
+<tr><th>Caja</th><th>Peso</th><th>Piezas de respaldo</th><th>Respuesta del contrato</th></tr>
+${filas}
+</table>
+</div>
+
+<div class="lote-info" style="margin-top:16px">
+
+<h3>Rendimiento físico del lote · CT-01 Lomo fino</h3>
+
+<p><strong>Tope del lote</strong> (1,6 % del peso frío despostado, +2 % de tolerancia): ${kg(t.tope)}</p>
+
+<p><strong>Ya empacado con piezas reales:</strong> ${kg(t.empacado)}</p>
+
+<p><strong>Las 6 cajas sin piezas suman:</strong> ${kg(extra)}</p>
+
+<p><strong>Total si se aceptaran:</strong> ${kg(total)}
+<span class="badge ${total>Number(t.tope)?"mal":"ok"}">${total>Number(t.tope)?"EXCEDE EL RENDIMIENTO FÍSICO":"DENTRO DEL RENDIMIENTO"}</span></p>
+
+</div>
+
+`;
+
+mostrarEstado("estadoBalance","El contrato rechazó "+rechazadas+" de "+cajas.length+" cajas: no tienen piezas de respaldo y excederían lo que el lote puede rendir.",rechazadas===cajas.length?"exito":"error");
+
+}catch(error){
+
+console.error(error);
+
+mostrarEstado("estadoBalance",obtenerMensajeError(error),"error");
+
+}
+
+}
+
+async function enviarCajaRechazada(){
+
+try{
+
+if(!contrato){
+
+mostrarEstado("estadoEnvioRechazo","Primero conecta MetaMask.","error");
+
+return;
+
+}
+
+await cargarDatosLote();
+
+const caja=cajasLomoSinPiezas()[0];
+
+mostrarEstado("estadoEnvioRechazo","Confirma la transacción en MetaMask (puede advertir que fallará: es lo esperado).","info");
+
+// Límite de gas fijo: sin él, la estimación fallaría antes de enviar
+const tx=await contrato.registrarCajas([tuplaCaja(caja)],{gasLimit:300000});
+
+try{
+
+await tx.wait();
+
+mostrarEstado("estadoEnvioRechazo","Atención: la transacción fue aceptada. "+EXPLORADOR+tx.hash,"error");
+
+}catch(error){
+
+mostrarEstado("estadoEnvioRechazo","Transacción revertida por el contrato, registrada en la cadena:\n"+EXPLORADOR+tx.hash,"exito");
+
+}
+
+}catch(error){
+
+console.error(error);
+
+mostrarEstado("estadoEnvioRechazo",obtenerMensajeError(error),"error");
+
+}
+
+}
+
+/* =====================================================
+   CRITERIO 4 · CADENA DE FRÍO
+===================================================== */
+
+async function verificarFrio(){
+
+try{
+
+mostrarEstado("estadoFrio","Leyendo los despachos anclados y recalculando desde la telemetría...","info");
+
+document.getElementById("resultadoFrio").innerHTML="";
+
+await cargarDatosLote();
+
+const lectura=await obtenerContratoLectura();
+
+let filas="";
+
+let rojos=[];
+
+for(const d of lote.despachos){
+
+const anclado=await lectura.obtenerDespacho(d.numero);
+
+const r=resumenFrio(d);
+
+const huellaOk=anclado.hashLecturas===r.hashLecturas;
+
+const cumple=r.minutosFuera===0&&r.minutosSinLectura===0&&huellaOk;
+
+if(!cumple)rojos.push(d.codigo);
+
+filas+=`
+<tr class="${cumple?"":"fila-roja"}">
+<td>${escaparHTML(d.codigo)}</td>
+<td>${actorConNombre(d.cliente)}</td>
+<td>${r.lecturas}</td>
+<td>${grados(r.tempMaxDecimas)}</td>
+<td>${r.minutosFuera}</td>
+<td>${r.minutosSinLectura}</td>
+<td>${huellaOk?'<span class="badge ok">COINCIDE</span>':'<span class="badge mal">ALTERADA</span>'}</td>
+<td>${anclado.cumpleDeclarado?"SÍ":"NO"}</td>
+<td>${cumple?'<span class="badge ok">CUMPLE</span>':'<span class="badge mal">NO CUMPLE</span>'}</td>
+</tr>
+`;
+
+}
+
+document.getElementById("resultadoFrio").innerHTML=`
+
+<div class="tabla-wrap">
+<table>
+<tr><th>Despacho</th><th>Cliente</th><th>Lecturas</th><th>Máxima</th><th>Min fuera</th><th>Min sin lectura</th><th>Huella</th><th>Declara cumplir</th><th>Recalculado</th></tr>
+${filas}
+</table>
+</div>
+
+`;
+
+mostrarEstado(
+"estadoFrio",
+rojos.length?"Rotura de cadena de frío en: "+rojos.join(", ")+". El campo declarado dice que cumplió; la telemetría muestra un hueco sin lecturas.":"Todos los despachos cumplen.",
+rojos.length?"error":"exito"
+);
+
+}catch(error){
+
+console.error(error);
+
+mostrarEstado("estadoFrio",obtenerMensajeError(error),"error");
+
+}
+
+}
+
+/* =====================================================
+   CRITERIO 5 · PRIVACIDAD
+===================================================== */
+
+// Convierte a texto los valores devueltos por el contrato (BigInt incluidos)
+function aTextoPlano(valor){
+
+return JSON.stringify(valor,(k,v)=>typeof v==="bigint"?v.toString():v,1);
+
+}
+
+function resultadoAObjeto(r){
+
+if(r&&typeof r.toObject==="function"){
+
+try{
+
+return r.toObject(true);
+
+}catch(error){
+
+return Array.from(r).map(resultadoAObjeto);
+
+}
+
+}
+
+return r;
+
+}
+
+async function verDatosCrudos(){
+
+try{
+
+const numero=leerNumero(document.getElementById("codigoCajaCruda").value);
+
+mostrarEstado("estadoCrudo","Consultando blockchain...","info");
+
+const lectura=await obtenerContratoLectura();
+
+const r=await lectura.trazarCaja(numero);
+
+const datos={
+caja:resultadoAObjeto(r.caja),
+despacho:resultadoAObjeto(r.despacho),
+canalesOrigen:r.canalesOrigen.map(resultadoAObjeto),
+animalesOrigen:r.animalesOrigen.map(resultadoAObjeto)
+};
+
+document.getElementById("resultadoCrudo").innerHTML=
+'<pre class="crudo">'+escaparHTML(aTextoPlano(datos))+"</pre>";
+
+mostrarEstado("estadoCrudo","Esto es todo lo que la cadena guarda: números, códigos y huellas. Ningún nombre ni dirección.","exito");
+
+}catch(error){
+
+console.error(error);
+
+mostrarEstado("estadoCrudo",obtenerMensajeError(error),"error");
+
+}
+
+}
+
+function textosSensibles(){
+
+const textos=[];
+
+Object.values(lote.fueraDeCadena).forEach(grupo=>{
+
+Object.values(grupo).forEach(registro=>{
+
+if(typeof registro==="string"){
+
+textos.push(registro);
+
+}else{
+
+Object.entries(registro).forEach(([campo,valor])=>{
+
+if(campo!=="codigo"&&typeof valor==="string")textos.push(valor);
+
+});
+
+}
+
+});
+
+});
+
+return textos;
+
+}
+
+async function auditarPrivacidad(){
+
+try{
+
+mostrarEstado("estadoAuditoria","Leyendo la historia de todas las cajas desde la cadena...","info");
+
+await cargarDatosLote();
+
+const lectura=await obtenerContratoLectura();
+
+const interfaz=lectura.interface;
+
+const numeros=(await lectura.listarCajas()).map(Number);
+
+if(numeros.length===0){
+
+mostrarEstado("estadoAuditoria","No hay cajas registradas en la cadena. Carga el lote primero.","error");
+
+return;
+
+}
+
+let crudo="";
+
+for(let i=0;i<numeros.length;i+=10){
+
+const respuestas=await Promise.all(numeros.slice(i,i+10).map(n=>
+lectura.runner.provider.call({
+to:contratoDireccion,
+data:interfaz.encodeFunctionData("trazarCaja",[n])
+})
+));
+
+crudo+=respuestas.map(x=>x.slice(2)).join("");
+
+mostrarEstado("estadoAuditoria","Leídas "+Math.min(i+10,numeros.length)+" de "+numeros.length+" cajas...","info");
+
+}
+
+crudo=crudo.toLowerCase();
+
+const textos=textosSensibles();
+
+const encontrados=textos.filter(t=>crudo.includes(ethers.hexlify(ethers.toUtf8Bytes(t)).slice(2).toLowerCase()));
+
+document.getElementById("resultadoAuditoria").innerHTML=`
+
+<div class="dashboard-grid">
+
+<div class="metric blue">
+<div class="metric-label">CAJAS LEÍDAS DE LA CADENA</div>
+<div class="metric-value">${numeros.length}</div>
+</div>
+
+<div class="metric green">
+<div class="metric-label">NOMBRES Y DIRECCIONES BUSCADOS</div>
+<div class="metric-value">${textos.length}</div>
+</div>
+
+<div class="metric red">
+<div class="metric-label">ENCONTRADOS</div>
+<div class="metric-value">${encontrados.length}</div>
+</div>
+
+</div>
+
+<details>
+<summary>Ver los ${textos.length} textos buscados (registro interno del camal)</summary>
+<div class="lote-info">${textos.map(t=>"<p>"+escaparHTML(t)+"</p>").join("")}</div>
+</details>
+
+`;
+
+mostrarEstado(
+"estadoAuditoria",
+encontrados.length?"Se encontraron datos personales en la cadena: "+encontrados.join(", "):"Ningún nombre de operario, cliente ni dirección aparece en los "+(crudo.length/2).toLocaleString("es-EC")+" bytes leídos de la cadena.",
+encontrados.length?"error":"exito"
+);
+
+}catch(error){
+
+console.error(error);
+
+mostrarEstado("estadoAuditoria",obtenerMensajeError(error),"error");
+
+}
+
+}
+
+async function verificarCompraConsumidor(){
+
+try{
+
+const codigo=document.getElementById("codigoConsulta").value.trim();
+
+if(!codigo){
+
+mostrarEstado("estadoCompra","Ingresa el código de consulta.","error");
+
+return;
+
+}
+
+mostrarEstado("estadoCompra","Consultando blockchain...","info");
+
+await cargarDatosLote();
+
+const lectura=await obtenerContratoLectura();
+
+// En la cadena solo está la huella del código, no el código
+const huella=ethers.id(codigo);
+
+const venta=await lectura.verificarCompra(huella);
+
+document.getElementById("resultadoCompra").innerHTML=`
+
+<div class="lote-info">
+
+<h3>COMPRA VERIFICADA EN LA CADENA</h3>
+
+<p><strong>Huella del código:</strong> <span class="hash">${huella}</span></p>
+
+<p><strong>Caja:</strong> ${codigoCaja(venta.caja)}</p>
+
+<p><strong>Punto de venta:</strong> ${escaparHTML(codigoActor(venta.minorista))}</p>
+
+<p><strong>Fecha de venta:</strong> ${formatearFecha(venta.fecha)} · ${venta.unidades} unidades fraccionadas</p>
+
+</div>
+
+<button class="btn" onclick="document.getElementById('codigoCaja').value='${codigoCaja(venta.caja)}';mostrarSeccion('atras');consultarHaciaAtras();">
+← &nbsp; Ver la historia de esta caja
+</button>
+
+`;
+
+mostrarEstado("estadoCompra","El código corresponde a una venta registrada en la cadena.","exito");
+
+}catch(error){
+
+console.error(error);
+
+document.getElementById("resultadoCompra").innerHTML="";
+
+mostrarEstado("estadoCompra","No se pudo verificar:\n"+obtenerMensajeError(error),"error");
+
+}
+
+}
+
+/* =====================================================
+   INICIO DE LA APP
+===================================================== */
+
+window.onload=function(){
+
+document.getElementById("direccionContrato").innerText=
+direccionConfigurada()?contratoDireccion:"Falta configurar: pega la dirección en contratoDireccion.";
+
+cargarDatosLote().catch(error=>console.warn(error));
+
+};
+
+</script>
+
+</body>
+</html>

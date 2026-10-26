@@ -1,0 +1,16 @@
+cliente_id,razon_social,tipo,direccion,registro_arsa
+CL-M01,Mercado Mayorista Central de Altamira,MAYORISTA,Av. Circunvalación s/n,ARSA-M01-2025
+CL-M02,Distribuidora Cárnica El Novillo S.A.,MAYORISTA,Parque Industrial Norte,ARSA-M02-2025
+CL-M03,Frigorífico Altamira Cía. Ltda.,MAYORISTA,Vía a Pimampiro km 4,ARSA-M03-2025
+CL-M04,Comercializadora Los Andes S.A.,MAYORISTA,Av. Los Shyris y Pasaje 3,ARSA-M04-2025
+CL-M05,Central de Abastos San Ramón,MAYORISTA,Sector La Delicia,ARSA-M05-2025
+CL-R01,Tercena Doña Inés,MINORISTA,"Mercado Central, puesto 42",ARSA-R01-2025
+CL-R02,Carnicería El Buen Corte,MINORISTA,Barrio La Floresta,ARSA-R02-2025
+CL-R03,Supermercado La Canasta,MINORISTA,Av. Occidental 1120,ARSA-R03-2025
+CL-R04,Tercena Los Hermanos,MINORISTA,"Mercado del Sur, puesto 17",ARSA-R04-2025
+CL-R05,Carnicería San Rafael,MINORISTA,Parroquia Calderón,ARSA-R05-2025
+CL-R06,Minimarket El Vecino,MINORISTA,Barrio Chillogallo,ARSA-R06-2025
+CL-R07,Tercena La Económica,MINORISTA,"Mercado Mayorista, puesto 8",ARSA-R07-2025
+CL-R08,Carnicería Premium Gourmet,MINORISTA,Av. República del Salvador,ARSA-R08-2025
+CL-R09,Supermercado Andino,MINORISTA,Centro Comercial El Bosque,ARSA-R09-2025
+CL-R10,Tercena Mi Barrio,MINORISTA,Parroquia Conocoto,ARSA-R10-2025

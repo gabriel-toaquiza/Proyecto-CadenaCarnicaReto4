@@ -1,0 +1,14 @@
+persona_id,nombre,cargo,turno,fechas_en_turno
+MV-01,Mauricio Larrea Cisneros,Médico Veterinario Inspector,MAÑANA,2026-08-10;2026-08-11;2026-08-12
+MV-02,Silvia Trujillo Albán,Médico Veterinario Inspector,MAÑANA,2026-08-10;2026-08-11
+MV-03,Édgar Pineda Montalvo,Médico Veterinario Inspector,TARDE,2026-08-13;2026-08-14
+MV-04,Gloria Zambrano Ricaurte,Médico Veterinario Inspector,TARDE,2026-08-11;2026-08-12
+OP-11,Segundo Cuzco Tenesaca,Operario de línea de faenamiento,MAÑANA,2026-08-11
+OP-12,Wilmer Gualotuña Simba,Operario de línea de faenamiento,MAÑANA,2026-08-11
+OP-21,Fanny Ushiña Chicaiza,Operaria de desposte,MAÑANA,2026-08-12
+OP-22,Byron Tipán Alomoto,Operario de desposte,MAÑANA,2026-08-12
+OP-23,Marlene Quilumba Toapanta,Operaria de desposte,MAÑANA,2026-08-12
+OP-24,Héctor Chiliquinga Amaguaña,Operario de desposte,TARDE,2026-08-12
+OP-31,Nube Calapaqui Farinango,Operaria de empaque,MAÑANA,2026-08-12
+OP-32,Alex Yumbla Sarango,Operario de empaque,TARDE,2026-08-12
+DS-01,Rodrigo Masapanta Llumiquinga,Despachador,MAÑANA,2026-08-12;2026-08-13
