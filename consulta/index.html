@@ -692,11 +692,24 @@ max-width:520px;
 }
 
 .disposicion{
-grid-template-columns:minmax(320px,380px) 1fr;
-grid-template-areas:"codigo resultado" "qr resultado";
-grid-template-rows:auto 1fr;
-gap:0 24px;
-align-items:start;
+grid-template-columns:1fr 1fr;
+grid-template-areas:"codigo qr" "resultado resultado";
+gap:20px 24px;
+align-items:stretch;
+}
+
+.zona-codigo,.zona-qr{
+margin-bottom:0;
+display:flex;
+flex-direction:column;
+}
+
+.zona-qr #btnEscanear{
+margin-top:auto;
+}
+
+.zona-resultado{
+align-self:start;
 }
 
 .zona-resultado{
@@ -730,7 +743,6 @@ display:flex;
 flex-direction:column;
 align-items:flex-start;
 gap:10px;
-min-height:100%;
 padding:36px 40px;
 border-radius:18px;
 border:2px dashed #c6dccf;
