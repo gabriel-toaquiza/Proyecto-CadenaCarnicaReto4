@@ -99,6 +99,9 @@ Reto 04 - Camal/              manual, brief y dataset del reto
    pesa 35 KB y supera el límite de 24 KB. Pegar la dirección en `contratoDireccion` dentro de `app/index.html`.
 3. **App**: en VS Code, clic derecho sobre `app/index.html` → *Open with Live Server*. Tiene que servirse
    desde `app/`, junto a `lote_nivel1.json`.
+   La App Admin pide **iniciar sesión**: solo el administrador entra, con su correo y contraseña o firmando
+   con la wallet admin en MetaMask. Es un control de acceso a la interfaz; lo que protege los datos son
+   los contratos.
 4. **Cargar el lote** (solo en un contrato nuevo): *Conectar MetaMask* → *Cargar lote* (unas 37
    transacciones, unos 58 M de gas). La carga es reanudable.
 5. **Demo del Nivel 1**: recorrer las secciones 1 a 5 del menú. Las consultas funcionan sin wallet (RPC público).
