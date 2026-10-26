@@ -633,6 +633,152 @@ color:var(--texto);
 margin:0;
 color:var(--tenue);
 }
+
+/* ---------- Disposición: celular (una columna) y computadora (dos) ---------- */
+
+.disposicion{
+display:grid;
+grid-template-areas:"codigo" "resultado" "qr";
+}
+
+.zona-codigo{grid-area:codigo}
+
+.zona-qr{grid-area:qr}
+
+.zona-resultado{grid-area:resultado}
+
+#resultado:empty{
+display:none;
+}
+
+#resultado:not(:empty){
+margin:0 0 14px;
+}
+
+.resultado-vacio{
+display:none;
+}
+
+@media(min-width:960px){
+
+body{
+padding:24px 28px 40px;
+}
+
+.container{
+max-width:1200px;
+padding:0;
+}
+
+.header{
+margin:0 0 24px;
+border-radius:24px;
+min-height:340px;
+padding:34px 44px 38px;
+background:
+linear-gradient(90deg,rgba(9,33,25,.95) 0%,rgba(9,33,25,.82) 38%,rgba(9,33,25,.25) 72%,rgba(9,33,25,.1) 100%),
+url("encabezado.jpg") right 18%/cover no-repeat,
+linear-gradient(140deg,var(--verde-800),var(--verde-700));
+}
+
+.header h1{
+font-size:42px;
+max-width:560px;
+}
+
+.header .subtitle{
+font-size:15px;
+max-width:520px;
+}
+
+.disposicion{
+grid-template-columns:minmax(320px,380px) 1fr;
+grid-template-areas:"codigo resultado" "qr resultado";
+grid-template-rows:auto 1fr;
+gap:0 24px;
+align-items:start;
+}
+
+.zona-resultado{
+min-width:0;
+}
+
+#resultado:not(:empty){
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:16px;
+margin:0;
+align-items:start;
+}
+
+#resultado > .alerta,
+#resultado > .leyendo,
+#resultado > .verificar,
+#resultado > .codigos{
+grid-column:1/-1;
+}
+
+#resultado > *{
+margin-bottom:0;
+}
+
+#resultado:empty + .resultado-vacio{
+display:flex;
+}
+
+.resultado-vacio{
+flex-direction:column;
+align-items:flex-start;
+gap:10px;
+min-height:100%;
+padding:36px 40px;
+border-radius:18px;
+border:2px dashed #c6dccf;
+background:#f8fbf9;
+color:var(--tenue);
+}
+
+.resultado-vacio svg{
+width:46px;
+height:46px;
+fill:none;
+stroke:var(--verde-600);
+stroke-width:1.6;
+stroke-linecap:round;
+stroke-linejoin:round;
+}
+
+.resultado-vacio h2{
+margin:0;
+font-size:22px;
+color:var(--texto);
+}
+
+.resultado-vacio p{
+margin:0;
+font-size:14px;
+}
+
+.resultado-vacio ul{
+margin:4px 0 0;
+padding-left:20px;
+display:grid;
+gap:6px;
+font-size:14px;
+color:var(--texto);
+}
+
+.footer{
+margin-top:20px;
+}
+}
+
+@media(min-width:1280px){
+
+#resultado:not(:empty){
+grid-template-columns:1fr 1fr;
+}
+}
 </style>
 </head>
 
@@ -667,9 +813,11 @@ Ethereum Sepolia · Sin cuenta ni wallet
 
 </header>
 
+<div class="disposicion">
+
 <!-- CONSULTAR POR CÓDIGO -->
 
-<section class="card">
+<section class="card zona-codigo">
 
 <div class="section-label">CONSULTA DEL CONSUMIDOR</div>
 
@@ -695,13 +843,31 @@ Consultar mi carne
 
 <div id="estadoConsulta" class="estado"></div>
 
+</section>
+
+<!-- RESULTADO -->
+
+<section class="zona-resultado" aria-label="Resultado de la consulta">
+
 <div id="resultado"></div>
+
+<div class="resultado-vacio">
+<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3h-3zM18 18h3v3h-3zM14 20h2M20 14v2"/></svg>
+<h2>Tu consulta aparecerá aquí</h2>
+<p>Escribe el código de la etiqueta o escanéalo. Vas a ver, verificado en la blockchain:</p>
+<ul>
+<li>Si el producto tiene un <strong>retiro sanitario</strong></li>
+<li>El <strong>predio de origen</strong> y el dictamen veterinario</li>
+<li>La <strong>fecha real de empaque</strong></li>
+<li>Si se mantuvo la <strong>cadena de frío</strong></li>
+</ul>
+</div>
 
 </section>
 
 <!-- ESCANEAR QR -->
 
-<section class="card">
+<section class="card zona-qr">
 
 <div class="section-label">LECTOR QR</div>
 
@@ -725,6 +891,8 @@ Detener cámara
 </button>
 
 </section>
+
+</div>
 
 <footer class="footer">
 <div class="lema">La confianza también se traza</div>
