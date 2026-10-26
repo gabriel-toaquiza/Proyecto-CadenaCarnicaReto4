@@ -3085,8 +3085,7 @@ mostrarEstado("estadoRetiro","Esperando confirmación de blockchain...","info");
 
 await tx.wait();
 
-mostrarEstado("estadoRetiro","Orden "+r.codigo+" registrada.
-Hash: "+tx.hash,"exito");
+mostrarEstado("estadoRetiro","Orden "+r.codigo+" registrada.\nHash: "+tx.hash,"exito");
 
 consultarRetiros();
 
@@ -3094,8 +3093,7 @@ consultarRetiros();
 
 console.error(error);
 
-mostrarEstado("estadoRetiro","No se pudo registrar el retiro:
-"+obtenerMensajeError(error),"error");
+mostrarEstado("estadoRetiro","No se pudo registrar el retiro:\n"+obtenerMensajeError(error),"error");
 
 }
 
