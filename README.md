@@ -14,11 +14,13 @@ retiro sanitario.
 | Contrato | Dirección | Contenido |
 |---|---|---|
 | `CadenaCarnica` (Nivel 1) | [`0xE78e4382984014D8b15B001ff9054aE9790a79ce`](https://sepolia.etherscan.io/address/0xE78e4382984014D8b15B001ff9054aE9790a79ce) | Lote cargado: 60 animales · 57 canales (55 despostadas) · 364 cajas · 12 despachos · 264 ventas |
-| `RetirosSanitarios` (Nivel 2) | [`0x4dAFa0621745559a636333898726A85Dee48c7Ec`](https://sepolia.etherscan.io/address/0x4dAFa0621745559a636333898726A85Dee48c7Ec) | Orden RS-2026-004 sobre la canal CN-0188-012 |
+| `RetirosSanitarios` (Nivel 2) | [`0x4dAFa0621745559a636333898726A85Dee48c7Ec`](https://sepolia.etherscan.io/address/0x4dAFa0621745559a636333898726A85Dee48c7Ec) | Orden RS-2026-004 registrada sobre la canal CN-0188-012 |
 
 Compilados con solc 0.8.34 y el optimizador activado (200 runs).
 
-**Consulta del consumidor:** pendiente de publicación. Ejemplo de caja retirada: `?codigo=QR-0294-1639`.
+**Consulta del consumidor:** https://lambent-blancmange-7e26ae.netlify.app/
+- Caja bajo retiro: [`?codigo=QR-0294-1639`](https://lambent-blancmange-7e26ae.netlify.app/?codigo=QR-0294-1639) (QR en `docs/qr_QR-0294-1639.png`)
+- Caja sin retiro: [`?codigo=QR-0288-5222`](https://lambent-blancmange-7e26ae.netlify.app/?codigo=QR-0288-5222) (QR en `docs/qr_QR-0288-5222.png`)
 
 ## Los cinco criterios del Nivel 1
 

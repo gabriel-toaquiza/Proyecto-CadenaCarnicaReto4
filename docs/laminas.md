@@ -28,6 +28,7 @@ flowchart LR
         R[Custodia: arete → canal → 15 piezas<br/>→ caja → despacho → minorista → venta]
         REG[Regla física:<br/>no sale más carne de la que entró]
         H[Huellas: hash de lecturas,<br/>documentos y código de venta]
+        RS[RetirosSanitarios<br/>órdenes de retiro sobre el lote]
     end
 
     APP[App Admin<br/>firma con la wallet del camal]
@@ -41,7 +42,10 @@ flowchart LR
     N -. nunca .-x R
     R --> VER
     L --> VER
-    VER --> J[Inspector · retiro sanitario<br/>· consumidor con su código]
+    RS --> R
+    VER --> J[Inspector · retiro sanitario]
+    RS --> CON[Consulta pública del consumidor<br/>Netlify · sin wallet]
+    R --> CON
 ```
 
 **Dentro de la cadena** (solo números, códigos seudónimos y huellas):
@@ -51,6 +55,11 @@ flowchart LR
 - Caja: corte, máscara de canales de origen, peso, fecha real de empaque, operario. La molida va marcada como **mezcla de lote**.
 - Despacho: cliente, cajas, y un resumen de frío (máxima, minutos fuera de rango, minutos sin lectura, huella de las lecturas).
 - Redistribución al minorista y venta (huella del código de consulta → caja).
+- Retiros sanitarios (contrato aparte `RetirosSanitarios`): código de la orden, canal, fechas y huella del
+  resultado de laboratorio. Lo registra solo la autoridad; decide en la cadena qué cajas alcanza.
+
+**Consulta del consumidor:** una página estática (Netlify) lee ambos contratos con un RPC público, sin wallet.
+Avisa del retiro aunque la venta conste como concretada, y recalcula en el teléfono la huella del frío.
 
 **Fuera de la cadena:** nombres de personas y clientes, direcciones, nombres de predios, lecturas
 individuales de temperatura y documentos originales. Solo su huella está en la cadena: si alguien los
