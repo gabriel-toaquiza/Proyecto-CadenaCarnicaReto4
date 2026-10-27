@@ -1,0 +1,1050 @@
+<title>Guion del pitch</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Serif:ital,wght@0,500;0,600;1,500&display=swap">
+<style>
+/* Concepto: un guion de ensayo con cuatro voces. Cabecera y cronómetro en carbón de marca;
+   el texto que se dice, grande y en serif; lo que se hace, en cajas suaves aparte. */
+:root{
+--bg:#f4f5f2;
+--card:#ffffff;
+--line:#dfe3dc;
+--ink:#16211b;
+--ink-2:#566259;
+--gold:#c9a24b;
+--gold-ink:#7c5f18;
+--gold-soft:#f6efd9;
+--gold-line:#ecdcaa;
+--char:#0e1612;
+--char-2:#15201a;
+--on-char:#f4f1e8;
+--on-char-2:#b9c2bb;
+--ok:#1b5a40;
+--ok-bg:#e4f2ea;
+--bad:#8c2f28;
+--bad-bg:#fbedeb;
+--serif:"IBM Plex Serif",Georgia,"Times New Roman",serif;
+--sans:"IBM Plex Sans","Segoe UI",Arial,sans-serif;
+--mono:"IBM Plex Mono",Consolas,monospace;
+}
+
+@media (prefers-color-scheme:dark){
+:root:not([data-theme="light"]){
+--bg:#0e1612;
+--card:#15201a;
+--line:#2a3b31;
+--ink:#f4f1e8;
+--ink-2:#a9b3ac;
+--gold-ink:#e7cd8b;
+--gold-soft:#241f10;
+--gold-line:#4a3d1a;
+--ok:#7ed39a;
+--ok-bg:#12281d;
+--bad:#f0a8a0;
+--bad-bg:#2c1714;
+color-scheme:dark;
+}
+}
+
+:root[data-theme="dark"]{
+--bg:#0e1612;
+--card:#15201a;
+--line:#2a3b31;
+--ink:#f4f1e8;
+--ink-2:#a9b3ac;
+--gold-ink:#e7cd8b;
+--gold-soft:#241f10;
+--gold-line:#4a3d1a;
+--ok:#7ed39a;
+--ok-bg:#12281d;
+--bad:#f0a8a0;
+--bad-bg:#2c1714;
+color-scheme:dark;
+}
+
+*{box-sizing:border-box}
+
+body{
+margin:0;
+background:var(--bg);
+color:var(--ink);
+font-family:var(--sans);
+font-size:16px;
+line-height:1.55;
+-webkit-font-smoothing:antialiased;
+}
+
+body::before{
+content:"";
+position:fixed;
+inset:0 0 auto;
+height:env(safe-area-inset-top,0px);
+z-index:30;
+background:var(--char);
+}
+
+h1,h2,h3{
+margin:0;
+text-wrap:balance;
+}
+
+.ancho{
+max-width:940px;
+margin:0 auto;
+padding-left:max(16px,env(safe-area-inset-left,0px));
+padding-right:max(16px,env(safe-area-inset-right,0px));
+}
+
+/* ---------- Cabecera ---------- */
+
+.cabecera{
+background:var(--char);
+color:var(--on-char);
+padding-block:44px 34px;
+}
+
+.etq{
+margin:0 0 10px;
+font-size:12px;
+font-weight:600;
+letter-spacing:1.4px;
+text-transform:uppercase;
+color:#e7cd8b;
+}
+
+.cabecera h1{
+font-family:var(--serif);
+font-weight:500;
+font-size:clamp(34px,6vw,56px);
+line-height:1.05;
+}
+
+.cabecera h1 em{
+font-style:italic;
+color:var(--gold);
+}
+
+.cabecera p.sub{
+margin:14px 0 0;
+max-width:60ch;
+font-size:16px;
+color:var(--on-char-2);
+}
+
+/* ---------- Cronómetro ---------- */
+
+.reloj{
+position:sticky;
+top:env(safe-area-inset-top,0px);
+z-index:20;
+background:var(--char);
+color:var(--on-char);
+border-top:1px solid #2a3b31;
+}
+
+.reloj-fila{
+display:flex;
+align-items:center;
+gap:14px 18px;
+flex-wrap:wrap;
+padding-block:10px 8px;
+}
+
+.tiempo{
+font-family:var(--mono);
+font-size:30px;
+font-weight:500;
+line-height:1;
+font-variant-numeric:tabular-nums;
+}
+
+.de{
+font-family:var(--mono);
+font-size:14px;
+color:var(--on-char-2);
+margin-left:-8px;
+}
+
+.quien{
+flex:1 1 180px;
+min-width:0;
+font-size:14px;
+color:var(--on-char-2);
+}
+
+.quien b{
+color:#e7cd8b;
+font-weight:600;
+}
+
+.botones{
+display:flex;
+gap:8px;
+}
+
+.boton{
+font:inherit;
+font-size:14px;
+font-weight:600;
+padding:9px 16px;
+border-radius:10px;
+border:0;
+cursor:pointer;
+color:#14110a;
+background:linear-gradient(100deg,#b8923d,#e7cd8b 50%,#b8923d);
+}
+
+.boton.sec{
+background:transparent;
+color:var(--on-char);
+border:1px solid #3a4d42;
+}
+
+.boton:focus-visible,
+.chequeo input:focus-visible{
+outline:3px solid #e7cd8b;
+outline-offset:2px;
+}
+
+.pista{
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:4px;
+padding-bottom:10px;
+}
+
+.pista-tramo{
+position:relative;
+height:22px;
+border-radius:6px;
+background:#1f2e26;
+overflow:hidden;
+font-size:11px;
+font-weight:600;
+letter-spacing:.6px;
+color:var(--on-char-2);
+display:flex;
+align-items:center;
+padding-left:8px;
+}
+
+.pista-tramo i{
+position:absolute;
+inset:0 auto 0 0;
+width:0;
+background:rgba(201,162,75,.45);
+}
+
+.pista-tramo span{
+position:relative;
+}
+
+.pista-tramo.actual{
+color:#ffffff;
+box-shadow:0 0 0 1.5px #c9a24b;
+}
+
+.reloj.tarde .tiempo{color:#f0a8a0}
+
+/* ---------- Bloques generales ---------- */
+
+main{
+padding-block:30px 60px;
+display:grid;
+gap:30px;
+}
+
+.bloque{
+display:grid;
+gap:14px;
+}
+
+.bloque > h2{
+font-family:var(--serif);
+font-weight:600;
+font-size:26px;
+line-height:1.15;
+}
+
+.bloque > p.lead{
+margin:0;
+color:var(--ink-2);
+max-width:70ch;
+}
+
+.tabla-wrap{
+overflow-x:auto;
+border:1px solid var(--line);
+border-radius:12px;
+background:var(--card);
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+font-size:14px;
+font-variant-numeric:tabular-nums;
+}
+
+th,td{
+padding:11px 14px;
+text-align:left;
+vertical-align:top;
+border-bottom:1px solid var(--line);
+}
+
+th{
+font-size:12px;
+font-weight:600;
+letter-spacing:.8px;
+text-transform:uppercase;
+color:var(--ink-2);
+background:var(--bg);
+white-space:nowrap;
+}
+
+tr:last-child td{border-bottom:0}
+
+td.letra{
+width:1%;
+white-space:nowrap;
+font-weight:700;
+}
+
+.cifras{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+gap:10px;
+}
+
+.cifra{
+padding:14px 16px;
+border-radius:12px;
+background:var(--card);
+border:1px solid var(--line);
+}
+
+.cifra b{
+display:block;
+font-family:var(--serif);
+font-size:30px;
+font-weight:600;
+line-height:1.1;
+color:var(--ink);
+font-variant-numeric:tabular-nums;
+}
+
+.cifra span{
+display:block;
+margin-top:2px;
+font-size:13px;
+color:var(--ink-2);
+}
+
+/* ---------- Tramos ---------- */
+
+.tramo{
+background:var(--card);
+border:1px solid var(--line);
+border-radius:16px;
+padding:22px max(18px,2.2vw) 20px;
+display:grid;
+gap:18px;
+scroll-margin-top:150px;
+}
+
+.tramo.activo{
+border-color:var(--gold);
+box-shadow:0 0 0 3px rgba(201,162,75,.25);
+}
+
+.tramo-cab{
+display:grid;
+grid-template-columns:auto 1fr;
+gap:6px 16px;
+align-items:center;
+}
+
+.insignia{
+grid-row:span 2;
+width:52px;
+height:52px;
+border-radius:50%;
+display:flex;
+align-items:center;
+justify-content:center;
+font-family:var(--serif);
+font-size:26px;
+font-weight:600;
+color:#14110a;
+background:linear-gradient(135deg,#e7cd8b,#b8923d);
+}
+
+.tramo-cab .etq{
+margin:0;
+color:var(--gold-ink);
+}
+
+.tramo-cab h2{
+font-family:var(--serif);
+font-size:24px;
+font-weight:600;
+line-height:1.15;
+}
+
+.tramo-meta{
+grid-column:1 / -1;
+display:flex;
+flex-wrap:wrap;
+gap:6px 18px;
+font-size:13px;
+color:var(--ink-2);
+}
+
+.tramo-meta b{
+color:var(--ink);
+font-weight:600;
+}
+
+.nombre{
+font-family:var(--mono);
+color:var(--gold-ink);
+}
+
+.paso{
+display:grid;
+gap:10px;
+padding-top:18px;
+border-top:1px solid var(--line);
+}
+
+.paso-cab{
+display:flex;
+align-items:baseline;
+gap:8px 12px;
+flex-wrap:wrap;
+}
+
+.diap{
+font-size:12px;
+font-weight:600;
+letter-spacing:.8px;
+text-transform:uppercase;
+color:var(--gold-ink);
+}
+
+.paso-cab h3{
+font-size:17px;
+font-weight:600;
+}
+
+.t{
+margin-left:auto;
+font-family:var(--mono);
+font-size:13px;
+color:var(--ink-2);
+}
+
+.accion{
+margin:0;
+padding:10px 14px;
+border-radius:10px;
+background:var(--gold-soft);
+border:1px solid var(--gold-line);
+font-size:14px;
+color:var(--ink);
+}
+
+.accion b,
+.pase b,
+.recorte b{
+font-size:12px;
+font-weight:700;
+letter-spacing:1px;
+text-transform:uppercase;
+color:var(--gold-ink);
+margin-right:6px;
+}
+
+.dicho{
+margin:0;
+max-width:62ch;
+font-family:var(--serif);
+font-size:20px;
+line-height:1.62;
+}
+
+.dicho + .dicho{
+margin-top:4px;
+}
+
+.dicho strong{
+font-weight:600;
+background:linear-gradient(transparent 62%,var(--gold-line) 62%);
+}
+
+.pausa{
+display:inline-block;
+margin:0 2px;
+padding:0 8px;
+border-radius:999px;
+font-family:var(--sans);
+font-size:12px;
+font-weight:600;
+letter-spacing:.4px;
+color:var(--gold-ink);
+background:var(--gold-soft);
+border:1px solid var(--gold-line);
+vertical-align:2px;
+}
+
+.pase{
+margin:0;
+padding-top:16px;
+border-top:2px dashed var(--gold-line);
+}
+
+.pase.dicho{
+font-style:italic;
+}
+
+.recorte{
+margin:0;
+font-size:14px;
+color:var(--ink-2);
+}
+
+/* ---------- Preguntas y listas ---------- */
+
+.resp{
+font-weight:700;
+white-space:nowrap;
+}
+
+.reglas,
+.lista{
+margin:0;
+padding-left:22px;
+display:grid;
+gap:8px;
+}
+
+.dos{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:16px;
+}
+
+.dos > div{
+min-width:0;
+padding:18px;
+border-radius:14px;
+background:var(--card);
+border:1px solid var(--line);
+display:grid;
+gap:10px;
+align-content:start;
+}
+
+.dos h3{
+font-size:15px;
+font-weight:600;
+}
+
+.chequeo{
+list-style:none;
+padding:0;
+margin:0;
+display:grid;
+gap:8px;
+}
+
+.chequeo label{
+display:flex;
+align-items:flex-start;
+gap:10px;
+cursor:pointer;
+font-size:15px;
+}
+
+.chequeo input{
+margin-top:4px;
+width:18px;
+height:18px;
+accent-color:#b8923d;
+flex-shrink:0;
+}
+
+.chequeo input:checked + span{
+color:var(--ink-2);
+text-decoration:line-through;
+}
+
+.pie{
+padding-block:22px 40px;
+font-size:13px;
+color:var(--ink-2);
+}
+
+@media (max-width:720px){
+.dos{grid-template-columns:1fr}
+.tiempo{font-size:26px}
+.dicho{font-size:19px}
+.tramo-cab{grid-template-columns:1fr}
+.insignia{grid-row:auto}
+.t{margin-left:0}
+}
+
+@media (prefers-reduced-motion:reduce){
+*{scroll-behavior:auto !important}
+}
+</style>
+
+<header class="cabecera">
+<div class="ancho">
+<p class="etq">Camal Metropolitano · Pitch de venta estilo Shark Tank</p>
+<h1>Guion para <em>cuatro voces</em> y diez minutos</h1>
+<p class="sub">Sigue las 14 diapositivas de Pitch_Camal_Metropolitano.pptx, en orden. Las diapositivas A1 a A3 del apéndice no se presentan: quedan para las preguntas.</p>
+</div>
+</header>
+
+<div class="reloj" id="reloj">
+<div class="ancho">
+<div class="reloj-fila">
+<output class="tiempo" id="tiempo" aria-label="Tiempo transcurrido">00:00</output>
+<span class="de">/ 10:00</span>
+<span class="quien" id="quien">Listo para ensayar. Pulsa Iniciar cuando empiece A.</span>
+<div class="botones">
+<button class="boton" id="btnInicio" type="button">Iniciar</button>
+<button class="boton sec" id="btnReinicio" type="button">Reiniciar</button>
+</div>
+</div>
+<div class="pista" aria-hidden="true" style="grid-template-columns:110fr 165fr 135fr 190fr">
+<div class="pista-tramo" data-i="0"><i></i><span>A · 1:50</span></div>
+<div class="pista-tramo" data-i="1"><i></i><span>B · 4:35</span></div>
+<div class="pista-tramo" data-i="2"><i></i><span>C · 6:50</span></div>
+<div class="pista-tramo" data-i="3"><i></i><span>D · 10:00</span></div>
+</div>
+</div>
+</div>
+
+<main class="ancho">
+
+<section class="bloque" aria-labelledby="t-mapa">
+<h2 id="t-mapa">El pitch de un vistazo</h2>
+<p class="lead">Quien habla da un paso al frente; los otros tres siguen de pie, en línea, mirando al jurado. Repartan las letras entre Gabriel, Juan, Angelo y Mateo y sustituyan <span class="nombre">[NOMBRE]</span> antes de ensayar.</p>
+<div class="tabla-wrap">
+<table>
+<thead><tr><th>Voz</th><th>Hace</th><th>Diapositivas</th><th>Minutos</th><th>Palabras</th></tr></thead>
+<tbody>
+<tr><td class="letra">A</td><td>Abre, engancha y plantea el problema</td><td>1, 2, 3</td><td>0:00 a 1:50</td><td data-palabras-de="tramo-a"></td></tr>
+<tr><td class="letra">B</td><td>El retiro, por qué no se resuelve, la solución y las pruebas 1 y 2</td><td>4, 5, 6, 7</td><td>1:50 a 4:35</td><td data-palabras-de="tramo-b"></td></tr>
+<tr><td class="letra">C</td><td>Pruebas 3, 4 y 5, y el consumidor</td><td>8, 9, 10</td><td>4:35 a 6:50</td><td data-palabras-de="tramo-c"></td></tr>
+<tr><td class="letra">D</td><td>Quién gana, adopción, honestidad, petición y cierre</td><td>11, 12, 13, 14</td><td>6:50 a 10:00</td><td data-palabras-de="tramo-d"></td></tr>
+</tbody>
+</table>
+</div>
+</section>
+
+<section class="bloque" aria-labelledby="t-cifras">
+<h2 id="t-cifras">Lo que no se improvisa</h2>
+<p class="lead">Son las únicas cifras del pitch. No se citan datos del lote de prueba ni costos de la red de pruebas.</p>
+<div class="cifras">
+<div class="cifra"><b>15</b><span>cortes salen de una sola res</span></div>
+<div class="cifra"><b>7</b><span>etapas del hilo, del predio a la mesa</span></div>
+<div class="cifra"><b>24 h</b><span>plazo que exige la norma para retirar</span></div>
+<div class="cifra"><b>~0,3 s</b><span>de un animal a todas sus cajas y clientes</span></div>
+<div class="cifra"><b>0</b><span>nombres o direcciones en la cadena</span></div>
+<div class="cifra"><b>3 «sin»</b><span>sin app, sin cuenta, sin wallet</span></div>
+<div class="cifra"><b>&lt; USD 0,20</b><span>por res al año (estimación a validar en el piloto)</span></div>
+<div class="cifra"><b>90 días</b><span>de piloto en un camal real</span></div>
+</div>
+</section>
+
+<!-- ======================= TRAMO A ======================= -->
+<article class="tramo" id="tramo-a" data-i="0">
+<header class="tramo-cab">
+<span class="insignia" aria-hidden="true">A</span>
+<p class="etq">0:00 a 1:50 · Diapositivas 1, 2 y 3</p>
+<h2>Abre, engancha y plantea el problema</h2>
+<div class="tramo-meta"><span class="nombre">[NOMBRE]</span><span data-palabras></span></div>
+</header>
+
+<section class="paso">
+<div class="paso-cab"><span class="diap">Diap. 1</span><h3>Cada corte cuenta una historia</h3><span class="t">0:30</span></div>
+<p class="accion"><b>Hacer</b>Los cuatro de pie y en línea. A da un paso al frente y mira al jurado, no a la pantalla.</p>
+<p class="dicho">Buenas tardes. Somos el equipo de Camal Metropolitano y venimos a venderles algo que hoy no existe en ningún camal: <strong>una carne que puede demostrar de dónde viene.</strong> <span class="pausa">pausa</span></p>
+</section>
+
+<section class="paso">
+<div class="paso-cab"><span class="diap">Diap. 2</span><h3>El gancho</h3><span class="t">0:30</span></div>
+<p class="accion"><b>Hacer</b>Lanzar la pregunta antes de que miren la diapositiva. Dejar dos segundos de silencio.</p>
+<p class="dicho">¿Alguien sabe de qué animal es el último bistec que comió? <span class="pausa">pausa</span></p>
+<p class="dicho">Una res se convierte en <strong>quince cortes</strong>. Esos cortes viajan en cajas junto con piezas de otros animales, y la carne molida es, literalmente, una mezcla de todos. Si mañana apareciera un problema sanitario, ¿de qué animal vino su bistec? Hoy, nadie puede responder con certeza.</p>
+</section>
+
+<section class="paso">
+<div class="paso-cab"><span class="diap">Diap. 3</span><h3>El problema</h3><span class="t">0:50</span></div>
+<p class="accion"><b>Hacer</b>Contar con los dedos: uno, dos, tres. Señalar cada tarjeta al nombrarla.</p>
+<p class="dicho">El problema tiene tres raíces. <strong>Uno:</strong> la carne se divide y se mezcla, y un registro en línea recta no puede seguirla.</p>
+<p class="dicho"><strong>Dos:</strong> los registros viven en papel, en hojas de cálculo o en bases de datos de un solo dueño, y cualquiera puede editarlos sin dejar rastro.</p>
+<p class="dicho"><strong>Tres:</strong> el frío se declara, no se prueba. Un transporte puede decir que cumplió aunque tenga horas sin registro.</p>
+<p class="pase dicho"><b>Pase a B</b>¿Y qué pasa cuando algo sale mal? [NOMBRE B].</p>
+</section>
+
+<p class="recorte"><b>Si van tarde</b>En la diapositiva 2, omitir la frase de la molida. Se ganan unos 10 segundos.</p>
+</article>
+
+<!-- ======================= TRAMO B ======================= -->
+<article class="tramo" id="tramo-b" data-i="1">
+<header class="tramo-cab">
+<span class="insignia" aria-hidden="true">B</span>
+<p class="etq">1:50 a 4:35 · Diapositivas 4, 5, 6 y 7</p>
+<h2>El retiro, por qué no se resuelve, la solución y las pruebas 1 y 2</h2>
+<div class="tramo-meta"><span class="nombre">[NOMBRE]</span><span data-palabras></span></div>
+</header>
+
+<section class="paso">
+<div class="paso-cab"><span class="diap">Diap. 4</span><h3>Cuando algo falla</h3><span class="t">0:35</span></div>
+<p class="accion"><b>Hacer</b>Recorrer los tres signos de pregunta con la mano, de izquierda a derecha.</p>
+<p class="dicho">Llega un resultado de laboratorio: una res no pasó la prueba. La norma exige retirar su carne en <strong>veinticuatro horas</strong>. Pero para retirar hay que saber qué cajas, qué clientes y si ya se vendió.</p>
+<p class="dicho">Hoy, eso se adivina. Y el último en enterarse es el consumidor.</p>
+</section>
+
+<section class="paso">
+<div class="paso-cab"><span class="diap">Diap. 5</span><h3>Por qué hoy no se resuelve</h3><span class="t">0:35</span></div>
+<p class="accion"><b>Hacer</b>Señalar las dos columnas con ✕ y terminar en la del ✓.</p>
+<p class="dicho">¿Por qué no se ha resuelto? El papel y el Excel se pueden editar. La base de datos tiene un dueño, y el dueño puede reescribirla. Ante una auditoría, las dos fallan.</p>
+<p class="dicho">Lo que hace falta es un registro compartido entre el camal, los mayoristas y la autoridad, que <strong>nadie, ni siquiera nosotros, pueda reescribir después.</strong></p>
+</section>
+
+<section class="paso">
+<div class="paso-cab"><span class="diap">Diap. 6</span><h3>La solución</h3><span class="t">0:45</span></div>
+<p class="accion"><b>Hacer</b>Señalar el hilo de siete etapas y luego el panel: es el producto real funcionando.</p>
+<p class="dicho">Eso es lo que construimos: un hilo que no se puede cortar. Siete etapas, del predio a la mesa: origen, inspección, faena y sello, frío, empaque, transporte y venta.</p>
+<p class="dicho">Cada traspaso queda firmado con su responsable y su hora. Y no es una línea: es un grafo, porque un animal se divide en muchas cajas y una caja junta varios animales.</p>
+</section>
+
+<section class="paso">
+<div class="paso-cab"><span class="diap">Diap. 7</span><h3>Pruebas 1 y 2 · hacia atrás y hacia adelante</h3><span class="t">0:50</span></div>
+<p class="accion"><b>Hacer</b>Mostrar las dos pantallas como producto. No leer los códigos de ejemplo.</p>
+<p class="dicho">Y funciona. Lo probamos con cinco capacidades. La primera: de una caja llegamos a su animal, su predio, sus dictámenes, quién la despostó y su frío.</p>
+<p class="dicho">La segunda: de un animal llegamos a todas sus cajas y todos sus clientes en <strong>tres décimas de segundo</strong>, con una sola consulta. Eso es un retiro sanitario real.</p>
+<p class="pase dicho"><b>Pase a C</b>Y además, no deja mentir. [NOMBRE C].</p>
+</section>
+
+<p class="recorte"><b>Si van tarde</b>En la diapositiva 5, decir solo la última frase. Se ganan unos 15 segundos.</p>
+</article>
+
+<!-- ======================= TRAMO C ======================= -->
+<article class="tramo" id="tramo-c" data-i="2">
+<header class="tramo-cab">
+<span class="insignia" aria-hidden="true">C</span>
+<p class="etq">4:35 a 6:50 · Diapositivas 8, 9 y 10</p>
+<h2>Pruebas 3, 4 y 5, y el consumidor</h2>
+<div class="tramo-meta"><span class="nombre">[NOMBRE]</span><span data-palabras></span></div>
+</header>
+
+<section class="paso">
+<div class="paso-cab"><span class="diap">Diap. 8</span><h3>Pruebas 3 y 4 · kilos y frío</h3><span class="t">0:40</span></div>
+<p class="accion"><b>Hacer</b>Señalar la caja rechazada en el simulador y luego el tramo sombreado del gráfico de frío.</p>
+<p class="dicho">Tercera: el contrato <strong>rechaza</strong> cualquier caja que pese más de lo que respaldan sus piezas. No se puede inventar carne.</p>
+<p class="dicho">Cuarta: el frío no se cree, se recalcula desde la telemetría. Un hueco es un hueco, aunque el transportista declare que cumplió.</p>
+</section>
+
+<section class="paso">
+<div class="paso-cab"><span class="diap">Diap. 9</span><h3>Prueba 5 · privacidad</h3><span class="t">0:35</span></div>
+<p class="accion"><b>Hacer</b>Señalar las dos columnas: dentro y fuera de la cadena.</p>
+<p class="dicho">Quinta: todo esto sin publicar un solo nombre ni una sola dirección. En la cadena solo hay códigos seudónimos y huellas. Los nombres se quedan en el registro interno del camal.</p>
+<p class="dicho">Verificable por todos, <strong>legible solo por quien debe.</strong></p>
+</section>
+
+<section class="paso">
+<div class="paso-cab"><span class="diap">Diap. 10</span><h3>El cliente final</h3><span class="t">1:00</span></div>
+<p class="accion"><b>Hacer</b>C saca la etiqueta impresa y se la entrega a un integrante del jurado. No hablar mientras escanea. Si falla, señalar los celulares de la diapositiva.</p>
+<p class="dicho">Pero nuestro cliente final es el consumidor. Tome, por favor: escanee este código con su celular. Sin app. Sin cuenta. Sin billetera. <span class="pausa">espera a que escanee</span></p>
+<p class="dicho">Ve el recorrido de esa carne, del predio a su mesa, etapa por etapa. Y si existe un retiro sanitario, ve una <strong>alerta roja aunque la venta ya conste como concretada.</strong></p>
+<p class="dicho">Es la primera vez que el consumidor puede verificar, en lugar de creer.</p>
+<p class="pase dicho"><b>Pase a D</b>¿Y quién gana con esto? [NOMBRE D].</p>
+</section>
+
+<p class="recorte"><b>Si van tarde</b>No entregar la etiqueta: mostrar los celulares de la diapositiva y decir lo que se ve. Se ganan unos 20 segundos.</p>
+</article>
+
+<!-- ======================= TRAMO D ======================= -->
+<article class="tramo" id="tramo-d" data-i="3">
+<header class="tramo-cab">
+<span class="insignia" aria-hidden="true">D</span>
+<p class="etq">6:50 a 10:00 · Diapositivas 11, 12, 13 y 14</p>
+<h2>Quién gana, adopción, honestidad, petición y cierre</h2>
+<div class="tramo-meta"><span class="nombre">[NOMBRE]</span><span data-palabras></span></div>
+</header>
+
+<section class="paso">
+<div class="paso-cab"><span class="diap">Diap. 11</span><h3>Quién gana</h3><span class="t">0:45</span></div>
+<p class="accion"><b>Hacer</b>Recorrer los cuatro íconos de izquierda a derecha.</p>
+<p class="dicho">Cada eslabón gana algo concreto. El camal evita multas y protege su marca, porque puede demostrar qué salió y a dónde. El mayorista recibe prueba de origen de lo que compra. La autoridad obtiene retiros auditables, no solo declarados. Y el consumidor, por primera vez, verifica.</p>
+<p class="dicho">El valor no está en la tecnología: <strong>está en poder demostrar.</strong></p>
+</section>
+
+<section class="paso">
+<div class="paso-cab"><span class="diap">Diap. 12</span><h3>Adopción</h3><span class="t">0:45</span></div>
+<p class="accion"><b>Hacer</b>Señalar las tres personas y luego los tres pasos del plan de entrada.</p>
+<p class="dicho">¿Se adopta? Sí, porque nadie tiene que comprar un lector nuevo. El operario usa un panel web. La tercena no instala nada: el código se lee con cualquier celular. El consumidor, tampoco.</p>
+<p class="dicho">Entramos por un camal piloto, después los mayoristas y después la autoridad. La red la comparten los tres, y se ancla periódicamente en una red pública.</p>
+</section>
+
+<section class="paso">
+<div class="paso-cab"><span class="diap">Diap. 13</span><h3>Honestidad</h3><span class="t">0:50</span></div>
+<p class="accion"><b>Hacer</b>Tono sereno, sin prisa. Es la diapositiva que da credibilidad.</p>
+<p class="dicho">Y seamos honestos. Ya está hecho: un prototipo funcional, con dos contratos, un panel y la página del consumidor.</p>
+<p class="dicho">Lo que no resolvemos: la cadena no garantiza que el dato de entrada sea verdadero. Lo que sí elimina es la <strong>manipulación retroactiva</strong>: nadie reescribe ni borra lo que ya se registró. Lo que falta: sensores que firmen sus lecturas, habilitación en origen y retiro automático.</p>
+<p class="dicho">¿Y el costo? Para trescientas reses por semana estimamos unos <strong>tres mil dólares al año</strong>: menos de veinte centavos por res. Es una estimación que validaremos en el piloto.</p>
+</section>
+
+<section class="paso">
+<div class="paso-cab"><span class="diap">Diap. 14</span><h3>La petición y el cierre</h3><span class="t">0:50</span></div>
+<p class="accion"><b>Hacer</b>Los cuatro se juntan al frente. D hace la petición; A dice la frase final. Pausa antes de «Que sea verdadera».</p>
+<p class="dicho">Por eso estamos aquí. No venimos a pedir dinero: venimos a pedir <strong>un camal piloto durante noventa días.</strong></p>
+<p class="dicho">Para tres cosas: conectar el sistema a la operación real, un lote por semana; conectar los sensores de frío de cámaras y camiones; y hacer con la autoridad sanitaria un simulacro de retiro completo.</p>
+<p class="pase dicho"><b>Cierra A</b>Porque cada corte cuenta una historia. <span class="pausa">pausa</span> Que sea verdadera. Gracias.</p>
+</section>
+
+<p class="recorte"><b>Si van tarde</b>En la diapositiva 12, omitir la frase del anclaje. En la 13, decir solo el costo y la frase de la manipulación retroactiva. Se ganan unos 30 segundos.</p>
+</article>
+
+<!-- ======================= PREGUNTAS ======================= -->
+<section class="bloque" aria-labelledby="t-preg">
+<h2 id="t-preg">Preguntas del jurado: quién responde</h2>
+<p class="lead">Responde quien tiene el tema; los demás solo complementan si se lo piden. Veinte segundos como máximo: primero la respuesta, después el límite. Las diapositivas A1 a A3 sirven de apoyo.</p>
+<div class="tabla-wrap">
+<table>
+<thead><tr><th>Pregunta</th><th>Responde</th><th>La respuesta en 15 segundos</th></tr></thead>
+<tbody>
+<tr><td>¿Por qué blockchain y no una base de datos?</td><td class="resp">B</td><td>Una base de datos tiene un dueño que puede reescribirla. Aquí participan el camal, los mayoristas y la autoridad, y ninguno puede alterar la historia.</td></tr>
+<tr><td>¿Quién garantiza que el dato es verdadero?</td><td class="resp">D</td><td>Nadie en el origen: la cadena elimina la manipulación retroactiva. Para reducir el riesgo de entrada vienen los sensores que firman lecturas y las credenciales verificables (A3).</td></tr>
+<tr><td>¿Cuánto cuesta operarlo?</td><td class="resp">D</td><td>Unos tres mil dólares al año para trescientas reses por semana: tres nodos de la red compartida, el hosting y un anclaje diario. Menos de veinte centavos por res. Es una estimación a validar (A2).</td></tr>
+<tr><td>¿Quién paga?</td><td class="resp">A</td><td>El camal, porque es quien responde ante un retiro y quien gana la confianza de los mayoristas. Es una hipótesis que el piloto debe confirmar.</td></tr>
+<tr><td>¿Y la privacidad?</td><td class="resp">C</td><td>En la cadena solo hay códigos seudónimos y huellas. Nombres, razones sociales y direcciones se quedan en el registro interno del camal.</td></tr>
+<tr><td>¿Y la carne molida?</td><td class="resp">C</td><td>Es mezcla de lote: se rastrea hasta el lote, nunca hasta un animal. Si una res del lote tiene un problema, el retiro alcanza toda la molida.</td></tr>
+<tr><td>¿Qué pasa si la tercena no tiene internet?</td><td class="resp">C</td><td>La tercena vende como siempre: el código va impreso en la etiqueta. El consumidor solo necesita su celular, y el registro se carga desde el camal.</td></tr>
+<tr><td>¿Ya tienen clientes?</td><td class="resp">A</td><td>Todavía no: es un prototipo con datos de prueba. Por eso pedimos el piloto.</td></tr>
+<tr><td>¿Por qué no automatizaron el retiro?</td><td class="resp">B</td><td>Es una decisión de alcance. Hoy la autoridad registra el retiro y el consumidor ve la alerta; el retiro automático por resultado de laboratorio es el siguiente paso.</td></tr>
+<tr><td>¿Cómo se integra con lo que el camal ya usa?</td><td class="resp">D</td><td>No lo reemplaza: ancla lo que el camal ya registra, cargándolo por lotes.</td></tr>
+</tbody>
+</table>
+</div>
+<ul class="reglas">
+<li>Si no lo saben: «No lo medimos. Lo propondríamos como parte del piloto.»</li>
+<li>Nunca decir «blockchain evita el fraude». Decir «impide la manipulación retroactiva».</li>
+<li>No citar costos de la red de pruebas ni datos del lote de demostración.</li>
+<li>Si la pregunta llega en medio del pitch: «Con gusto la respondemos en el turno de preguntas», y seguir.</li>
+</ul>
+</section>
+
+<!-- ======================= ANTES Y PLAN B ======================= -->
+<section class="dos">
+<div>
+<h3>Antes de entrar</h3>
+<ul class="chequeo">
+<li><label><input type="checkbox"><span>Presentación en pantalla completa; el apéndice (A1 a A3) después de la diapositiva 14.</span></label></li>
+<li><label><input type="checkbox"><span>Consulta pública abierta en el celular de C y en otra pestaña.</span></label></li>
+<li><label><input type="checkbox"><span>Dos etiquetas impresas con el QR, del tamaño de una tarjeta.</span></label></li>
+<li><label><input type="checkbox"><span>Escanear el QR una vez antes de entrar, para calentar la conexión.</span></label></li>
+<li><label><input type="checkbox"><span>Notificaciones silenciadas y datos móviles activos como respaldo del wifi.</span></label></li>
+<li><label><input type="checkbox"><span>Esta página abierta en un celular o tableta, como cronómetro del equipo.</span></label></li>
+</ul>
+</div>
+<div>
+<h3>Si algo falla</h3>
+<ul class="lista">
+<li><b>Se cae el internet.</b> Señalar los celulares de la diapositiva 10 y leer lo que muestran.</li>
+<li><b>El jurado no puede escanear.</b> C lo escanea con su propio celular y se lo muestra.</li>
+<li><b>Se pierden los tiempos.</b> Cada tramo tiene su recorte. Si todavía van tarde, D resume la diapositiva 12 en una frase.</li>
+</ul>
+</div>
+</section>
+
+<section class="bloque" aria-labelledby="t-ensayo">
+<h2 id="t-ensayo">Tres ensayos antes del día</h2>
+<ol class="lista">
+<li><b>Lectura en voz alta.</b> Cada quien su tramo, sin cronómetro. Pueden cambiar las frases para que suenen a ustedes; las cifras no se cambian.</li>
+<li><b>Con cronómetro y pases.</b> Esta página marca los puntos de pase. Objetivo: llegar a 1:50, 4:35 y 6:50 con diez segundos de margen.</li>
+<li><b>Con jurado simulado.</b> Alguien de otro equipo hace de tiburón e interrumpe con tres preguntas de la tabla.</li>
+</ol>
+</section>
+
+</main>
+
+<footer class="pie">
+<div class="ancho">Basado en Pitch_Camal_Metropolitano.pptx (14 diapositivas + apéndice). El costo anual es una estimación del equipo, no una medición. Datos de prueba sintéticos.</div>
+</footer>
+
+<script>
+(function(){
+
+var TOTAL=600;
+var LIMITES=[110,275,410,600];
+var NOMBRES=["A","B","C","D"];
+
+/* ---------- Palabras por tramo ---------- */
+
+function contarPalabras(tramo){
+
+var total=0;
+
+tramo.querySelectorAll(".dicho").forEach(function(p){
+
+var copia=p.cloneNode(true);
+
+copia.querySelectorAll(".pausa, b").forEach(function(x){
+if(x.tagName==="B"||x.classList.contains("pausa"))x.remove();
+});
+
+var texto=copia.textContent.replace(/\s+/g," ").trim();
+
+if(texto)total+=texto.split(" ").length;
+
+});
+
+return total;
+
+}
+
+document.querySelectorAll(".tramo").forEach(function(t){
+
+var n=contarPalabras(t);
+
+var k=Number(t.getAttribute("data-i"));
+
+var ritmo=Math.round(n/((LIMITES[k]-(k?LIMITES[k-1]:0))/60));
+
+var celda=t.querySelector("[data-palabras]");
+
+if(celda)celda.textContent="≈ "+n+" palabras · "+ritmo+" por minuto";
+
+var tabla=document.querySelector('[data-palabras-de="'+t.id+'"]');
+
+if(tabla)tabla.textContent="≈ "+n;
+
+});
+
+/* ---------- Cronómetro ---------- */
+
+var segundos=0;
+var corriendo=false;
+var reloj=document.getElementById("reloj");
+var tiempo=document.getElementById("tiempo");
+var quien=document.getElementById("quien");
+var boton=document.getElementById("btnInicio");
+var intervalo=null;
+var inicio=0;
+var acumulado=0;
+
+function dos(n){return (n<10?"0":"")+n;}
+
+function pintar(){
+
+var s=Math.floor(segundos);
+
+tiempo.textContent=dos(Math.floor(s/60))+":"+dos(s%60);
+
+reloj.classList.toggle("tarde",s>TOTAL);
+
+var i=0;
+
+while(i<3&&s>=LIMITES[i])i++;
+
+document.querySelectorAll(".pista-tramo").forEach(function(el){
+
+var k=Number(el.getAttribute("data-i"));
+
+var ini=k?LIMITES[k-1]:0;
+
+var relleno=Math.max(0,Math.min(1,(s-ini)/(LIMITES[k]-ini)));
+
+el.firstElementChild.style.width=(relleno*100)+"%";
+
+el.classList.toggle("actual",corriendo&&k===i&&s<=TOTAL);
+
+});
+
+document.querySelectorAll(".tramo").forEach(function(t){
+t.classList.toggle("activo",corriendo&&Number(t.getAttribute("data-i"))===i&&s<=TOTAL);
+});
+
+if(s>TOTAL){
+
+quien.innerHTML="<b>Te pasaste "+(s-TOTAL)+" s.</b> Recorta con las notas «Si van tarde».";
+
+}else if(corriendo||s>0){
+
+var falta=Math.round(LIMITES[i]-s);
+
+quien.innerHTML="Habla <b>"+NOMBRES[i]+"</b> · quedan "+Math.max(0,falta)+" s del tramo";
+
+}else{
+
+quien.textContent="Listo para ensayar. Pulsa Iniciar cuando empiece A.";
+
+}
+
+}
+
+function tic(){
+
+segundos=acumulado+(Date.now()-inicio)/1000;
+
+pintar();
+
+}
+
+boton.addEventListener("click",function(){
+
+if(corriendo){
+
+corriendo=false;
+
+acumulado=segundos;
+
+clearInterval(intervalo);
+
+boton.textContent="Seguir";
+
+}else{
+
+corriendo=true;
+
+inicio=Date.now();
+
+intervalo=setInterval(tic,250);
+
+boton.textContent="Pausar";
+
+}
+
+pintar();
+
+});
+
+document.getElementById("btnReinicio").addEventListener("click",function(){
+
+corriendo=false;
+
+clearInterval(intervalo);
+
+segundos=0;
+
+acumulado=0;
+
+boton.textContent="Iniciar";
+
+pintar();
+
+});
+
+pintar();
+
+})();
+</script>
