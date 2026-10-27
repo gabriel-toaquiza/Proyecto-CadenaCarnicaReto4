@@ -58,7 +58,8 @@ nombre de persona ni de cliente ni dirección.
 
 ## Interfaz
 
-Tema negro y dorado "Camal Metropolitano". La **App Admin** (`app/index.html`) pide inicio de sesión del
+Sistema de diseño "Camal Metropolitano": una sola familia tipográfica (IBM Plex), una escala de ocho tamaños
+y una paleta de marca (carbón y oro) con colores de estado aparte. La **App Admin** (`app/index.html`) pide inicio de sesión del
 administrador y ofrece, además de los cinco criterios y el retiro sanitario:
 
 - **Buscador global** en la barra superior: entiende cajas (`CJ-…`), canales (`CN-…`), despachos (`DSP-…`)
