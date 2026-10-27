@@ -220,6 +220,7 @@ def main():
     lote = {
         "lote": "LF-2026-0188",
         "cortes": {corte_de[c["corte_id"]]: {"codigo": c["corte_id"], "nombre": c["nombre"],
+                                            "categoria": c["categoria"],
                                             "rendimientoPct": float(c["rendimiento_referencia_pct"])}
                    for c in carta},
         "animales": animales,

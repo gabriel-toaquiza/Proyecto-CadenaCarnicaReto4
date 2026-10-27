@@ -7,35 +7,49 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Caveat:wght@600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Allura&family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Mulish:wght@400;500;600;700;800&display=swap">
 
 <script src="https://cdn.jsdelivr.net/npm/ethers@6.13.2/dist/ethers.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
 <style>
-/* =====================================================
-   CAMAL METROPOLITANO · ESTILO DEL PANEL
-   Barra lateral verde bosque, contenido claro, tarjetas blancas.
-===================================================== */
-
 *{box-sizing:border-box}
 
+/* =====================================================
+   CAMAL METROPOLITANO · TEMA NEGRO Y DORADO
+   Barra lateral y portada en carbón verdoso con acento dorado,
+   contenido claro con tarjetas blancas. El verde, el rojo y el
+   ámbar quedan reservados para estados (cumple, retiro, aviso).
+===================================================== */
+
 :root{
+--carbon-950:#06090a;
+--carbon-900:#0a100d;
+--carbon-800:#0f1814;
+--carbon-700:#16231d;
+--carbon-600:#1f3028;
+--oro:#d4a950;
+--oro-claro:#ecd08a;
+--oro-oscuro:#a8832f;
+--oro-fondo:#f7f0dd;
 --verde-900:#0c2a20;
 --verde-800:#123628;
 --verde-700:#1d5a42;
---verde-600:#2a7552;
+--verde-600:#2f8a5f;
 --verde-300:#7ed39a;
---verde-100:#e7f4ec;
---fondo:#f2f5f3;
+--verde-100:#e6f3ea;
+--fondo:#eff1ee;
 --tarjeta:#ffffff;
---borde:#e1e9e4;
---texto:#14231d;
---tenue:#61756c;
+--borde:#e2e7e2;
+--texto:#14201a;
+--tenue:#5f7167;
 --rojo:#b8443a;
 --rojo-100:#fbeceb;
 --ambar:#b7791f;
---sombra:0 6px 22px rgba(16,42,32,.07);
---fuente:"Poppins","Segoe UI",Arial,sans-serif;
+--sombra:0 6px 24px rgba(8,16,12,.08);
+--fuente:"Mulish","Segoe UI",Arial,sans-serif;
+--serif:"Cormorant Garamond",Georgia,"Times New Roman",serif;
+--script:"Allura","Segoe Script",cursive;
 --mono:Consolas,"Courier New",monospace;
 }
 
@@ -49,75 +63,468 @@ min-height:100vh;
 display:flex;
 }
 
+h1,h2,h3{
+text-wrap:balance;
+}
+
+em{
+font-family:var(--serif);
+font-style:italic;
+color:var(--oro);
+font-weight:600;
+}
+
 /* =====================================================
-   MENU LATERAL
+   LOGIN
 ===================================================== */
 
-.sidebar{
-width:250px;
-flex-shrink:0;
+body.bloqueado{
+background:var(--carbon-950);
+}
+
+body.bloqueado .sidebar,
+body.bloqueado .main,
+body.bloqueado .aviso-flotante{
+display:none;
+}
+
+#pantallaLogin{
+display:none;
+}
+
+body.bloqueado #pantallaLogin{
+display:flex;
+}
+
+#pantallaLogin{
+width:100%;
 min-height:100vh;
-position:sticky;
-top:0;
-align-self:flex-start;
-height:100vh;
-overflow-y:auto;
+padding:22px;
+gap:22px;
+align-items:stretch;
 background:
-radial-gradient(ellipse at 20% 100%,rgba(126,211,154,.12) 0%,transparent 55%),
-var(--verde-900);
-color:#e9f3ee;
-padding:24px 16px;
+radial-gradient(ellipse at 88% 8%,rgba(212,169,80,.10) 0%,transparent 45%),
+var(--carbon-950);
+color:#f1ede2;
+}
+
+.login-portada{
+flex:1.3;
+position:relative;
+isolation:isolate;
+border-radius:26px;
+overflow:hidden;
+padding:38px 46px 34px;
 display:flex;
 flex-direction:column;
-gap:26px;
+gap:24px;
+border:1px solid rgba(212,169,80,.24);
+background:
+linear-gradient(90deg,rgba(6,9,10,.95) 0%,rgba(6,9,10,.76) 46%,rgba(6,9,10,.30) 100%),
+url("encabezado.jpg") 78% center/cover no-repeat,
+var(--carbon-800);
+}
+
+/* Foto opcional de un corte (corte.jpg): si no existe, no se ve nada */
+.login-portada::after{
+content:"";
+position:absolute;
+right:0;
+bottom:0;
+width:58%;
+height:44%;
+z-index:-1;
+background:url("corte.jpg") right bottom/cover no-repeat;
+-webkit-mask-image:linear-gradient(to top left,#000 30%,transparent 80%);
+mask-image:linear-gradient(to top left,#000 30%,transparent 80%);
+}
+
+.login-cabecera{
+display:flex;
+justify-content:space-between;
+align-items:flex-start;
+gap:16px;
+flex-wrap:wrap;
 }
 
 .marca{
 display:flex;
 align-items:center;
-gap:11px;
-padding:0 6px;
+gap:12px;
 }
 
 .marca-logo{
-width:44px;
-height:44px;
+width:50px;
+height:50px;
 flex-shrink:0;
 }
 
 .marca-nombre{
-font-size:17px;
-font-weight:700;
-line-height:1.1;
+font-family:var(--serif);
+font-size:26px;
+font-weight:600;
+line-height:1;
 color:#ffffff;
-}
-
-.marca-nombre span{
-color:var(--verde-300);
+letter-spacing:.2px;
 }
 
 .marca-sub{
-font-size:11px;
-color:#a9c4b7;
-margin-top:3px;
+font-size:11.5px;
+color:#c9c3b0;
+margin-top:5px;
+}
+
+.pildora{
+display:inline-flex;
+align-items:center;
+gap:8px;
+padding:7px 13px;
+border-radius:30px;
+border:1px solid rgba(212,169,80,.55);
+background:rgba(212,169,80,.08);
+font-size:10.5px;
+font-weight:700;
+letter-spacing:1.6px;
+text-transform:uppercase;
+color:var(--oro-claro);
+}
+
+.pildora svg{
+width:15px;
+height:15px;
+fill:none;
+stroke:var(--oro);
+stroke-width:1.8;
+stroke-linecap:round;
+stroke-linejoin:round;
+}
+
+.login-portada h1{
+font-family:var(--serif);
+font-weight:600;
+font-size:clamp(40px,4.6vw,66px);
+line-height:1.02;
+margin:auto 0 0;
+color:#ffffff;
+max-width:560px;
+}
+
+.login-portada h1 em{
+color:var(--oro);
+}
+
+.subtitle{
+color:#d8d2bf;
+font-size:15px;
+line-height:1.6;
+margin:0;
+max-width:470px;
+}
+
+.login-ventajas{
+list-style:none;
+margin:6px 0 0;
+padding:0;
+display:grid;
+gap:16px;
+max-width:420px;
+}
+
+.login-ventajas li{
+display:flex;
+align-items:center;
+gap:14px;
+}
+
+.login-ventajas svg{
+width:38px;
+height:38px;
+flex-shrink:0;
+fill:none;
+stroke:var(--oro);
+stroke-width:1.5;
+stroke-linecap:round;
+stroke-linejoin:round;
+}
+
+.login-ventajas strong{
+display:block;
+font-size:14px;
+color:#ffffff;
+}
+
+.login-ventajas span{
+display:block;
+font-size:12.5px;
+color:#bdb7a3;
+margin-top:2px;
+}
+
+.lema{
+font-family:var(--script);
+font-size:38px;
+line-height:1.05;
+color:var(--oro-claro);
+transform:rotate(-4deg);
+transform-origin:left bottom;
+margin-top:auto;
+text-shadow:0 2px 14px rgba(0,0,0,.6);
+}
+
+.login-panel{
+flex:1;
+display:flex;
+align-items:center;
+justify-content:center;
+}
+
+.login-tarjeta{
+width:100%;
+max-width:430px;
+padding:36px 34px 30px;
+border-radius:22px;
+background:linear-gradient(160deg,#131d18,#0c1310);
+border:1px solid rgba(212,169,80,.30);
+box-shadow:0 24px 60px rgba(0,0,0,.55);
+color:#f1ede2;
+}
+
+.login-tarjeta h2{
+font-family:var(--serif);
+font-size:36px;
+font-weight:600;
+margin:0;
+color:#ffffff;
+}
+
+.login-tarjeta > p{
+color:#b7b19e;
+font-size:13.5px;
+line-height:1.6;
+margin:8px 0 24px;
+}
+
+.campo-icono{
+position:relative;
+margin-bottom:14px;
+}
+
+.campo-icono > svg{
+position:absolute;
+left:14px;
+top:50%;
+transform:translateY(-50%);
+width:18px;
+height:18px;
+fill:none;
+stroke:var(--oro);
+stroke-width:1.8;
+stroke-linecap:round;
+stroke-linejoin:round;
+pointer-events:none;
+}
+
+.login-tarjeta input[type=email],
+.login-tarjeta input[type=password],
+.login-tarjeta input[type=text]{
+background:rgba(255,255,255,.04);
+border:1px solid rgba(255,255,255,.14);
+color:#ffffff;
+padding-left:44px;
+padding-right:44px;
+}
+
+.login-tarjeta input::placeholder{
+color:#8c8775;
+}
+
+.login-tarjeta input:focus{
+border-color:var(--oro);
+box-shadow:0 0 0 3px rgba(212,169,80,.18);
+}
+
+.ver-clave{
+position:absolute;
+right:8px;
+top:50%;
+transform:translateY(-50%);
+border:0;
+background:transparent;
+padding:6px;
+cursor:pointer;
+color:#a9a390;
+border-radius:6px;
+}
+
+.ver-clave svg{
+width:18px;
+height:18px;
+fill:none;
+stroke:currentColor;
+stroke-width:1.8;
+stroke-linecap:round;
+stroke-linejoin:round;
+display:block;
+}
+
+.ver-clave:focus-visible{
+outline:2px solid var(--oro);
+}
+
+.login-opciones{
+display:flex;
+justify-content:space-between;
+align-items:center;
+gap:10px;
+font-size:12.5px;
+margin:2px 0 4px;
+}
+
+.login-opciones label{
+display:flex;
+align-items:center;
+gap:8px;
+color:#d8d2bf;
+cursor:pointer;
+margin:0;
+font-weight:500;
+}
+
+.login-opciones input{
+width:16px;
+height:16px;
+accent-color:var(--oro);
+}
+
+.enlace{
+border:0;
+background:none;
+padding:0;
+font-family:inherit;
+font-size:12.5px;
+font-weight:600;
+color:var(--oro-claro);
+cursor:pointer;
+}
+
+.enlace:hover{
+text-decoration:underline;
+}
+
+.login-tarjeta .btn{
+background:linear-gradient(100deg,#b8923d,#e0bb68 50%,#b08934);
+color:#1a1405;
+box-shadow:0 8px 22px rgba(212,169,80,.25);
+}
+
+.login-tarjeta .btn-metamask{
+background:transparent;
+color:#ffffff;
+border:1.5px solid rgba(212,169,80,.7);
+box-shadow:none;
+}
+
+.login-tarjeta .btn-metamask:hover{
+background:rgba(212,169,80,.10);
+}
+
+.btn-metamask svg{
+width:22px;
+height:22px;
+}
+
+.separador{
+display:flex;
+align-items:center;
+gap:12px;
+color:#8c8775;
+font-size:12px;
+margin:18px 0 4px;
+}
+
+.separador::before,.separador::after{
+content:"";
+flex:1;
+border-top:1px solid rgba(255,255,255,.12);
+}
+
+.login-tarjeta .estado.error{
+background:rgba(184,68,58,.16);
+border-color:rgba(232,140,128,.5);
+color:#ffd4cf;
+}
+
+.login-tarjeta .estado.info{
+background:rgba(212,169,80,.10);
+border-color:rgba(212,169,80,.4);
+color:#f0dca8;
+}
+
+.login-pie{
+text-align:center;
+font-size:12px;
+color:#8c8775;
+margin:20px 0 0 !important;
+}
+
+.login-pie strong{
+color:var(--oro-claro);
+}
+
+/* =====================================================
+   MENÚ LATERAL
+===================================================== */
+
+.sidebar{
+width:268px;
+flex-shrink:0;
+position:sticky;
+top:0;
+align-self:flex-start;
+height:100vh;
+overflow-y:auto;
+display:flex;
+flex-direction:column;
+gap:12px;
+padding:18px 14px 14px;
+color:#e8e3d3;
+background:
+radial-gradient(ellipse at 20% 100%,rgba(212,169,80,.07) 0%,transparent 55%),
+linear-gradient(180deg,var(--carbon-950),var(--carbon-900));
+border-right:1px solid rgba(212,169,80,.16);
+scrollbar-width:thin;
+scrollbar-color:#2a3a32 transparent;
+}
+
+.sidebar .marca{
+padding:0 8px;
+}
+
+.sidebar .marca-logo{
+width:42px;
+height:42px;
+}
+
+.sidebar .marca-nombre{
+font-size:21px;
 }
 
 .menu{
 display:flex;
 flex-direction:column;
-gap:4px;
+gap:3px;
 }
 
 .menu button{
 display:flex;
 align-items:center;
-gap:12px;
+gap:13px;
 width:100%;
 border:0;
-border-radius:10px;
-padding:11px 12px;
+border-radius:11px;
+padding:8px 12px;
 background:transparent;
-color:#d6e6dd;
+color:#d9d4c3;
 font-family:inherit;
 font-size:13.5px;
 font-weight:500;
@@ -127,14 +534,20 @@ transition:background .15s,color .15s;
 }
 
 .menu button:hover{
-background:rgba(255,255,255,.07);
+background:rgba(212,169,80,.09);
 color:#ffffff;
 }
 
 .menu button.active{
-background:linear-gradient(100deg,var(--verde-600),var(--verde-700));
-color:#ffffff;
-box-shadow:0 6px 16px rgba(0,0,0,.25);
+background:linear-gradient(100deg,#a8832f,#d9b45c 55%,#b08934);
+color:#171204;
+font-weight:700;
+box-shadow:0 6px 16px rgba(0,0,0,.35);
+}
+
+.menu button:focus-visible{
+outline:2px solid var(--oro);
+outline-offset:2px;
 }
 
 .menu-icon{
@@ -151,128 +564,205 @@ width:19px;
 height:19px;
 fill:none;
 stroke:currentColor;
-stroke-width:1.8;
+stroke-width:1.7;
 stroke-linecap:round;
 stroke-linejoin:round;
 }
 
+.menu button:not(.active) .menu-icon{
+color:var(--oro);
+}
+
 .menu-grupo{
 font-size:10px;
-letter-spacing:1.4px;
+font-weight:700;
+letter-spacing:1.6px;
 text-transform:uppercase;
-color:#7f9d8f;
-padding:14px 12px 4px;
+color:#8f8a76;
+padding:10px 12px 3px;
 }
 
-.sidebar-pie{
+.tarjeta-wallet{
 margin-top:auto;
-border:1px solid rgba(255,255,255,.1);
-border-radius:12px;
-padding:14px;
-background:rgba(255,255,255,.04);
+border:1px solid rgba(212,169,80,.34);
+border-radius:13px;
+padding:10px 12px;
+background:rgba(255,255,255,.03);
+display:grid;
+gap:8px;
 }
 
-.sidebar-pie strong{
+.wallet-fila{
+display:flex;
+align-items:center;
+gap:11px;
+}
+
+.wallet-fila > svg{
+width:26px;
+height:26px;
+flex-shrink:0;
+fill:none;
+stroke:var(--oro);
+stroke-width:1.5;
+stroke-linecap:round;
+stroke-linejoin:round;
+}
+
+.wallet-fila strong{
 display:block;
-font-size:12px;
+font-size:12.5px;
 color:#ffffff;
 }
 
-.sidebar-pie span{
+.wallet-fila span{
 display:block;
+font-family:var(--mono);
 font-size:11px;
-color:#a9c4b7;
-margin-top:3px;
+color:#b7b19e;
+margin-top:2px;
 }
 
-.lema{
-font-family:"Caveat","Segoe Script",cursive;
-font-size:22px;
-color:#cfe6d8;
-transform:rotate(-6deg);
-padding:0 8px 6px;
-line-height:1.1;
+.wallet-fila .punto{
+margin-left:auto;
+width:8px;
+height:8px;
+border-radius:50%;
+background:#6b6a5f;
+flex-shrink:0;
+}
+
+.tarjeta-wallet.conectada .punto{
+background:var(--verde-300);
+box-shadow:0 0 9px var(--verde-300);
+}
+
+.tarjeta-wallet .btn-chico{
+margin:0;
+width:100%;
+background:transparent;
+color:var(--oro-claro);
+border:1px solid rgba(212,169,80,.6);
+}
+
+.tarjeta-wallet .btn-chico:hover{
+background:rgba(212,169,80,.12);
+}
+
+.sidebar-paisaje{
+position:relative;
+border-radius:14px;
+overflow:hidden;
+flex:1 1 84px;
+min-height:84px;
+max-height:150px;
+padding:12px 14px;
+display:flex;
+align-items:flex-end;
+background:
+linear-gradient(180deg,rgba(6,9,10,.05) 0%,rgba(6,9,10,.82) 100%),
+url("encabezado.jpg") 85% 60%/cover no-repeat,
+var(--carbon-700);
+border:1px solid rgba(212,169,80,.18);
+}
+
+.sidebar-paisaje .lema{
+font-size:25px;
+margin:0;
+}
+
+.sidebar-paisaje svg{
+position:absolute;
+right:12px;
+bottom:12px;
+width:46px;
+height:30px;
+fill:none;
+stroke:var(--oro);
+stroke-width:1.6;
+stroke-linejoin:round;
+stroke-linecap:round;
+opacity:.9;
 }
 
 /* =====================================================
-   CONTENIDO PRINCIPAL
+   CONTENIDO PRINCIPAL · BARRA SUPERIOR
 ===================================================== */
 
 .main{
 flex:1;
 min-width:0;
-padding:26px 32px 40px;
+padding:18px 28px 44px;
 }
 
-/* Encabezado con foto: encabezado.jpg en la misma carpeta.
-   Si no existe, queda el fondo verde. */
-.topbar{
-position:relative;
-border-radius:18px;
-overflow:hidden;
-padding:30px 34px;
-margin-bottom:24px;
-color:#ffffff;
-background:
-linear-gradient(95deg,rgba(9,33,25,.95) 0%,rgba(9,33,25,.78) 45%,rgba(9,33,25,.25) 100%),
-url("encabezado.jpg") center 35%/cover no-repeat,
-linear-gradient(120deg,var(--verde-800),var(--verde-700));
+.barra{
+position:sticky;
+top:10px;
+z-index:30;
 display:flex;
-justify-content:space-between;
-align-items:flex-end;
-gap:20px;
-flex-wrap:wrap;
-box-shadow:var(--sombra);
-min-height:170px;
+align-items:center;
+gap:14px;
+padding:9px 12px;
+margin-bottom:20px;
+border-radius:16px;
+background:rgba(255,255,255,.94);
+backdrop-filter:blur(8px);
+border:1px solid var(--borde);
+box-shadow:0 6px 22px rgba(8,16,12,.08);
 }
 
-.eyebrow{
-font-size:11px;
-font-weight:600;
-letter-spacing:2px;
-text-transform:uppercase;
-color:var(--verde-300);
-margin-bottom:8px;
-}
-
-h1{
-font-size:30px;
-line-height:1.15;
-margin:0;
-font-weight:700;
-text-wrap:balance;
-max-width:620px;
-}
-
-h1 span{
-color:var(--verde-300);
-}
-
-.subtitle{
-color:#d3e4da;
-font-size:14px;
-margin:10px 0 0;
-max-width:560px;
-line-height:1.55;
-}
-
-.status{
+.buscador{
+flex:1;
+min-width:0;
 display:flex;
+align-items:center;
 gap:10px;
-flex-wrap:wrap;
+padding:0 14px;
+border-radius:11px;
+background:#f4f5f2;
+border:1px solid transparent;
 }
 
-.status span{
+.buscador:focus-within{
+border-color:var(--oro);
+box-shadow:0 0 0 3px rgba(212,169,80,.2);
+background:#ffffff;
+}
+
+.buscador svg{
+width:18px;
+height:18px;
+flex-shrink:0;
+fill:none;
+stroke:var(--tenue);
+stroke-width:1.8;
+stroke-linecap:round;
+}
+
+.buscador input{
+border:0;
+background:transparent;
+box-shadow:none;
+padding:12px 0;
+font-size:14px;
+}
+
+.buscador input:focus{
+box-shadow:none;
+}
+
+.pastilla-red{
 display:inline-flex;
 align-items:center;
 gap:8px;
-padding:9px 14px;
+padding:8px 13px;
 border-radius:30px;
-background:rgba(255,255,255,.1);
-border:1px solid rgba(255,255,255,.22);
-backdrop-filter:blur(6px);
+background:#f4f5f2;
+border:1px solid var(--borde);
 font-size:12px;
-color:#ffffff;
+font-weight:600;
+color:var(--texto);
+white-space:nowrap;
 }
 
 .dot{
@@ -280,12 +770,192 @@ display:inline-block;
 width:8px;
 height:8px;
 border-radius:50%;
-background:var(--verde-300);
-box-shadow:0 0 10px var(--verde-300);
+background:var(--verde-600);
+box-shadow:0 0 8px rgba(47,138,95,.7);
+}
+
+.pastilla-red.sin-red .dot{
+background:#e2a03f;
+box-shadow:0 0 8px #e2a03f;
+}
+
+.campana-wrap{
+position:relative;
+}
+
+.icono-btn{
+position:relative;
+width:42px;
+height:42px;
+display:flex;
+align-items:center;
+justify-content:center;
+border:1px solid var(--borde);
+border-radius:12px;
+background:#ffffff;
+color:var(--texto);
+cursor:pointer;
+}
+
+.icono-btn:hover{
+border-color:var(--oro);
+}
+
+.icono-btn:focus-visible{
+outline:2px solid var(--oro);
+outline-offset:2px;
+}
+
+.icono-btn svg{
+width:20px;
+height:20px;
+fill:none;
+stroke:currentColor;
+stroke-width:1.8;
+stroke-linecap:round;
+stroke-linejoin:round;
+}
+
+.insignia{
+position:absolute;
+top:-5px;
+right:-5px;
+min-width:19px;
+height:19px;
+padding:0 5px;
+border-radius:10px;
+background:var(--rojo);
+color:#ffffff;
+font-size:11px;
+font-weight:800;
+display:flex;
+align-items:center;
+justify-content:center;
+border:2px solid #ffffff;
+}
+
+.panel-alertas{
+position:absolute;
+right:0;
+top:52px;
+width:min(380px,90vw);
+max-height:70vh;
+overflow-y:auto;
+background:#ffffff;
+border:1px solid var(--borde);
+border-radius:14px;
+box-shadow:0 20px 50px rgba(8,16,12,.22);
+padding:6px;
+}
+
+.panel-alertas[hidden]{
+display:none;
+}
+
+.panel-alertas-cab{
+padding:10px 12px 6px;
+font-family:var(--serif);
+font-size:20px;
+font-weight:700;
+}
+
+.usuario{
+display:flex;
+align-items:center;
+gap:10px;
+padding-left:6px;
+border-left:1px solid var(--borde);
+}
+
+.avatar{
+width:40px;
+height:40px;
+flex-shrink:0;
+border-radius:50%;
+display:flex;
+align-items:center;
+justify-content:center;
+font-weight:800;
+font-size:13px;
+color:#171204;
+background:linear-gradient(135deg,#e7c777,#b08934);
+border:2px solid #ffffff;
+box-shadow:0 0 0 1.5px var(--oro);
+}
+
+.usuario-datos{
+min-width:0;
+line-height:1.25;
+}
+
+.usuario-datos strong{
+display:block;
+font-size:13px;
+}
+
+.usuario-datos span{
+display:block;
+font-size:11.5px;
+color:var(--tenue);
+max-width:150px;
+overflow:hidden;
+text-overflow:ellipsis;
+white-space:nowrap;
+}
+
+.btn-salir{
+border:1px solid var(--borde);
+background:#ffffff;
+color:var(--texto);
+font-family:inherit;
+font-size:12px;
+font-weight:600;
+padding:7px 11px;
+border-radius:9px;
+cursor:pointer;
+flex-shrink:0;
+}
+
+.btn-salir:hover{
+border-color:var(--oro);
+}
+
+.aviso-flotante{
+position:fixed;
+right:22px;
+bottom:22px;
+z-index:90;
+max-width:min(380px,calc(100vw - 32px));
+padding:13px 16px;
+border-radius:12px;
+font-size:13px;
+font-weight:600;
+line-height:1.45;
+background:var(--carbon-800);
+color:#ffffff;
+border:1px solid rgba(212,169,80,.5);
+box-shadow:0 14px 40px rgba(0,0,0,.35);
+opacity:0;
+transform:translateY(10px);
+pointer-events:none;
+transition:opacity .2s,transform .2s;
+}
+
+.aviso-flotante.visible{
+opacity:1;
+transform:none;
+}
+
+.aviso-flotante.error{
+border-color:#e88c80;
+}
+
+@media (prefers-reduced-motion:reduce){
+.aviso-flotante{transition:none}
 }
 
 /* =====================================================
-   SECCIONES Y TARJETAS
+   SECCIONES, TARJETAS Y FORMULARIOS
 ===================================================== */
 
 .section{
@@ -316,16 +986,17 @@ margin-bottom:20px;
 }
 
 .card h2{
-font-size:20px;
+font-family:var(--serif);
+font-size:26px;
+font-weight:700;
 margin:0;
-font-weight:600;
+line-height:1.1;
 }
 
 .card h3{
 font-size:15px;
-font-weight:600;
+font-weight:700;
 margin:20px 0 10px;
-color:var(--texto);
 }
 
 .card p{
@@ -343,32 +1014,36 @@ margin-bottom:20px;
 }
 
 .number{
-width:46px;
-height:46px;
+font-variant-numeric:lining-nums;
+width:48px;
+height:48px;
 flex-shrink:0;
-border-radius:12px;
+border-radius:13px;
 display:flex;
 align-items:center;
 justify-content:center;
-font-size:18px;
+font-family:var(--serif);
+font-size:24px;
 font-weight:700;
-color:#ffffff;
-background:linear-gradient(135deg,var(--verde-600),var(--verde-800));
-box-shadow:0 6px 14px rgba(29,90,66,.28);
+color:#171204;
+background:linear-gradient(135deg,#ecd08a,#b08934);
+box-shadow:0 6px 14px rgba(168,131,47,.3);
 }
 
-.section-title h2{
-font-size:20px;
+.number svg{
+width:24px;
+height:24px;
+fill:none;
+stroke:currentColor;
+stroke-width:1.8;
+stroke-linecap:round;
+stroke-linejoin:round;
 }
 
 .section-title p{
-margin:3px 0 0;
+margin:4px 0 0;
 font-size:13px;
 }
-
-/* =====================================================
-   FORMULARIOS Y BOTONES
-===================================================== */
 
 .form-grid{
 display:grid;
@@ -376,10 +1051,10 @@ grid-template-columns:1fr 1fr;
 gap:14px;
 }
 
-.field label{
+.field label,label{
 display:block;
 font-size:12.5px;
-font-weight:600;
+font-weight:700;
 color:var(--texto);
 margin-bottom:7px;
 }
@@ -389,8 +1064,8 @@ width:100%;
 font-family:inherit;
 font-size:14px;
 color:var(--texto);
-background:#fbfdfc;
-border:1px solid #d5e0da;
+background:#fbfcfa;
+border:1px solid #d6ddd6;
 border-radius:10px;
 padding:12px 14px;
 outline:none;
@@ -398,12 +1073,12 @@ transition:border-color .15s,box-shadow .15s;
 }
 
 input::placeholder,textarea::placeholder{
-color:#93a69c;
+color:#94a399;
 }
 
 input:focus,select:focus,textarea:focus{
-border-color:var(--verde-600);
-box-shadow:0 0 0 3px rgba(42,117,82,.15);
+border-color:var(--oro);
+box-shadow:0 0 0 3px rgba(212,169,80,.2);
 }
 
 textarea{
@@ -420,27 +1095,27 @@ width:100%;
 margin-top:14px;
 padding:13px 18px;
 border:0;
-border-radius:10px;
+border-radius:11px;
 font-family:inherit;
 font-size:14px;
-font-weight:600;
-color:#ffffff;
+font-weight:700;
+color:#171204;
 cursor:pointer;
-background:linear-gradient(100deg,var(--verde-600),var(--verde-700));
-box-shadow:0 6px 16px rgba(29,90,66,.25);
+background:linear-gradient(100deg,#b8923d,#e0bb68 50%,#b08934);
+box-shadow:0 6px 16px rgba(168,131,47,.28);
 transition:transform .1s,filter .15s;
 }
 
 .btn:hover{
-filter:brightness(1.08);
+filter:brightness(1.07);
 }
 
 .btn:active{
 transform:translateY(1px);
 }
 
-.btn:focus-visible,.menu button:focus-visible{
-outline:3px solid var(--verde-300);
+.btn:focus-visible{
+outline:3px solid rgba(212,169,80,.5);
 outline-offset:2px;
 }
 
@@ -452,18 +1127,58 @@ filter:none;
 
 .btn-red{
 background:linear-gradient(100deg,#c4513f,#9e3a30);
-box-shadow:0 6px 16px rgba(158,58,48,.25);
+color:#ffffff;
+box-shadow:0 6px 16px rgba(158,58,48,.28);
+}
+
+.btn-green{
+background:linear-gradient(100deg,#3a8f66,#2a7552);
+color:#ffffff;
+box-shadow:0 6px 16px rgba(42,117,82,.25);
 }
 
 .btn-gray{
 background:#ffffff;
-color:var(--verde-700);
-border:1.5px solid var(--verde-700);
+color:var(--texto);
+border:1.5px solid #cfd6cf;
 box-shadow:none;
 }
 
-.btn-green{
-background:linear-gradient(100deg,#3a8f66,var(--verde-600));
+.btn-gray:hover{
+border-color:var(--oro);
+}
+
+.btn-chico{
+width:auto;
+margin:0;
+padding:9px 14px;
+font-size:12.5px;
+border-radius:9px;
+}
+
+.btn-oro{
+display:inline-flex;
+align-items:center;
+gap:8px;
+padding:12px 20px;
+border:0;
+border-radius:10px;
+font-family:inherit;
+font-size:14px;
+font-weight:800;
+color:#171204;
+cursor:pointer;
+background:linear-gradient(100deg,#e7c777,#d4a950 55%,#b8923d);
+box-shadow:0 8px 22px rgba(0,0,0,.3);
+}
+
+.btn-oro:hover{
+filter:brightness(1.07);
+}
+
+.btn-oro:focus-visible{
+outline:3px solid rgba(255,255,255,.6);
+outline-offset:2px;
 }
 
 hr{
@@ -471,10 +1186,6 @@ border:0;
 border-top:1px solid var(--borde);
 margin:24px 0;
 }
-
-/* =====================================================
-   MENSAJES DE ESTADO
-===================================================== */
 
 .estado{
 display:none;
@@ -503,9 +1214,9 @@ color:#8d2f26;
 
 .info{
 display:block;
-background:#eef5fb;
-border:1px solid #bdd6ea;
-color:#285473;
+background:var(--oro-fondo);
+border:1px solid #e6d29b;
+color:#6b5416;
 }
 
 /* =====================================================
@@ -514,18 +1225,17 @@ color:#285473;
 
 .wallet-title{
 font-size:12.5px;
-font-weight:600;
+font-weight:700;
 margin:18px 0 8px;
 }
 
 .wallet{
-background:#f6f9f7;
+background:#f6f8f5;
 border:1px solid var(--borde);
 border-radius:10px;
 padding:12px 14px;
 font-family:var(--mono);
 font-size:12.5px;
-color:var(--texto);
 white-space:pre-wrap;
 overflow-wrap:anywhere;
 }
@@ -535,10 +1245,10 @@ display:flex;
 flex-direction:column;
 align-items:center;
 text-align:center;
-padding:26px;
+padding:28px;
 border-radius:14px;
-background:linear-gradient(135deg,#f6faf8,#edf5f0);
-border:1px solid var(--borde);
+background:linear-gradient(135deg,#fbf8ef,#f4f1e4);
+border:1px solid #eadfbd;
 }
 
 .connection-circle{
@@ -549,7 +1259,7 @@ display:flex;
 align-items:center;
 justify-content:center;
 background:#ffffff;
-border:2px solid #cfdcd5;
+border:2px solid #d8cba0;
 margin-bottom:14px;
 }
 
@@ -557,14 +1267,14 @@ margin-bottom:14px;
 width:36px;
 height:36px;
 fill:none;
-stroke:#8aa497;
+stroke:#a8985f;
 stroke-width:1.6;
 stroke-linejoin:round;
 }
 
 .connection-circle.connected{
 border-color:var(--verde-600);
-box-shadow:0 0 0 6px rgba(42,117,82,.12);
+box-shadow:0 0 0 6px rgba(47,138,95,.13);
 animation:pulseConnection 2.4s ease-in-out infinite;
 }
 
@@ -573,8 +1283,8 @@ stroke:var(--verde-600);
 }
 
 @keyframes pulseConnection{
-0%,100%{box-shadow:0 0 0 6px rgba(42,117,82,.12)}
-50%{box-shadow:0 0 0 12px rgba(42,117,82,.04)}
+0%,100%{box-shadow:0 0 0 6px rgba(47,138,95,.13)}
+50%{box-shadow:0 0 0 12px rgba(47,138,95,.04)}
 }
 
 @media (prefers-reduced-motion:reduce){
@@ -585,8 +1295,9 @@ stroke:var(--verde-600);
 display:flex;
 align-items:center;
 gap:8px;
-font-size:17px;
-margin:0;
+font-family:var(--serif);
+font-size:24px !important;
+margin:0 !important;
 }
 
 .connection-description{
@@ -610,7 +1321,7 @@ box-shadow:0 0 8px var(--verde-300);
 ===================================================== */
 
 .lote-info{
-background:#f8fbf9;
+background:#fafbf9;
 border:1px solid var(--borde);
 border-radius:12px;
 padding:16px 18px;
@@ -620,9 +1331,10 @@ overflow-wrap:anywhere;
 
 .lote-info h3{
 margin:0 0 10px;
-font-size:14px;
-letter-spacing:.5px;
-color:var(--verde-700);
+font-size:12.5px;
+letter-spacing:1.2px;
+text-transform:uppercase;
+color:var(--oro-oscuro);
 }
 
 .lote-info p{
@@ -631,12 +1343,8 @@ color:var(--texto);
 font-size:13.5px;
 }
 
-.lote-info strong{
-color:var(--texto);
-}
-
 .evento{
-border-left:4px solid var(--verde-600);
+border-left:4px solid var(--oro);
 background:#ffffff;
 border-top:1px solid var(--borde);
 border-right:1px solid var(--borde);
@@ -649,25 +1357,21 @@ line-height:1.75;
 overflow-wrap:anywhere;
 }
 
-.evento strong{
-color:var(--texto);
-}
-
-.eventos-title h3{
-margin-top:22px;
-}
-
 .hash{
 font-family:var(--mono);
 font-size:12px;
 word-break:break-all;
-color:#3e6b58;
+color:#6b5a2a;
 }
 
 .empty{
 text-align:center;
 color:var(--tenue);
 padding:22px;
+}
+
+.eventos-title h3{
+margin-top:22px;
 }
 
 .dashboard-grid{
@@ -693,34 +1397,34 @@ left:0;
 top:0;
 bottom:0;
 width:4px;
-background:var(--verde-600);
+background:var(--oro);
 }
 
-.metric.green::before{background:var(--verde-300)}
+.metric.green::before{background:var(--verde-600)}
 
 .metric.red::before{background:var(--rojo)}
 
 .metric-label{
 font-size:11px;
-font-weight:600;
+font-weight:700;
 letter-spacing:1px;
 text-transform:uppercase;
 color:var(--tenue);
 }
 
 .metric-value{
-font-size:30px;
+font-family:var(--serif);
+font-size:38px;
 font-weight:700;
-margin-top:6px;
+line-height:1.1;
+margin-top:4px;
 color:var(--texto);
-font-variant-numeric:tabular-nums;
+font-variant-numeric:lining-nums tabular-nums;
 }
 
 .metric.red .metric-value{color:var(--rojo)}
 
-.metric.green .metric-value{color:var(--verde-600)}
-
-/* Tablas, insignias y registro de carga */
+.metric.green .metric-value{color:var(--verde-700)}
 
 .tabla-wrap{
 overflow-x:auto;
@@ -744,10 +1448,10 @@ white-space:nowrap;
 }
 
 th{
-background:#f6f9f7;
+background:#f6f7f3;
 color:var(--tenue);
 font-size:11px;
-font-weight:600;
+font-weight:700;
 letter-spacing:.8px;
 text-transform:uppercase;
 }
@@ -761,12 +1465,25 @@ background:var(--rojo-100);
 color:#8d2f26;
 }
 
+tr.resaltada td{
+background:var(--oro-fondo);
+box-shadow:inset 0 0 0 1px var(--oro);
+}
+
+.tabla-wrap td .fuera{
+display:block;
+white-space:normal;
+max-width:240px;
+margin-top:2px;
+line-height:1.35;
+}
+
 .badge{
 display:inline-block;
 padding:3px 10px;
 border-radius:20px;
 font-size:11px;
-font-weight:600;
+font-weight:700;
 }
 
 .badge.ok{
@@ -781,6 +1498,12 @@ color:#8d2f26;
 border:1px solid #e8b0aa;
 }
 
+.badge.oro{
+background:var(--oro-fondo);
+color:#6b5416;
+border:1px solid #e6d29b;
+}
+
 .fuera{
 color:var(--tenue);
 font-size:11.5px;
@@ -788,13 +1511,13 @@ font-style:italic;
 }
 
 .registro{
-background:var(--verde-900);
+background:var(--carbon-900);
 border-radius:12px;
 padding:14px;
 font-family:var(--mono);
 font-size:12px;
 line-height:1.65;
-color:#cfe3d8;
+color:#d6d1bf;
 max-height:360px;
 overflow-y:auto;
 white-space:pre-wrap;
@@ -803,7 +1526,7 @@ margin-top:14px;
 
 .registro .rechazo{color:#ff9f93}
 
-.registro .listo{color:var(--verde-300)}
+.registro .listo{color:var(--oro-claro)}
 
 details{
 margin-top:16px;
@@ -811,13 +1534,13 @@ margin-top:16px;
 
 summary{
 cursor:pointer;
-font-weight:600;
-color:var(--verde-700);
+font-weight:700;
+color:var(--oro-oscuro);
 }
 
 pre.crudo{
-background:var(--verde-900);
-color:#cfe3d8;
+background:var(--carbon-900);
+color:#d6d1bf;
 border-radius:12px;
 padding:14px;
 font-size:12px;
@@ -825,509 +1548,32 @@ overflow-x:auto;
 max-height:380px;
 }
 
-/* =====================================================
-   INICIO: ACCESOS Y RESUMEN DE LA CADENA
-===================================================== */
-
-.accesos{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(190px,1fr));
-gap:14px;
-margin-bottom:20px;
+.avance{
+margin-top:14px;
 }
 
-.acceso{
-display:flex;
-flex-direction:column;
-gap:8px;
-text-align:left;
-background:var(--tarjeta);
-border:1px solid var(--borde);
-border-radius:14px;
-padding:18px;
-font-family:inherit;
-cursor:pointer;
-box-shadow:var(--sombra);
-transition:transform .15s,border-color .15s;
-}
-
-.acceso:hover{
-transform:translateY(-2px);
-border-color:#b9d9c6;
-}
-
-.acceso:focus-visible{
-outline:3px solid var(--verde-300);
-outline-offset:2px;
-}
-
-.acceso-icono{
-width:42px;
-height:42px;
-border-radius:11px;
-display:flex;
-align-items:center;
-justify-content:center;
-background:var(--verde-100);
-color:var(--verde-700);
-}
-
-.acceso-icono svg,.paso-icono svg{
-width:22px;
-height:22px;
-fill:none;
-stroke:currentColor;
-stroke-width:1.8;
-stroke-linecap:round;
-stroke-linejoin:round;
-}
-
-.acceso strong{
-font-size:15px;
-color:var(--texto);
-}
-
-.acceso span{
-font-size:12.5px;
-color:var(--tenue);
-line-height:1.45;
-}
-
-.cadena-pasos{
-display:flex;
-align-items:flex-start;
-justify-content:space-between;
-gap:6px;
-overflow-x:auto;
-padding:6px 2px 4px;
-}
-
-.paso{
-display:flex;
-flex-direction:column;
-align-items:center;
-gap:8px;
-min-width:76px;
-text-align:center;
-font-size:11.5px;
-color:var(--tenue);
-line-height:1.3;
-}
-
-.paso-icono{
-width:48px;
-height:48px;
-border-radius:50%;
-display:flex;
-align-items:center;
-justify-content:center;
-background:var(--verde-100);
-border:2px solid #b9dfc8;
-color:var(--verde-700);
-}
-
-.paso-flecha{
-align-self:center;
-margin-top:-22px;
-color:#9cb8aa;
-font-size:16px;
-}
-
-/* =====================================================
-   CELULAR Y PANTALLAS MEDIANAS
-===================================================== */
-
-@media(max-width:1100px){
-.sidebar{width:212px}
-.main{padding:22px}
-h1{font-size:26px}
-}
-
-@media(max-width:760px){
-
-body{display:block}
-
-.sidebar{
-position:static;
-width:100%;
-height:auto;
-min-height:0;
-padding:16px;
-gap:14px;
-}
-
-.lema,.sidebar-pie,.menu-grupo{display:none}
-
-.menu{
-flex-direction:row;
-overflow-x:auto;
-gap:6px;
-padding-bottom:4px;
-}
-
-.menu button{
-width:auto;
-white-space:nowrap;
-flex-shrink:0;
-padding:9px 12px;
-font-size:12.5px;
-}
-
-.main{padding:16px 14px 30px}
-
-.topbar{padding:22px 20px;min-height:0}
-
-h1{font-size:22px}
-
-.card{padding:18px}
-
-.section-title h2{font-size:18px}
-
-.form-grid{grid-template-columns:1fr}
-
-.dashboard-grid{grid-template-columns:1fr 1fr}
-
-.metric-value{font-size:24px}
-}
-
-@media(max-width:380px){
-.dashboard-grid{grid-template-columns:1fr}
-}
-
-/* =====================================================
-   LOGIN DEL ADMINISTRADOR
-   Mientras no hay sesión, el body lleva la clase "bloqueado"
-   y solo se ve la pantalla de ingreso.
-===================================================== */
-
-#pantallaLogin{
-display:none;
-}
-
-body.bloqueado .sidebar,
-body.bloqueado .main{
-display:none;
-}
-
-body.bloqueado #pantallaLogin{
-display:flex;
-}
-
-#pantallaLogin{
-width:100%;
-min-height:100vh;
-padding:24px;
-gap:24px;
-align-items:stretch;
-}
-
-.login-portada{
-flex:1.15;
-position:relative;
-border-radius:22px;
+.avance-barra{
+height:10px;
+border-radius:10px;
+background:var(--oro-fondo);
 overflow:hidden;
-padding:40px 44px;
-color:#ffffff;
-display:flex;
-flex-direction:column;
-gap:28px;
-background:
-linear-gradient(90deg,rgba(9,33,25,.94) 0%,rgba(9,33,25,.72) 50%,rgba(9,33,25,.15) 100%),
-url("encabezado.jpg") 78% center/cover no-repeat,
-linear-gradient(140deg,var(--verde-900),var(--verde-700));
-box-shadow:var(--sombra);
 }
 
-.login-portada .marca{
-padding:0;
-}
-
-.login-portada h1{
-font-size:38px;
-max-width:420px;
-margin-top:auto;
-}
-
-.login-portada .subtitle{
-font-size:14.5px;
-max-width:400px;
-}
-
-.login-ventajas{
-list-style:none;
-margin:0;
-padding:0;
-display:grid;
-gap:14px;
-}
-
-.login-ventajas li{
-display:flex;
-align-items:center;
-gap:12px;
-font-size:13.5px;
-color:#e3efe8;
-}
-
-.login-ventajas svg{
-width:30px;
-height:30px;
-flex-shrink:0;
-fill:none;
-stroke:var(--verde-300);
-stroke-width:1.7;
-stroke-linecap:round;
-stroke-linejoin:round;
-}
-
-.login-portada .lema{
-font-size:30px;
-transform:rotate(-6deg);
-padding:0;
-margin-top:auto;
-color:#e9f5ee;
-}
-
-.login-panel{
-flex:1;
-display:flex;
-align-items:center;
-justify-content:center;
-}
-
-.login-tarjeta{
-width:100%;
-max-width:420px;
-background:var(--tarjeta);
-border:1px solid var(--borde);
-border-radius:20px;
-padding:34px 32px;
-box-shadow:0 18px 48px rgba(16,42,32,.12);
-}
-
-.login-tarjeta h2{
-margin:0;
-font-size:24px;
-font-weight:700;
-}
-
-.login-tarjeta > p{
-color:var(--tenue);
-font-size:13.5px;
-margin:6px 0 24px;
-line-height:1.55;
-}
-
-.campo-icono{
-position:relative;
-margin-bottom:14px;
-}
-
-.campo-icono > svg{
-position:absolute;
-left:14px;
-top:50%;
-transform:translateY(-50%);
-width:18px;
-height:18px;
-fill:none;
-stroke:var(--tenue);
-stroke-width:1.8;
-stroke-linecap:round;
-stroke-linejoin:round;
-pointer-events:none;
-}
-
-.campo-icono input{
-padding-left:44px;
-padding-right:44px;
-}
-
-.ver-clave{
-position:absolute;
-right:8px;
-top:50%;
-transform:translateY(-50%);
-border:0;
-background:transparent;
-padding:6px;
-cursor:pointer;
-color:var(--tenue);
-border-radius:6px;
-}
-
-.ver-clave svg{
-width:18px;
-height:18px;
-fill:none;
-stroke:currentColor;
-stroke-width:1.8;
-stroke-linecap:round;
-stroke-linejoin:round;
+.avance-barra span{
 display:block;
+height:100%;
+width:0;
+border-radius:10px;
+background:linear-gradient(90deg,#b08934,#ecd08a);
+transition:width .4s ease;
 }
 
-.ver-clave:focus-visible{
-outline:2px solid var(--verde-600);
-}
-
-.login-opciones{
-display:flex;
-justify-content:space-between;
-align-items:center;
-gap:10px;
+.avance-texto{
 font-size:12.5px;
-margin-bottom:4px;
+font-weight:700;
+color:var(--oro-oscuro);
+margin-top:7px;
 }
-
-.login-opciones label{
-display:flex;
-align-items:center;
-gap:8px;
-color:var(--texto);
-cursor:pointer;
-}
-
-.login-opciones input{
-width:16px;
-height:16px;
-accent-color:var(--verde-600);
-}
-
-.enlace{
-border:0;
-background:none;
-padding:0;
-font-family:inherit;
-font-size:12.5px;
-font-weight:500;
-color:var(--verde-600);
-cursor:pointer;
-}
-
-.enlace:hover{
-text-decoration:underline;
-}
-
-.separador{
-display:flex;
-align-items:center;
-gap:12px;
-color:var(--tenue);
-font-size:12px;
-margin:18px 0 4px;
-}
-
-.separador::before,.separador::after{
-content:"";
-flex:1;
-border-top:1px solid var(--borde);
-}
-
-.btn-metamask{
-background:#ffffff;
-color:var(--texto);
-border:1.5px solid var(--verde-700);
-box-shadow:none;
-}
-
-.btn-metamask svg{
-width:22px;
-height:22px;
-}
-
-.login-pie{
-text-align:center;
-font-size:12px;
-color:var(--tenue);
-margin-top:20px;
-}
-
-.login-pie strong{
-color:var(--verde-700);
-}
-
-.sesion{
-display:flex;
-align-items:center;
-justify-content:space-between;
-gap:8px;
-margin-top:10px;
-padding-top:10px;
-border-top:1px solid rgba(255,255,255,.1);
-}
-
-.sesion span{
-margin:0 !important;
-overflow:hidden;
-text-overflow:ellipsis;
-white-space:nowrap;
-}
-
-.btn-salir{
-border:1px solid rgba(255,255,255,.25);
-background:transparent;
-color:#ffffff;
-font-family:inherit;
-font-size:11.5px;
-padding:5px 10px;
-border-radius:8px;
-cursor:pointer;
-flex-shrink:0;
-}
-
-.btn-salir:hover{
-background:rgba(255,255,255,.1);
-}
-
-@media(max-width:900px){
-
-#pantallaLogin{
-flex-direction:column;
-padding:14px;
-}
-
-.login-portada{
-padding:26px 22px;
-gap:18px;
-flex:none;
-}
-
-.login-portada h1{font-size:28px;margin-top:8px}
-
-.login-ventajas,.login-portada .lema{display:none}
-
-.login-tarjeta{padding:26px 20px}
-}
-
-/* =====================================================
-   EXPERIENCIA DE USO
-===================================================== */
-
-/* Fuera de Inicio, la franja superior se vuelve una barra compacta */
-
-body:not([data-seccion="inicio"]) .topbar{
-min-height:0;
-padding:14px 22px;
-align-items:center;
-margin-bottom:18px;
-}
-
-body:not([data-seccion="inicio"]) .topbar .eyebrow,
-body:not([data-seccion="inicio"]) .topbar .subtitle{
-display:none;
-}
-
-body:not([data-seccion="inicio"]) .topbar h1{
-font-size:18px;
-}
-
-.status span.sin-red .dot{
-background:#e2a03f;
-box-shadow:0 0 10px #e2a03f;
-}
-
-/* Botón ocupado */
 
 .btn.cargando{
 position:relative;
@@ -1344,14 +1590,14 @@ width:18px;
 height:18px;
 margin:-9px 0 0 -9px;
 border-radius:50%;
-border:2.5px solid rgba(255,255,255,.45);
-border-top-color:#ffffff;
+border:2.5px solid rgba(23,18,4,.3);
+border-top-color:#171204;
 animation:girar .8s linear infinite;
 }
 
-.btn-gray.cargando::after{
-border-color:rgba(29,90,66,.25);
-border-top-color:var(--verde-700);
+.btn-red.cargando::after,.btn-green.cargando::after{
+border-color:rgba(255,255,255,.45);
+border-top-color:#ffffff;
 }
 
 @keyframes girar{
@@ -1360,45 +1606,6 @@ to{transform:rotate(360deg)}
 
 @media (prefers-reduced-motion:reduce){
 .btn.cargando::after{animation-duration:2.4s}
-}
-
-/* Avance de la carga del lote */
-
-.avance{
-margin-top:14px;
-}
-
-.avance-barra{
-height:10px;
-border-radius:10px;
-background:var(--verde-100);
-overflow:hidden;
-}
-
-.avance-barra span{
-display:block;
-height:100%;
-width:0;
-border-radius:10px;
-background:linear-gradient(90deg,var(--verde-600),var(--verde-300));
-transition:width .4s ease;
-}
-
-.avance-texto{
-font-size:12.5px;
-font-weight:600;
-color:var(--verde-700);
-margin-top:7px;
-}
-
-/* Tablas: el nombre interno va debajo del código, sin ensanchar la tabla */
-
-.tabla-wrap td .fuera{
-display:block;
-white-space:normal;
-max-width:240px;
-margin-top:2px;
-line-height:1.35;
 }
 
 /* Hacia atrás: caja y despacho lado a lado, tarjeta por canal */
@@ -1439,18 +1646,19 @@ justify-content:space-between;
 align-items:baseline;
 gap:10px;
 padding:12px 16px;
-background:var(--verde-100);
-border-bottom:1px solid var(--borde);
+background:var(--carbon-800);
+color:#ffffff;
 }
 
 .canal-card header strong{
-color:var(--verde-700);
-font-size:15px;
+font-family:var(--serif);
+font-size:20px;
+color:var(--oro-claro);
 }
 
 .canal-card header span{
 font-size:12px;
-color:var(--tenue);
+color:#c9c3b0;
 font-variant-numeric:tabular-nums;
 }
 
@@ -1466,7 +1674,7 @@ line-height:1.5;
 
 .datos dt{
 color:var(--tenue);
-font-weight:600;
+font-weight:700;
 font-size:11.5px;
 text-transform:uppercase;
 letter-spacing:.4px;
@@ -1488,7 +1696,7 @@ display:block;
 margin-top:auto;
 padding:12px 16px 14px;
 border-top:1px solid var(--borde);
-background:#fbfdfc;
+background:#fbfcfa;
 }
 
 .curva-titulo{
@@ -1497,8 +1705,7 @@ justify-content:space-between;
 align-items:center;
 gap:8px;
 font-size:12px;
-font-weight:600;
-color:var(--texto);
+font-weight:700;
 margin-bottom:6px;
 }
 
@@ -1528,15 +1735,836 @@ font-family:var(--fuente);
 
 .mini-curva .limite-texto{
 fill:var(--ambar);
-font-weight:600;
+font-weight:700;
 }
 
 .mini-curva .valor{
 font-size:10.5px;
-font-weight:700;
+font-weight:800;
 fill:var(--texto);
 font-family:var(--fuente);
 }
+
+/* =====================================================
+   INICIO · PORTADA, ACCESOS, CADENA Y PANELES
+===================================================== */
+
+.hero{
+position:relative;
+isolation:isolate;
+overflow:hidden;
+border-radius:20px;
+padding:40px 44px;
+margin-bottom:20px;
+min-height:300px;
+display:flex;
+justify-content:space-between;
+align-items:flex-end;
+gap:24px;
+flex-wrap:wrap;
+color:#ffffff;
+border:1px solid rgba(212,169,80,.28);
+background:
+linear-gradient(95deg,rgba(6,9,10,.96) 0%,rgba(6,9,10,.82) 42%,rgba(6,9,10,.22) 100%),
+url("encabezado.jpg") 80% 32%/cover no-repeat,
+var(--carbon-800);
+box-shadow:var(--sombra);
+}
+
+/* Foto opcional de un corte (corte.jpg) a la derecha */
+.hero::after{
+content:"";
+position:absolute;
+top:0;
+right:0;
+bottom:0;
+width:56%;
+z-index:-1;
+background:url("corte.jpg") center/cover no-repeat;
+-webkit-mask-image:linear-gradient(to right,transparent 0%,#000 55%);
+mask-image:linear-gradient(to right,transparent 0%,#000 55%);
+}
+
+.hero-texto{
+max-width:560px;
+display:grid;
+gap:14px;
+justify-items:start;
+}
+
+.hero h1{
+font-family:var(--serif);
+font-weight:600;
+font-size:clamp(38px,4.4vw,60px);
+line-height:1.02;
+margin:0;
+color:#ffffff;
+}
+
+.hero p{
+margin:0;
+color:#d8d2bf;
+font-size:14.5px;
+line-height:1.6;
+max-width:480px;
+}
+
+.hero-qr{
+display:flex;
+align-items:center;
+gap:14px;
+padding:14px 18px;
+border-radius:14px;
+text-decoration:none;
+color:#ffffff;
+background:rgba(10,16,13,.72);
+backdrop-filter:blur(8px);
+border:1px solid rgba(212,169,80,.42);
+}
+
+.hero-qr:hover{
+border-color:var(--oro);
+}
+
+.hero-qr:focus-visible{
+outline:3px solid rgba(212,169,80,.6);
+outline-offset:3px;
+}
+
+.hero-qr > svg{
+width:38px;
+height:38px;
+flex-shrink:0;
+fill:none;
+stroke:var(--oro);
+stroke-width:1.5;
+stroke-linecap:round;
+stroke-linejoin:round;
+}
+
+.hero-qr strong{
+display:block;
+font-size:15px;
+}
+
+.hero-qr span{
+display:block;
+font-size:12.5px;
+color:#c9c3b0;
+margin-top:2px;
+}
+
+.hero-qr .flecha{
+margin-left:6px;
+font-size:20px;
+color:var(--oro);
+}
+
+.accesos{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(210px,1fr));
+gap:14px;
+margin-bottom:20px;
+}
+
+.acceso{
+position:relative;
+isolation:isolate;
+overflow:hidden;
+display:flex;
+flex-direction:column;
+align-items:flex-start;
+gap:6px;
+min-height:150px;
+padding:16px;
+text-align:left;
+border:1px solid rgba(212,169,80,.26);
+border-radius:16px;
+font-family:inherit;
+color:#ffffff;
+cursor:pointer;
+background:
+linear-gradient(180deg,rgba(6,9,10,.40) 0%,rgba(6,9,10,.92) 100%),
+url("encabezado.jpg") var(--pos,50%) 55%/cover no-repeat,
+var(--carbon-800);
+box-shadow:var(--sombra);
+transition:transform .15s,border-color .15s;
+}
+
+.acceso:hover{
+transform:translateY(-3px);
+border-color:var(--oro);
+}
+
+.acceso:focus-visible{
+outline:3px solid rgba(212,169,80,.6);
+outline-offset:2px;
+}
+
+.acceso-icono{
+width:42px;
+height:42px;
+border-radius:50%;
+display:flex;
+align-items:center;
+justify-content:center;
+background:rgba(10,16,13,.8);
+border:1.5px solid var(--oro);
+color:var(--oro);
+margin-bottom:auto;
+}
+
+.acceso-icono svg,.paso-icono svg{
+width:21px;
+height:21px;
+fill:none;
+stroke:currentColor;
+stroke-width:1.7;
+stroke-linecap:round;
+stroke-linejoin:round;
+}
+
+.acceso strong{
+font-family:var(--serif);
+font-size:22px;
+line-height:1.1;
+}
+
+.acceso .desc{
+font-size:12.5px;
+color:#d2ccb9;
+line-height:1.4;
+max-width:80%;
+}
+
+.acceso .ir{
+position:absolute;
+right:14px;
+bottom:14px;
+width:32px;
+height:32px;
+border-radius:50%;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:16px;
+color:#ffffff;
+background:rgba(255,255,255,.12);
+border:1px solid rgba(255,255,255,.3);
+}
+
+.card.oscura{
+background:
+radial-gradient(ellipse at 100% 0%,rgba(212,169,80,.10),transparent 50%),
+linear-gradient(160deg,#13201a,#0c1310);
+border-color:rgba(212,169,80,.28);
+color:#f1ede2;
+}
+
+.card.oscura h2{
+color:#ffffff;
+}
+
+.card.oscura p{
+color:#b9b3a0;
+}
+
+.cadena-pasos{
+display:flex;
+align-items:flex-start;
+justify-content:space-between;
+gap:6px;
+overflow-x:auto;
+padding:6px 2px 4px;
+}
+
+.paso{
+display:flex;
+flex-direction:column;
+align-items:center;
+gap:9px;
+min-width:84px;
+text-align:center;
+font-size:12px;
+color:#d6d1bf;
+line-height:1.3;
+}
+
+.paso-icono{
+width:56px;
+height:56px;
+border-radius:50%;
+display:flex;
+align-items:center;
+justify-content:center;
+background:rgba(212,169,80,.10);
+border:1.5px solid var(--oro);
+color:var(--oro);
+}
+
+.paso-icono svg{
+width:25px;
+height:25px;
+}
+
+.paso-flecha{
+align-self:center;
+margin-top:-24px;
+color:var(--oro);
+font-size:22px;
+opacity:.8;
+}
+
+.fila-tres{
+display:grid;
+grid-template-columns:minmax(0,1.4fr) minmax(0,1fr) minmax(0,1fr);
+gap:20px;
+align-items:stretch;
+}
+
+.fila-tres > .card{
+margin-bottom:0;
+display:flex;
+flex-direction:column;
+}
+
+.fila-tres h2{
+font-size:23px;
+}
+
+.panel-sub{
+font-size:12.5px !important;
+margin:3px 0 12px !important;
+}
+
+.pie-panel{
+margin-top:auto;
+padding-top:12px;
+}
+
+.enlace-ver{
+border:0;
+background:none;
+padding:0;
+font-family:inherit;
+font-size:12.5px;
+font-weight:700;
+color:var(--oro-oscuro);
+cursor:pointer;
+}
+
+.enlace-ver:hover{
+text-decoration:underline;
+}
+
+.tabla-mini th,.tabla-mini td{
+padding:9px 10px;
+font-size:12.5px;
+}
+
+.tabla-mini .badge{
+font-size:10.5px;
+padding:2px 9px;
+}
+
+.donut-wrap{
+display:flex;
+align-items:center;
+gap:18px;
+flex-wrap:wrap;
+justify-content:center;
+}
+
+.donut{
+position:relative;
+width:168px;
+height:168px;
+flex-shrink:0;
+}
+
+.donut svg{
+width:100%;
+height:100%;
+transform:rotate(-90deg);
+}
+
+.donut circle{
+fill:none;
+stroke-width:5.2;
+}
+
+.donut-centro{
+position:absolute;
+inset:0;
+display:flex;
+flex-direction:column;
+align-items:center;
+justify-content:center;
+text-align:center;
+}
+
+.donut-centro strong{
+font-family:var(--serif);
+font-size:34px;
+line-height:1;
+font-variant-numeric:lining-nums;
+}
+
+.donut-centro span{
+font-size:11px;
+color:var(--tenue);
+margin-top:2px;
+}
+
+.leyenda{
+list-style:none;
+margin:0;
+padding:0;
+display:grid;
+gap:7px;
+font-size:12.5px;
+min-width:150px;
+}
+
+.leyenda li{
+display:flex;
+align-items:center;
+gap:8px;
+}
+
+.leyenda i{
+width:10px;
+height:10px;
+border-radius:50%;
+flex-shrink:0;
+}
+
+.leyenda b{
+margin-left:auto;
+font-variant-numeric:tabular-nums;
+}
+
+.alertas{
+list-style:none;
+margin:0;
+padding:0;
+display:grid;
+gap:8px;
+}
+
+.alerta-item{
+display:flex;
+align-items:flex-start;
+gap:11px;
+width:100%;
+text-align:left;
+padding:11px 12px;
+border:1px solid var(--borde);
+border-radius:11px;
+background:#fbfcfa;
+font-family:inherit;
+color:var(--texto);
+cursor:pointer;
+}
+
+.alerta-item:hover{
+border-color:var(--oro);
+}
+
+.alerta-item:focus-visible{
+outline:2px solid var(--oro);
+}
+
+.alerta-icono{
+width:32px;
+height:32px;
+flex-shrink:0;
+border-radius:50%;
+display:flex;
+align-items:center;
+justify-content:center;
+background:var(--oro-fondo);
+color:var(--oro-oscuro);
+}
+
+.alerta-icono svg{
+width:17px;
+height:17px;
+fill:none;
+stroke:currentColor;
+stroke-width:1.9;
+stroke-linecap:round;
+stroke-linejoin:round;
+}
+
+.alerta-item.critica .alerta-icono{
+background:var(--rojo-100);
+color:var(--rojo);
+}
+
+.alerta-item.aviso .alerta-icono{
+background:#fdf1dc;
+color:var(--ambar);
+}
+
+.alerta-item strong{
+display:block;
+font-size:13px;
+line-height:1.3;
+}
+
+.alerta-item span{
+display:block;
+font-size:12px;
+color:var(--tenue);
+line-height:1.4;
+margin-top:2px;
+}
+
+.sin-alertas{
+padding:14px;
+text-align:center;
+color:var(--tenue);
+font-size:13px;
+}
+
+/* =====================================================
+   CATÁLOGO DE CORTES
+===================================================== */
+
+.cortes-grid{
+display:grid;
+grid-template-columns:minmax(260px,340px) 1fr;
+gap:20px;
+align-items:start;
+}
+
+.cortes-grid > .card{
+margin-bottom:0;
+}
+
+.corte-fila{
+display:grid;
+grid-template-columns:minmax(150px,1.3fr) 90px minmax(160px,2fr) 90px;
+gap:12px;
+align-items:center;
+padding:11px 4px;
+border-bottom:1px solid var(--borde);
+font-size:13px;
+}
+
+.corte-fila:last-child{
+border-bottom:0;
+}
+
+.corte-fila.cab{
+font-size:11px;
+font-weight:700;
+letter-spacing:.8px;
+text-transform:uppercase;
+color:var(--tenue);
+padding-top:2px;
+}
+
+.corte-nombre strong{
+display:block;
+}
+
+.corte-nombre span{
+font-family:var(--mono);
+font-size:11px;
+color:var(--tenue);
+}
+
+.barra-corte{
+height:9px;
+border-radius:9px;
+background:#eceee9;
+overflow:hidden;
+}
+
+.barra-corte span{
+display:block;
+height:100%;
+border-radius:9px;
+background:linear-gradient(90deg,#b08934,#ecd08a);
+}
+
+.corte-kg{
+font-size:11.5px;
+color:var(--tenue);
+margin-top:4px;
+font-variant-numeric:tabular-nums;
+}
+
+.corte-num{
+text-align:right;
+font-variant-numeric:tabular-nums;
+font-weight:700;
+}
+
+/* =====================================================
+   ETIQUETA DE TRAZABILIDAD
+===================================================== */
+
+.etiqueta-grid{
+display:grid;
+grid-template-columns:minmax(260px,1fr) minmax(300px,420px);
+gap:24px;
+align-items:start;
+}
+
+.etiqueta{
+position:relative;
+border-radius:16px;
+overflow:hidden;
+color:#f1ede2;
+background:
+radial-gradient(ellipse at 100% 0%,rgba(212,169,80,.14),transparent 55%),
+linear-gradient(160deg,#16231d,#0b110e);
+border:1.5px solid rgba(212,169,80,.55);
+padding:20px 22px 18px;
+box-shadow:0 14px 34px rgba(8,16,12,.28);
+}
+
+.etiqueta-cab{
+display:flex;
+align-items:center;
+gap:10px;
+margin-bottom:14px;
+}
+
+.etiqueta-cab .marca-logo{
+width:34px;
+height:34px;
+}
+
+.etiqueta-cab strong{
+font-family:var(--serif);
+font-size:18px;
+display:block;
+line-height:1;
+}
+
+.etiqueta-cab span{
+font-size:10.5px;
+letter-spacing:1.2px;
+text-transform:uppercase;
+color:#bdb7a3;
+}
+
+.etiqueta-cuerpo{
+display:flex;
+gap:16px;
+align-items:center;
+}
+
+.etiqueta-datos{
+flex:1;
+min-width:0;
+}
+
+.etiqueta-datos h3{
+font-family:var(--serif);
+font-size:30px !important;
+line-height:1.05;
+margin:0 0 10px !important;
+color:#ffffff !important;
+}
+
+.etiqueta-datos dl{
+display:grid;
+grid-template-columns:auto 1fr;
+gap:5px 10px;
+margin:0;
+font-size:12px;
+}
+
+.etiqueta-datos dt{
+color:#a9a390;
+}
+
+.etiqueta-datos dd{
+margin:0;
+color:#ffffff;
+font-weight:600;
+overflow-wrap:anywhere;
+}
+
+.etiqueta-qr{
+flex-shrink:0;
+width:132px;
+background:#ffffff;
+padding:8px;
+border-radius:10px;
+text-align:center;
+}
+
+.etiqueta-qr canvas,.etiqueta-qr img{
+display:block;
+max-width:100%;
+height:auto;
+margin:0 auto;
+}
+
+.etiqueta-qr small{
+display:block;
+font-family:var(--mono);
+font-size:9.5px;
+color:#14201a;
+margin-top:5px;
+word-break:break-all;
+}
+
+.etiqueta-pie{
+margin-top:14px;
+padding-top:10px;
+border-top:1px dashed rgba(212,169,80,.4);
+font-size:11px;
+color:#bdb7a3;
+display:flex;
+justify-content:space-between;
+gap:10px;
+flex-wrap:wrap;
+}
+
+.etiqueta-vacia{
+min-height:220px;
+border:2px dashed #d5d9d2;
+border-radius:16px;
+display:flex;
+align-items:center;
+justify-content:center;
+text-align:center;
+padding:24px;
+color:var(--tenue);
+font-size:13px;
+}
+
+.acciones-fila{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:10px;
+}
+
+@media print{
+body > *:not(.main){display:none !important}
+.sidebar,.barra,.section:not(.active),.aviso-flotante,.no-imprimir{display:none !important}
+.main{padding:0}
+.card{box-shadow:none;border:0;padding:0}
+.etiqueta-grid{display:block}
+.etiqueta{-webkit-print-color-adjust:exact;print-color-adjust:exact;max-width:420px}
+}
+
+/* =====================================================
+   PANTALLAS MEDIANAS Y CELULAR
+===================================================== */
+
+@media(max-width:1180px){
+.sidebar{width:226px}
+.main{padding:16px 18px 40px}
+.fila-tres{grid-template-columns:1fr 1fr}
+.fila-tres > .card:first-child{grid-column:1/-1}
+.cortes-grid{grid-template-columns:1fr}
+.pastilla-red{display:none}
+}
+
+@media(max-width:900px){
+
+#pantallaLogin{flex-direction:column;padding:14px}
+
+.login-portada{padding:26px 22px;gap:16px;flex:none}
+
+.login-portada h1{font-size:38px;margin-top:6px}
+
+.login-ventajas,.login-portada .lema{display:none}
+
+.login-tarjeta{padding:28px 22px}
+
+.etiqueta-grid{grid-template-columns:1fr}
+}
+
+@media(max-width:760px){
+
+.fila-tres{grid-template-columns:minmax(0,1fr)}
+
+.fila-tres > .card,.cortes-grid > .card{min-width:0}
+
+body{display:block}
+
+.sidebar{
+position:static;
+width:100%;
+height:auto;
+padding:14px;
+gap:12px;
+}
+
+.sidebar-paisaje,.tarjeta-wallet{display:none}
+
+.menu{
+flex-direction:row;
+overflow-x:auto;
+gap:6px;
+padding-bottom:4px;
+}
+
+.menu button{
+width:auto;
+white-space:nowrap;
+flex-shrink:0;
+padding:9px 12px;
+font-size:13px;
+}
+
+.menu-grupo{display:none}
+
+.main{padding:14px 12px 30px}
+
+.barra{
+position:static;
+flex-wrap:wrap;
+gap:10px;
+}
+
+.buscador{flex-basis:100%;order:3}
+
+.usuario{margin-left:auto;border-left:0;padding-left:0}
+
+.usuario-datos{display:none}
+
+.hero{padding:26px 22px;min-height:0}
+
+.hero h1{font-size:36px}
+
+.card{padding:18px}
+
+.card h2{font-size:23px}
+
+.form-grid{grid-template-columns:1fr}
+
+.dashboard-grid{grid-template-columns:1fr 1fr}
+
+.metric-value{font-size:30px}
+
+.fila-tres{grid-template-columns:1fr}
+
+.corte-fila{grid-template-columns:1fr 1fr;row-gap:6px}
+
+.corte-fila.cab{display:none}
+
+.corte-fila .barra-wrap{grid-column:1/-1;order:5}
+
+.etiqueta-cuerpo{flex-direction:column;align-items:flex-start}
+
+.acciones-fila{grid-template-columns:1fr}
+}
+
+@media(max-width:380px){
+.dashboard-grid{grid-template-columns:1fr}
+}
+
+[hidden]{display:none !important}
 </style>
 </head>
 
@@ -1550,40 +2578,60 @@ font-family:var(--fuente);
 
 <section class="login-portada">
 
+<div class="login-cabecera">
+
 <div class="marca">
-<svg class="marca-logo" viewBox="0 0 48 48" aria-hidden="true">
-<path d="M24 3l17 6.5v12.5c0 10.5-7.2 19-17 23C14.2 41 7 32.5 7 22V9.5z" fill="#1d5a42" stroke="#7ed39a" stroke-width="2"/>
-<path d="M16 24.5l6 6 11.5-12.5" fill="none" stroke="#ffffff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>
+<svg class="marca-logo" viewBox="0 0 48 48" aria-hidden="true" fill="none" stroke="#d4a950" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+<path d="M15 14.500C9 14.500 5.500 11 6 5c2.500 3.500 5.500 5 10 5.500"/>
+<path d="M33 14.500c6 0 9.500-3.500 9-9.500-2.500 3.500-5.500 5-10 5.500"/>
+<path d="M15 13h18c.8 8-.5 14.500-3 19.500-1.500 3-3.500 5.500-6 7-2.500-1.500-4.500-4-6-7-2.500-5-3.800-11.500-3-19.500z"/>
+<path d="M15.500 17 8.500 19.500 14 24"/>
+<path d="M32.500 17l7 2.500L34 24"/>
+<path d="M19.500 33.500c1.500 1.500 3 2 4.500 2s3-.5 4.500-2"/>
+<path d="M21 13.500Q24 18 27 13.500"/>
+<circle cx="19.500" cy="23" r="1" fill="#d4a950"/>
+<circle cx="28.500" cy="23" r="1" fill="#d4a950"/>
 </svg>
 <div>
-<div class="marca-nombre">Camal <span>Metropolitano</span></div>
-<div class="marca-sub">San Ramón de Altamira</div>
+<div class="marca-nombre">Camal Metropolitano</div>
+<div class="marca-sub">Del origen al corte perfecto</div>
 </div>
 </div>
 
-<h1>Transparencia <span>en cada paso</span></h1>
+<span class="pildora">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l8 3v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6z"/><path d="M9 12l2 2 4-4"/></svg>
+Trazabilidad blockchain
+</span>
+
+</div>
+
+<h1>Calidad que se<br>puede <em>rastrear</em></h1>
 
 <p class="subtitle">
-Conectamos la cadena cárnica con la tecnología blockchain para que cada caja
-pueda remontarse a su animal y cada retiro llegue a tiempo.
+Tecnología, tradición y confianza. Cada corte de carne cuenta una historia,
+desde el predio hasta tu mesa.
 </p>
 
 <ul class="login-ventajas">
+
 <li>
 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l8 3v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6z"/><path d="M9 12l2 2 4-4"/></svg>
-Trazabilidad completa desde el predio de origen
+<div><strong>Origen verificado</strong><span>Del predio a la mesa, con total transparencia</span></div>
 </li>
+
 <li>
-<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l8 3v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6z"/><path d="M9 12l2 2 4-4"/></svg>
-Retiro sanitario en una sola consulta
+<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/><path d="M8.5 11l2 2 3.500-4"/></svg>
+<div><strong>Retiro sanitario inmediato</strong><span>Cada caja alcanzada, en una sola consulta</span></div>
 </li>
+
 <li>
-<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l8 3v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6z"/><path d="M9 12l2 2 4-4"/></svg>
-Registros que nadie puede cambiar después
+<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/><path d="M12 15v2"/></svg>
+<div><strong>Registros inalterables</strong><span>Ninguna historia se reescribe después</span></div>
 </li>
+
 </ul>
 
-<div class="lema">La confianza<br>también se traza</div>
+<div class="lema">La trazabilidad<br>también es calidad</div>
 
 </section>
 
@@ -1648,6 +2696,7 @@ Conectar con MetaMask
 
 </div>
 
+<div id="avisoFlotante" class="aviso-flotante" role="status" aria-live="polite"></div>
 
 <!-- =====================================================
      MENU LATERAL
@@ -1656,79 +2705,115 @@ Conectar con MetaMask
 <aside class="sidebar">
 
 <div class="marca">
-<svg class="marca-logo" viewBox="0 0 48 48" aria-hidden="true">
-<path d="M24 3l17 6.5v12.5c0 10.5-7.2 19-17 23C14.2 41 7 32.5 7 22V9.5z" fill="#1d5a42" stroke="#7ed39a" stroke-width="2"/>
-<path d="M16 24.5l6 6 11.5-12.5" fill="none" stroke="#ffffff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>
+<svg class="marca-logo" viewBox="0 0 48 48" aria-hidden="true" fill="none" stroke="#d4a950" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+<path d="M15 14.500C9 14.500 5.500 11 6 5c2.500 3.500 5.500 5 10 5.500"/>
+<path d="M33 14.500c6 0 9.500-3.500 9-9.500-2.500 3.500-5.500 5-10 5.500"/>
+<path d="M15 13h18c.8 8-.5 14.500-3 19.500-1.500 3-3.500 5.500-6 7-2.500-1.500-4.500-4-6-7-2.500-5-3.800-11.500-3-19.500z"/>
+<path d="M15.500 17 8.500 19.500 14 24"/>
+<path d="M32.500 17l7 2.500L34 24"/>
+<path d="M19.500 33.500c1.500 1.500 3 2 4.500 2s3-.5 4.500-2"/>
+<path d="M21 13.500Q24 18 27 13.500"/>
+<circle cx="19.500" cy="23" r="1" fill="#d4a950"/>
+<circle cx="28.500" cy="23" r="1" fill="#d4a950"/>
 </svg>
 <div>
-<div class="marca-nombre">Camal <span>Metropolitano</span></div>
-<div class="marca-sub">San Ramón de Altamira</div>
+<div class="marca-nombre">Camal Metropolitano</div>
+<div class="marca-sub">Del origen al corte perfecto</div>
 </div>
 </div>
 
 <nav class="menu">
 
-<button class="active" onclick="mostrarSeccion('blockchain',this)">
-<span class="menu-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 14a4 4 0 0 0 5.66 0l3-3a4 4 0 0 0-5.66-5.66l-1 1"/><path d="M14 10a4 4 0 0 0-5.66 0l-3 3a4 4 0 0 0 5.66 5.66l1-1"/></svg></span>
-Blockchain
-</button>
-
-<button onclick="mostrarSeccion('inicio',this)">
+<button data-seccion="inicio" onclick="mostrarSeccion('inicio',this)">
 <span class="menu-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/></svg></span>
 Inicio
 </button>
 
-<button onclick="mostrarSeccion('cargar',this)">
+<button data-seccion="blockchain" class="active" onclick="mostrarSeccion('blockchain',this)">
+<span class="menu-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 14a4 4 0 0 0 5.66 0l3-3a4 4 0 0 0-5.66-5.66l-1 1"/><path d="M14 10a4 4 0 0 0-5.66 0l-3 3a4 4 0 0 0 5.66 5.66l1-1"/></svg></span>
+Conexión
+</button>
+
+<button data-seccion="cargar" onclick="mostrarSeccion('cargar',this)">
 <span class="menu-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4"/><path d="M7 9l5-5 5 5"/><path d="M4 20h16"/></svg></span>
 Cargar lote
 </button>
 
-<div class="menu-grupo">Criterios del Nivel 1</div>
+<div class="menu-grupo">Nivel 1 · Criterios</div>
 
-<button onclick="mostrarSeccion('atras',this)">
+<button data-seccion="atras" onclick="mostrarSeccion('atras',this)">
 <span class="menu-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="12" y="7" width="9" height="10" rx="1.5"/><path d="M9 12H3"/><path d="M6 9l-3 3 3 3"/></svg></span>
 1 · Hacia atrás
 </button>
 
-<button onclick="mostrarSeccion('adelante',this)">
+<button data-seccion="adelante" onclick="mostrarSeccion('adelante',this)">
 <span class="menu-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="7" width="9" height="10" rx="1.5"/><path d="M15 12h6"/><path d="M18 9l3 3-3 3"/></svg></span>
 2 · Hacia adelante
 </button>
 
-<button onclick="mostrarSeccion('balance',this)">
+<button data-seccion="balance" onclick="mostrarSeccion('balance',this)">
 <span class="menu-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v16"/><path d="M6 20h12"/><path d="M4 7h16"/><path d="M6.5 7L3.5 13h6z"/><path d="M17.5 7l-3 6h6z"/></svg></span>
 3 · Balance de masa
 </button>
 
-<button onclick="mostrarSeccion('frio',this)">
+<button data-seccion="frio" onclick="mostrarSeccion('frio',this)">
 <span class="menu-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2v20"/><path d="M4.9 7l14.2 10"/><path d="M4.9 17L19.1 7"/><path d="M9.5 3.5L12 6l2.5-2.5"/><path d="M9.5 20.5L12 18l2.5 2.5"/></svg></span>
 4 · Cadena de frío
 </button>
 
-<button onclick="mostrarSeccion('privacidad',this)">
+<button data-seccion="privacidad" onclick="mostrarSeccion('privacidad',this)">
 <span class="menu-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></span>
 5 · Privacidad
 </button>
 
-<div class="menu-grupo">Nivel 2</div>
+<div class="menu-grupo">Nivel 2 · Consumidor</div>
 
-<button onclick="mostrarSeccion('retiro',this)">
+<button data-seccion="retiro" onclick="mostrarSeccion('retiro',this)">
 <span class="menu-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l10 18H2z"/><path d="M12 10v5"/><path d="M12 18h.01"/></svg></span>
 Retiro sanitario
 </button>
 
+<button data-seccion="etiqueta" onclick="mostrarSeccion('etiqueta',this)">
+<span class="menu-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3h-3zM18 18h3v3h-3zM14 20h2M20 14v2"/></svg></span>
+Etiqueta y QR
+</button>
+
+<div class="menu-grupo">Herramientas</div>
+
+<button data-seccion="cortes" onclick="mostrarSeccion('cortes',this)">
+<span class="menu-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3v9h9"/><path d="M12 12l-6.500 6.500"/></svg></span>
+Catálogo de cortes
+</button>
+
 </nav>
 
-<div class="sidebar-pie">
-<strong>Lote LF-2026-0188</strong>
-<span>60 animales · Ethereum Sepolia</span>
-<div class="sesion">
-<span id="usuarioSesion">Administrador</span>
-<button class="btn-salir" onclick="cerrarSesion()">Salir</button>
+<div class="tarjeta-wallet" id="tarjetaWallet">
+
+<div class="wallet-fila">
+<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18"/><circle cx="16.5" cy="14.500" r="1.200"/></svg>
+<div>
+<strong id="walletTitulo">Wallet no conectada</strong>
+<span id="walletDireccion">Conecta MetaMask</span>
+</div>
+<i class="punto"></i>
+</div>
+
+<button class="btn btn-gray btn-chico" id="walletBoton" onclick="conectar()">Conectar MetaMask</button>
+
+<div class="wallet-fila">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l8 10-8 10-8-10z"/><path d="M4 12l8 3 8-3"/></svg>
+<div>
+<strong>Red</strong>
+<span>Ethereum Sepolia</span>
 </div>
 </div>
 
+</div>
+
+<div class="sidebar-paisaje">
 <div class="lema">Del campo<br>a tu mesa</div>
+<svg viewBox="0 0 48 30" aria-hidden="true"><path d="M2 28L18 6l10 14 6-8 12 16z"/><path d="M14 12l4 5 4-5"/></svg>
+</div>
 
 </aside>
 
@@ -1738,22 +2823,46 @@ Retiro sanitario
 
 <main class="main">
 
-<header class="topbar">
+<header class="barra">
 
-<div>
-<div class="eyebrow">Trazabilidad cárnica · EPM-RASRA</div>
-<h1>De la vaca al plato, <span>sin perder el hilo</span></h1>
-<p class="subtitle">
-Registro de custodia del lote LF-2026-0188 en Ethereum Sepolia: cada traspaso,
-de la báscula de ingreso al consumidor, queda anclado con su responsable.
-</p>
+<form class="buscador" onsubmit="buscarGlobal(event)" role="search">
+<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.500-3.500"/></svg>
+<input id="buscadorGlobal" type="search" list="sugerenciasBusqueda" placeholder="Buscar caja, canal, despacho o código de venta…" autocomplete="off" aria-label="Buscar caja, canal, despacho o código de venta">
+<datalist id="sugerenciasBusqueda">
+<option value="CJ-0188-0294">Caja del criterio 1</option>
+<option value="CN-0188-012">Canal con Salmonella</option>
+<option value="DSP-0188-006">Despacho con hueco de frío</option>
+<option value="QR-0294-1639">Compra bajo retiro</option>
+</datalist>
+</form>
+
+<span class="pastilla-red" id="estadoRed"><i class="dot"></i>Comprobando conexión…</span>
+
+<div class="campana-wrap">
+
+<button class="icono-btn" id="btnCampana" onclick="alternarAlertas()" aria-label="Alertas del lote" aria-expanded="false" aria-controls="panelAlertas">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 17h12l-1.500-2V11a4.500 4.500 0 0 0-9 0v4z"/><path d="M10 20a2 2 0 0 0 4 0"/></svg>
+<span class="insignia" id="insigniaAlertas" hidden>0</span>
+</button>
+
+<div class="panel-alertas" id="panelAlertas" hidden>
+<div class="panel-alertas-cab">Alertas del lote</div>
+<ul class="alertas" id="listaAlertasCampana"></ul>
 </div>
 
-<div class="status">
-<span id="estadoRed"><i class="dot"></i>Comprobando conexión…</span>
+</div>
+
+<div class="usuario">
+<span class="avatar" aria-hidden="true">AD</span>
+<div class="usuario-datos">
+<strong>Administrador</strong>
+<span id="usuarioSesion">Administrador</span>
+</div>
+<button class="btn-salir" onclick="cerrarSesion()">Salir</button>
 </div>
 
 </header>
+
 
 <!-- =====================================================
      CONEXIÓN BLOCKCHAIN
@@ -1823,58 +2932,95 @@ Wallet no conectada
 
 <section id="inicio" class="section">
 
-<div class="accesos">
+<div class="hero">
 
-<button class="acceso" onclick="mostrarSeccion('cargar')">
-<span class="acceso-icono"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4"/><path d="M7 9l5-5 5 5"/><path d="M4 20h16"/></svg></span>
-<strong>Cargar lote</strong>
-<span>Registra el lote LF-2026-0188 en el contrato, por grupos.</span>
-</button>
+<div class="hero-texto">
 
-<button class="acceso" onclick="mostrarSeccion('adelante')">
-<span class="acceso-icono"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="7" width="9" height="10" rx="1.5"/><path d="M15 12h6"/><path d="M18 9l3 3-3 3"/></svg></span>
-<strong>Retiro hacia adelante</strong>
-<span>De una canal a todas sus cajas y clientes.</span>
-</button>
+<span class="pildora">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l8 3v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6z"/><path d="M9 12l2 2 4-4"/></svg>
+Trazabilidad blockchain
+</span>
 
-<button class="acceso" onclick="mostrarSeccion('frio')">
-<span class="acceso-icono"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2v20"/><path d="M4.9 7l14.2 10"/><path d="M4.9 17L19.1 7"/><path d="M9.5 3.5L12 6l2.5-2.5"/><path d="M9.5 20.5L12 18l2.5 2.5"/></svg></span>
-<strong>Cadena de frío</strong>
-<span>Recalcula cada despacho desde la telemetría.</span>
-</button>
+<h1>Cada corte<br>cuenta una <em>historia</em></h1>
 
-<button class="acceso" onclick="mostrarSeccion('retiro')">
-<span class="acceso-icono"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l10 18H2z"/><path d="M12 10v5"/><path d="M12 18h.01"/></svg></span>
-<strong>Retiro sanitario</strong>
-<span>Registra la orden para la consulta pública.</span>
+<p>
+Registro de custodia del lote LF-2026-0188 en Ethereum Sepolia: cada traspaso,
+de la báscula al consumidor, queda anclado con su responsable.
+</p>
+
+<button class="btn-oro" onclick="mostrarSeccion('atras')">
+Explorar trazabilidad &nbsp;→
 </button>
 
 </div>
 
-<div class="card">
+<a class="hero-qr" id="enlaceConsulta" href="https://lambent-blancmange-7e26ae.netlify.app/" target="_blank" rel="noopener">
+<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3h-3zM18 18h3v3h-3zM14 20h2M20 14v2"/></svg>
+<div>
+<strong>Escanea un QR</strong>
+<span>y consulta el origen de la carne</span>
+</div>
+<span class="flecha">→</span>
+</a>
+
+</div>
+
+<div class="accesos">
+
+<button class="acceso" style="--pos:8%" onclick="mostrarSeccion('cargar')">
+<span class="acceso-icono"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4"/><path d="M7 9l5-5 5 5"/><path d="M4 20h16"/></svg></span>
+<strong>Cargar lote</strong>
+<span class="desc">Añade el lote a la cadena de trazabilidad.</span>
+<span class="ir">→</span>
+</button>
+
+<button class="acceso" style="--pos:36%" onclick="mostrarSeccion('etiqueta')">
+<span class="acceso-icono"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3h-3zM18 18h3v3h-3zM14 20h2M20 14v2"/></svg></span>
+<strong>Etiqueta y QR</strong>
+<span class="desc">Crea el código de cada caja vendida.</span>
+<span class="ir">→</span>
+</button>
+
+<button class="acceso" style="--pos:64%" onclick="mostrarSeccion('cortes')">
+<span class="acceso-icono"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3v9h9"/><path d="M12 12l-6.500 6.500"/></svg></span>
+<strong>Catálogo de cortes</strong>
+<span class="desc">Rendimiento de cada corte y su tope físico.</span>
+<span class="ir">→</span>
+</button>
+
+<button class="acceso" style="--pos:92%" onclick="mostrarSeccion('adelante')">
+<span class="acceso-icono"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="7" width="9" height="10" rx="1.5"/><path d="M15 12h6"/><path d="M18 9l3 3-3 3"/></svg></span>
+<strong>Retiro hacia adelante</strong>
+<span class="desc">De una canal a todas sus cajas y clientes.</span>
+<span class="ir">→</span>
+</button>
+
+</div>
+
+<div class="card oscura">
 
 <div class="section-title">
-<div class="number">⌂</div>
+<div class="number"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12h4l2-6 4 12 2-6h6"/></svg></div>
 <div>
-<h2>Resumen de la cadena</h2>
-<p>Desde el predio hasta el consumidor: cada paso es un registro en el contrato.</p>
+<h2>Cadena de trazabilidad</h2>
+<p>Del predio a tu mesa: cada paso es un registro en el contrato.</p>
 </div>
 </div>
 
 <div class="cadena-pasos">
 <div class="paso"><div class="paso-icono"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/></svg></div>Ingreso<br>del predio</div>
-<div class="paso-flecha">›</div>
+<div class="paso-flecha">→</div>
 <div class="paso"><div class="paso-icono"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l8 3v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6z"/><path d="M9 12l2 2 4-4"/></svg></div>Inspección<br>ante-mortem</div>
-<div class="paso-flecha">›</div>
+<div class="paso-flecha">→</div>
 <div class="paso"><div class="paso-icono"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4h10"/><path d="M12 4v4"/><path d="M8 8h8l-1 12H9z"/></svg></div>Faena<br>y sello</div>
-<div class="paso-flecha">›</div>
+<div class="paso-flecha">→</div>
 <div class="paso"><div class="paso-icono"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20L14 10"/><path d="M14 10l4-6 2 2-6 4"/><path d="M4 20l3-1"/></svg></div>Desposte<br>15 cortes</div>
-<div class="paso-flecha">›</div>
+<div class="paso-flecha">→</div>
 <div class="paso"><div class="paso-icono"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="8" width="16" height="12" rx="1.5"/><path d="M4 12h16"/><path d="M10 8V4h4v4"/></svg></div>Empaque<br>en cajas</div>
-<div class="paso-flecha">›</div>
+<div class="paso-flecha">→</div>
 <div class="paso"><div class="paso-icono"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 7h11v9H2z"/><path d="M13 10h4l3 3v3h-7"/><circle cx="6" cy="18" r="1.6"/><circle cx="17" cy="18" r="1.6"/></svg></div>Despacho<br>en frío</div>
-<div class="paso-flecha">›</div>
-<div class="paso"><div class="paso-icono"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c1-4 4-6 7-6s6 2 7 6"/></svg></div>Consumidor<br>final</div>
+<div class="paso-flecha">→</div>
+<div class="paso"><div class="paso-icono"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3v8"/><path d="M5 3v5a2 2 0 0 0 4 0V3"/><path d="M17 3c-2 2-2 6 0 8v10"/></svg></div>Mesa del<br>consumidor</div>
 </div>
 
 </div>
@@ -1882,11 +3028,14 @@ Wallet no conectada
 <div class="card">
 
 <div class="section-title">
-<div class="number">⌂</div>
+<div class="number"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/></svg></div>
 <div>
 <h2>Estado del lote en la cadena</h2>
 <p>Lo que el contrato tiene registrado del lote LF-2026-0188.</p>
 </div>
+<button class="btn btn-gray btn-chico" style="margin-left:auto" onclick="actualizarTotales()">
+⟳ &nbsp; Actualizar
+</button>
 </div>
 
 <div class="dashboard-grid">
@@ -1918,11 +3067,36 @@ Wallet no conectada
 
 </div>
 
-<button class="btn" onclick="actualizarTotales()">
-⟳ &nbsp; Actualizar
-</button>
-
 <div id="estadoInicio" class="estado"></div>
+
+</div>
+
+<div class="fila-tres">
+
+<div class="card">
+<h2>Despachos del lote</h2>
+<p class="panel-sub">Resumen de frío anclado en la cadena.</p>
+<div class="tabla-wrap">
+<table class="tabla-mini" id="tablaDespachos">
+<tr><td class="empty">Cargando despachos…</td></tr>
+</table>
+</div>
+<div class="pie-panel"><button class="enlace-ver" onclick="mostrarSeccion('frio')">Ver cadena de frío →</button></div>
+</div>
+
+<div class="card">
+<h2>Distribución de cortes</h2>
+<p class="panel-sub">Rendimiento de referencia de la canal.</p>
+<div id="donutInicio" class="donut-wrap"></div>
+<div class="pie-panel"><button class="enlace-ver" onclick="mostrarSeccion('cortes')">Ver catálogo →</button></div>
+</div>
+
+<div class="card">
+<h2>Alertas del lote</h2>
+<p class="panel-sub">Calculadas desde la cadena.</p>
+<ul class="alertas" id="listaAlertas"></ul>
+<div class="pie-panel"><button class="enlace-ver" onclick="mostrarSeccion('adelante')">Ver retiro hacia adelante →</button></div>
+</div>
 
 </div>
 
@@ -2028,6 +3202,10 @@ Lo que el contrato rechaza queda anotado en rojo.
 <div id="estadoAdelante" class="estado"></div>
 
 <div id="resultadoAdelante"></div>
+
+<button class="btn btn-gray" id="btnCsv" onclick="exportarClientesCsv()" hidden>
+⬇ &nbsp; Descargar lista de cajas y clientes (CSV)
+</button>
 
 </div>
 
@@ -2206,6 +3384,98 @@ El registro no bloquea ventas: deja la orden en la cadena para que cualquiera la
 </button>
 
 <div id="resultadoRetiros"></div>
+
+</div>
+
+</section>
+
+
+<!-- =====================================================
+     ETIQUETA DE TRAZABILIDAD Y QR
+===================================================== -->
+
+<section id="etiqueta" class="section">
+
+<div class="card">
+
+<div class="section-title">
+<div class="number"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3h-3zM18 18h3v3h-3zM14 20h2M20 14v2"/></svg></div>
+<div>
+<h2>Etiqueta de trazabilidad</h2>
+<p>Genera la etiqueta de una venta registrada. Su QR lleva a la consulta pública del consumidor.</p>
+</div>
+</div>
+
+<div class="etiqueta-grid">
+
+<div class="no-imprimir">
+
+<div class="field">
+<label for="etCodigo">Código de consulta (el que va impreso en la etiqueta)</label>
+<input id="etCodigo" value="QR-0294-1639" autocomplete="off">
+</div>
+
+<div class="field" style="margin-top:14px">
+<label for="etUrl">Dirección de la consulta pública</label>
+<input id="etUrl" value="https://lambent-blancmange-7e26ae.netlify.app/" autocomplete="off">
+</div>
+
+<button class="btn" onclick="generarEtiqueta()">
+▦ &nbsp; Generar etiqueta
+</button>
+
+<div id="estadoEtiqueta" class="estado"></div>
+
+<div class="acciones-fila">
+<button class="btn btn-gray" id="btnImprimirEtiqueta" onclick="imprimirEtiqueta()" disabled>Imprimir etiqueta</button>
+<button class="btn btn-gray" id="btnDescargarQr" onclick="descargarQr()" disabled>Descargar QR (PNG)</button>
+</div>
+
+</div>
+
+<div id="vistaEtiqueta">
+<div class="etiqueta-vacia">La etiqueta aparecerá aquí, con el corte, el peso, la fecha real de empaque y el código QR.</div>
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+<!-- =====================================================
+     CATÁLOGO DE CORTES
+===================================================== -->
+
+<section id="cortes" class="section">
+
+<div class="card oscura">
+
+<div class="section-title" style="margin-bottom:0">
+<div class="number"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3v9h9"/><path d="M12 12l-6.500 6.500"/></svg></div>
+<div>
+<h2>Catálogo de cortes</h2>
+<p>Los 15 cortes de la carta, su rendimiento de referencia y los kilos empacados contra el tope físico del lote.</p>
+</div>
+<button class="btn btn-gray btn-chico" style="margin-left:auto" onclick="cargarCatalogo()">⟳ &nbsp; Actualizar</button>
+</div>
+
+</div>
+
+<div class="cortes-grid">
+
+<div class="card">
+<h2>Rendimiento de la canal</h2>
+<p class="panel-sub">Cortes por categoría y hueso, grasa y mermas, como % del peso de la canal.</p>
+<div id="donutCortes" class="donut-wrap"></div>
+</div>
+
+<div class="card">
+<h2>Los 15 cortes</h2>
+<p class="panel-sub" id="notaCortes">Leyendo el contrato…</p>
+<div id="listaCortes"></div>
+<div id="estadoCortes" class="estado"></div>
+</div>
 
 </div>
 
@@ -4575,6 +5845,876 @@ elemento.setAttribute("aria-live","polite");
 });
 
 </script>
+
+<script>
+
+/* =====================================================
+   TEMA NEGRO Y DORADO · FUNCIONES NUEVAS DE LA INTERFAZ
+   Se apoyan en las funciones existentes. No cambian lo que
+   se consulta ni lo que se registra en los contratos.
+===================================================== */
+
+const URL_CONSULTA="https://lambent-blancmange-7e26ae.netlify.app/";
+
+const ORDEN_CATEGORIAS=["PREMIUM","PRIMERA","SEGUNDA","INDUSTRIAL"];
+
+const COLOR_CATEGORIA={
+PREMIUM:"#d4a950",
+PRIMERA:"#2f8a5f",
+SEGUNDA:"#2b6f8f",
+INDUSTRIAL:"#b8443a",
+DESPERDICIO:"#a9b2ac"
+};
+
+const NOMBRE_CATEGORIA={
+PREMIUM:"Premium",
+PRIMERA:"Primera",
+SEGUNDA:"Segunda",
+INDUSTRIAL:"Molida (mezcla de lote)",
+DESPERDICIO:"Hueso, grasa y mermas"
+};
+
+const ICONO_ALERTA={
+critica:'<path d="M12 3l10 18H2z"/><path d="M12 10v5"/><path d="M12 18h.01"/>',
+aviso:'<circle cx="12" cy="12" r="9"/><path d="M12 7v6"/><path d="M12 16.500h.01"/>',
+info:'<circle cx="12" cy="12" r="9"/><path d="M12 11v5"/><path d="M12 8h.01"/>'
+};
+
+let ultimasAlertas=null;
+
+let ultimaEtiqueta=null;
+
+/* =====================================================
+   AVISO FLOTANTE
+===================================================== */
+
+let temporizadorAviso;
+
+function mostrarAviso(texto,tipo){
+
+const aviso=document.getElementById("avisoFlotante");
+
+aviso.innerText=texto;
+
+aviso.className="aviso-flotante visible "+(tipo||"");
+
+clearTimeout(temporizadorAviso);
+
+temporizadorAviso=setTimeout(()=>aviso.classList.remove("visible"),4500);
+
+}
+
+/* =====================================================
+   NAVEGACIÓN: el botón activo sale de data-seccion
+===================================================== */
+
+const mostrarSeccionBase2=mostrarSeccion;
+
+mostrarSeccion=function(id,boton){
+
+mostrarSeccionBase2(id,boton);
+
+document.querySelectorAll(".menu button").forEach(b=>{
+b.classList.toggle("active",b.dataset.seccion===id);
+});
+
+cerrarAlertas();
+
+if(id==="inicio")cargarPanelesInicio();
+
+if(id==="cortes")cargarCatalogo();
+
+};
+
+/* =====================================================
+   TARJETA DE WALLET DE LA BARRA LATERAL
+===================================================== */
+
+const conectarBase2=conectar;
+
+conectar=async function(...argumentos){
+
+const resultado=await conectarBase2.apply(this,argumentos);
+
+actualizarTarjetaWallet();
+
+return resultado;
+
+};
+
+async function actualizarTarjetaWallet(){
+
+if(typeof signer==="undefined"||!signer)return;
+
+try{
+
+const direccion=await signer.getAddress();
+
+document.getElementById("tarjetaWallet").classList.add("conectada");
+
+document.getElementById("walletTitulo").innerText="Wallet conectada";
+
+document.getElementById("walletDireccion").innerText=
+direccion.slice(0,6)+"…"+direccion.slice(-4);
+
+document.getElementById("walletBoton").hidden=true;
+
+}catch(error){
+
+console.warn(error);
+
+}
+
+}
+
+/* =====================================================
+   BUSCADOR GLOBAL
+   Entiende cajas (CJ-), canales (CN-), despachos (DSP-)
+   y códigos de consulta de una venta (QR-).
+===================================================== */
+
+async function buscarGlobal(evento){
+
+evento.preventDefault();
+
+const campo=document.getElementById("buscadorGlobal");
+
+const texto=campo.value.trim().toUpperCase();
+
+if(!texto)return;
+
+try{
+
+if(texto.startsWith("CJ")){
+
+document.getElementById("codigoCaja").value=texto;
+
+mostrarSeccion("atras");
+
+await consultarHaciaAtras();
+
+}else if(texto.startsWith("CN")){
+
+document.getElementById("codigoCanal").value=texto;
+
+mostrarSeccion("adelante");
+
+await consultarHaciaAdelante();
+
+}else if(texto.startsWith("DSP")){
+
+mostrarSeccion("frio");
+
+await verificarFrio();
+
+resaltarFila("resultadoFrio",texto);
+
+}else if(texto.startsWith("QR")){
+
+document.getElementById("codigoConsulta").value=texto;
+
+mostrarSeccion("privacidad");
+
+await verificarCompraConsumidor();
+
+}else{
+
+mostrarAviso("No reconozco ese código. Prueba con CJ-0188-0294, CN-0188-012, DSP-0188-006 o QR-0294-1639.","error");
+
+return;
+
+}
+
+campo.blur();
+
+}catch(error){
+
+console.error(error);
+
+mostrarAviso(obtenerMensajeError(error),"error");
+
+}
+
+}
+
+function resaltarFila(contenedor,codigo){
+
+const filas=document.querySelectorAll("#"+contenedor+" tr");
+
+let encontrada=null;
+
+filas.forEach(fila=>{
+
+fila.classList.remove("resaltada");
+
+if(fila.cells[0]&&fila.cells[0].textContent.trim()===codigo)encontrada=fila;
+
+});
+
+if(encontrada){
+
+encontrada.classList.add("resaltada");
+
+encontrada.scrollIntoView({behavior:"smooth",block:"center"});
+
+}else{
+
+mostrarAviso("No encontré "+codigo+" en la tabla.","error");
+
+}
+
+}
+
+/* =====================================================
+   ALERTAS DEL LOTE (campana e Inicio)
+   Se calculan desde la cadena: retiros registrados, resumen
+   de frío de cada despacho y totales del contrato. Las ventas
+   posteriores a la orden se cuentan con los datos del lote.
+===================================================== */
+
+async function calcularAlertas(){
+
+await cargarDatosLote();
+
+const lectura=await obtenerContratoLectura();
+
+const lista=[];
+
+let retiros=[];
+
+try{
+
+retiros=await contratoRetiros(lectura.runner).listarRetiros();
+
+}catch(error){
+
+console.warn("No se pudieron leer los retiros:",error);
+
+}
+
+retiros.forEach(r=>{
+
+lista.push({
+tipo:"critica",
+titulo:"Retiro sanitario "+r.codigo,
+texto:"Canal "+codigoCanal(r.canal)+" con resultado desfavorable. Orden: "+formatearFecha(r.fechaOrden),
+destino:"retiro"
+});
+
+});
+
+const numeros=(await lectura.listarDespachos()).map(Number);
+
+const despachos=await Promise.all(numeros.map(n=>lectura.obtenerDespacho(n)));
+
+despachos.forEach(d=>{
+
+const sinLectura=Number(d.minutosSinLectura);
+
+const fuera=Number(d.minutosFuera);
+
+if(sinLectura>0||fuera>0){
+
+const partes=[];
+
+if(sinLectura>0)partes.push(sinLectura+" min sin lecturas");
+
+if(fuera>0)partes.push(fuera+" min fuera de rango");
+
+lista.push({
+tipo:"aviso",
+titulo:codigoDespacho(d.numero)+": frío no demostrado",
+texto:partes.join(" y ")+(d.cumpleDeclarado?", aunque declara cumplir.":"."),
+destino:"frio"
+});
+
+}
+
+});
+
+const totales=await lectura.totales();
+
+const rechazadas=lote.cajas.length-Number(totales.nCajas);
+
+if(Number(totales.nCajas)>0&&rechazadas>0){
+
+lista.push({
+tipo:"info",
+titulo:rechazadas+" cajas rechazadas por el contrato",
+texto:"No tienen piezas de respaldo y excederían el rendimiento físico del lote.",
+destino:"balance"
+});
+
+}
+
+if(retiros.length>0){
+
+const r=retiros[0];
+
+const canal=Number(r.canal);
+
+const orden=Number(r.fechaOrden);
+
+const directas=new Set(lote.cajas.filter(c=>c.corte!==15&&c.canales.includes(canal)).map(c=>c.numero));
+
+const molida=new Set(lote.cajas.filter(c=>c.corte===15).map(c=>c.numero));
+
+const posteriores=lote.ventas.filter(v=>v.fecha>orden);
+
+const ventasDirectas=posteriores.filter(v=>directas.has(v.caja));
+
+const ventasMolida=posteriores.filter(v=>molida.has(v.caja));
+
+if(ventasDirectas.length>0){
+
+lista.push({
+tipo:"critica",
+titulo:ventasDirectas.length+" ventas posteriores a la orden de retiro",
+texto:"Cajas "+ventasDirectas.map(v=>codigoCaja(v.caja)).join(", ")+
+(ventasMolida.length>0?" y "+ventasMolida.length+" ventas de carne molida":""),
+destino:"adelante"
+});
+
+}
+
+}
+
+const peso={critica:0,aviso:1,info:2};
+
+lista.sort((a,b)=>peso[a.tipo]-peso[b.tipo]);
+
+return lista;
+
+}
+
+function alertaHTML(alerta){
+
+return `
+<li>
+<button class="alerta-item ${alerta.tipo}" onclick="irAlerta('${alerta.destino}')">
+<span class="alerta-icono"><svg viewBox="0 0 24 24" aria-hidden="true">${ICONO_ALERTA[alerta.tipo]}</svg></span>
+<span><strong>${escaparHTML(alerta.titulo)}</strong><span>${escaparHTML(alerta.texto)}</span></span>
+</button>
+</li>
+`;
+
+}
+
+async function pintarAlertas(){
+
+const destinos=[
+document.getElementById("listaAlertas"),
+document.getElementById("listaAlertasCampana")
+];
+
+destinos.forEach(d=>{d.innerHTML='<li class="sin-alertas">Calculando alertas…</li>';});
+
+try{
+
+ultimasAlertas=await calcularAlertas();
+
+const html=ultimasAlertas.length>0
+?ultimasAlertas.map(alertaHTML).join("")
+:'<li class="sin-alertas">Sin alertas: el lote no tiene novedades.</li>';
+
+destinos.forEach(d=>{d.innerHTML=html;});
+
+const urgentes=ultimasAlertas.filter(a=>a.tipo!=="info").length;
+
+const insignia=document.getElementById("insigniaAlertas");
+
+insignia.innerText=urgentes;
+
+insignia.hidden=urgentes===0;
+
+}catch(error){
+
+console.error(error);
+
+destinos.forEach(d=>{
+d.innerHTML='<li class="sin-alertas">No se pudieron calcular las alertas:<br>'+escaparHTML(obtenerMensajeError(error))+'</li>';
+});
+
+}
+
+}
+
+function irAlerta(destino){
+
+cerrarAlertas();
+
+mostrarSeccion(destino);
+
+}
+
+function alternarAlertas(){
+
+const panel=document.getElementById("panelAlertas");
+
+const abrir=panel.hidden;
+
+panel.hidden=!abrir;
+
+document.getElementById("btnCampana").setAttribute("aria-expanded",String(abrir));
+
+if(abrir&&!ultimasAlertas)pintarAlertas();
+
+}
+
+function cerrarAlertas(){
+
+const panel=document.getElementById("panelAlertas");
+
+if(!panel||panel.hidden)return;
+
+panel.hidden=true;
+
+document.getElementById("btnCampana").setAttribute("aria-expanded","false");
+
+}
+
+document.addEventListener("click",evento=>{
+
+if(!evento.target.closest(".campana-wrap"))cerrarAlertas();
+
+});
+
+document.addEventListener("keydown",evento=>{
+
+if(evento.key==="Escape")cerrarAlertas();
+
+});
+
+/* =====================================================
+   INICIO: DESPACHOS, DISTRIBUCIÓN DE CORTES Y ALERTAS
+===================================================== */
+
+async function cargarPanelesInicio(){
+
+try{
+
+await cargarDatosLote();
+
+dibujarDonut("donutInicio");
+
+const lectura=await obtenerContratoLectura();
+
+await Promise.all([pintarDespachos(lectura),pintarAlertas()]);
+
+}catch(error){
+
+console.error(error);
+
+}
+
+}
+
+async function pintarDespachos(lectura){
+
+const tabla=document.getElementById("tablaDespachos");
+
+const numeros=(await lectura.listarDespachos()).map(Number);
+
+if(numeros.length===0){
+
+tabla.innerHTML='<tr><td class="empty">Aún no hay despachos registrados. Carga el lote.</td></tr>';
+
+return;
+
+}
+
+const lista=await Promise.all(numeros.map(n=>lectura.obtenerDespacho(n)));
+
+let filas="<tr><th>Despacho</th><th>Cliente</th><th>Cajas</th><th>Frío</th></tr>";
+
+lista.forEach(d=>{
+
+const cumple=Number(d.minutosFuera)===0&&Number(d.minutosSinLectura)===0;
+
+filas+=`
+<tr class="${cumple?"":"fila-roja"}">
+<td>${codigoDespacho(d.numero)}</td>
+<td>${escaparHTML(codigoActor(d.cliente))}</td>
+<td>${d.cajas.length}</td>
+<td><span class="badge ${cumple?"ok":"mal"}">${cumple?"Verificado":"Sin frío demostrado"}</span></td>
+</tr>
+`;
+
+});
+
+tabla.innerHTML=filas;
+
+}
+
+/* =====================================================
+   GRÁFICO DE DISTRIBUCIÓN DE CORTES
+===================================================== */
+
+function datosDonut(){
+
+const porCategoria={};
+
+Object.values(lote.cortes).forEach(c=>{
+
+porCategoria[c.categoria]=(porCategoria[c.categoria]||0)+c.rendimientoPct;
+
+});
+
+const total=Object.values(porCategoria).reduce((a,b)=>a+b,0);
+
+porCategoria.DESPERDICIO=Math.max(0,100-total);
+
+return porCategoria;
+
+}
+
+function dibujarDonut(idContenedor){
+
+const contenedor=document.getElementById(idContenedor);
+
+if(!contenedor||!lote||!lote.cortes)return;
+
+const datos=datosDonut();
+
+const claves=ORDEN_CATEGORIAS.concat(["DESPERDICIO"]).filter(k=>datos[k]>0);
+
+let inicio=0;
+
+let arcos="";
+
+claves.forEach(k=>{
+
+const pct=datos[k];
+
+arcos+=`<circle cx="21" cy="21" r="15.9155" stroke="${COLOR_CATEGORIA[k]}" stroke-dasharray="${pct.toFixed(2)} ${(100-pct).toFixed(2)}" stroke-dashoffset="${(-inicio).toFixed(2)}"/>`;
+
+inicio+=pct;
+
+});
+
+const leyenda=claves.map(k=>`
+<li><i style="background:${COLOR_CATEGORIA[k]}"></i>${NOMBRE_CATEGORIA[k]}<b>${datos[k].toLocaleString("es-EC",{maximumFractionDigits:1})} %</b></li>
+`).join("");
+
+contenedor.innerHTML=`
+<div class="donut">
+<svg viewBox="0 0 42 42" role="img" aria-label="Distribución del peso de la canal por categoría de corte">${arcos}</svg>
+<div class="donut-centro"><strong>100 %</strong><span>de la canal</span></div>
+</div>
+<ul class="leyenda">${leyenda}</ul>
+`;
+
+}
+
+/* =====================================================
+   CATÁLOGO DE CORTES
+   Rendimiento de referencia y kilos empacados contra el
+   tope físico que calcula el contrato (criterio 3).
+===================================================== */
+
+async function cargarCatalogo(){
+
+try{
+
+await cargarDatosLote();
+
+dibujarDonut("donutCortes");
+
+const lectura=await obtenerContratoLectura();
+
+const pesoFrio=Number(await lectura.pesoFrioDespostadoG());
+
+const numeros=Array.from({length:15},(_,i)=>i+1);
+
+const topes=await Promise.all(numeros.map(n=>lectura.topeCorte(n)));
+
+let html=`
+<div class="corte-fila cab">
+<span>Corte</span><span>Referencia</span><span>Empacado contra el tope</span><span style="text-align:right">Tope</span>
+</div>
+`;
+
+numeros.forEach((n,i)=>{
+
+const corte=lote.cortes[n];
+
+const empacado=Number(topes[i].empacado);
+
+const tope=Number(topes[i].tope);
+
+const porcentaje=tope>0?Math.min(100,empacado/tope*100):0;
+
+const referencia=pesoFrio*corte.rendimientoPct/100;
+
+html+=`
+<div class="corte-fila">
+<div class="corte-nombre"><strong>${escaparHTML(corte.nombre)}</strong><span>${escaparHTML(corte.codigo)} · ${NOMBRE_CATEGORIA[corte.categoria]}</span></div>
+<div class="corte-num">${corte.rendimientoPct.toLocaleString("es-EC")} %<div class="corte-kg">${kg(referencia)}</div></div>
+<div class="barra-wrap"><div class="barra-corte"><span style="width:${porcentaje.toFixed(1)}%"></span></div><div class="corte-kg">${kg(empacado)} empacados · ${porcentaje.toFixed(0)} % del tope</div></div>
+<div class="corte-num">${kg(tope)}</div>
+</div>
+`;
+
+});
+
+document.getElementById("listaCortes").innerHTML=html;
+
+document.getElementById("notaCortes").innerText=
+"Peso frío despostado del lote: "+kg(pesoFrio)+". El tope de cada corte es su rendimiento de referencia más un 2 % de tolerancia.";
+
+document.getElementById("estadoCortes").className="estado";
+
+}catch(error){
+
+console.error(error);
+
+document.getElementById("notaCortes").innerText="No se pudo leer el contrato.";
+
+mostrarEstado("estadoCortes","No se pudo cargar el catálogo:\n"+obtenerMensajeError(error),"error");
+
+}
+
+}
+
+/* =====================================================
+   ETIQUETA DE TRAZABILIDAD CON QR
+   Corte, peso y fecha real de empaque salen de la cadena.
+   El QR lleva a la consulta pública con el código de venta.
+===================================================== */
+
+async function generarEtiqueta(){
+
+try{
+
+const codigo=document.getElementById("etCodigo").value.trim().toUpperCase();
+
+const base=document.getElementById("etUrl").value.trim();
+
+if(!codigo){
+
+mostrarEstado("estadoEtiqueta","Escribe el código de consulta.","error");
+
+return;
+
+}
+
+if(!base){
+
+mostrarEstado("estadoEtiqueta","Escribe la dirección de la consulta pública.","error");
+
+return;
+
+}
+
+if(typeof QRCode==="undefined"){
+
+throw new Error("No se cargó la librería del código QR.");
+
+}
+
+mostrarEstado("estadoEtiqueta","Leyendo la venta en la blockchain...","info");
+
+await cargarDatosLote();
+
+const lectura=await obtenerContratoLectura();
+
+let venta;
+
+try{
+
+venta=await lectura.verificarCompra(ethers.id(codigo));
+
+}catch(error){
+
+throw new Error("Ese código no corresponde a ninguna venta registrada.");
+
+}
+
+const caja=await lectura.obtenerCaja(venta.caja);
+
+const corte=lote.cortes[Number(caja.corte)];
+
+const direccion=base+(base.includes("?")?"&":"?")+"codigo="+encodeURIComponent(codigo);
+
+const canales=canalesDeMascara(caja.canales);
+
+const origen=caja.mezclaDeLote?"Mezcla de lote":canales.map(codigoCanal).join(", ");
+
+document.getElementById("vistaEtiqueta").innerHTML=`
+<div class="etiqueta" id="etiquetaImprimible">
+<div class="etiqueta-cab">
+${document.querySelector(".sidebar .marca-logo").outerHTML}
+<div><strong>Camal Metropolitano</strong><span>Etiqueta de trazabilidad</span></div>
+</div>
+<div class="etiqueta-cuerpo">
+<div class="etiqueta-datos">
+<h3>${escaparHTML(corte.nombre)}</h3>
+<dl>
+<dt>Corte</dt><dd>${escaparHTML(corte.codigo)}</dd>
+<dt>Lote</dt><dd>LF-2026-0188</dd>
+<dt>Caja</dt><dd>${codigoCaja(caja.numero)}</dd>
+<dt>Peso</dt><dd>${kg(caja.pesoG)}</dd>
+<dt>Empaque</dt><dd>${formatearFecha(caja.fechaEmpaqueReal)}</dd>
+<dt>Origen</dt><dd>${escaparHTML(origen)}</dd>
+</dl>
+</div>
+<div class="etiqueta-qr">
+<div id="qrEtiqueta"></div>
+<small>${escaparHTML(codigo)}</small>
+</div>
+</div>
+<div class="etiqueta-pie"><span>Escanea para verificar en la blockchain</span><span>Ethereum Sepolia</span></div>
+</div>
+`;
+
+new QRCode(document.getElementById("qrEtiqueta"),{
+text:direccion,
+width:256,
+height:256,
+colorDark:"#0a100d",
+colorLight:"#ffffff",
+correctLevel:QRCode.CorrectLevel.H
+});
+
+ultimaEtiqueta={codigo:codigo,direccion:direccion};
+
+document.getElementById("btnImprimirEtiqueta").disabled=false;
+
+document.getElementById("btnDescargarQr").disabled=false;
+
+mostrarEstado("estadoEtiqueta","Etiqueta lista. El QR abre: "+direccion,"exito");
+
+}catch(error){
+
+console.error(error);
+
+mostrarEstado("estadoEtiqueta",obtenerMensajeError(error),"error");
+
+}
+
+}
+
+conIndicador("generarEtiqueta");
+
+function imprimirEtiqueta(){
+
+if(!ultimaEtiqueta){
+
+mostrarAviso("Primero genera la etiqueta.","error");
+
+return;
+
+}
+
+window.print();
+
+}
+
+function descargarQr(){
+
+const contenedor=document.getElementById("qrEtiqueta");
+
+const lienzo=contenedor&&contenedor.querySelector("canvas");
+
+const imagen=contenedor&&contenedor.querySelector("img");
+
+const origen=lienzo?lienzo.toDataURL("image/png"):(imagen?imagen.src:null);
+
+if(!origen||!ultimaEtiqueta){
+
+mostrarAviso("Primero genera la etiqueta.","error");
+
+return;
+
+}
+
+const enlace=document.createElement("a");
+
+enlace.href=origen;
+
+enlace.download="QR_"+ultimaEtiqueta.codigo+".png";
+
+document.body.appendChild(enlace);
+
+enlace.click();
+
+enlace.remove();
+
+}
+
+/* =====================================================
+   RETIRO HACIA ADELANTE: LISTA DE CLIENTES A NOTIFICAR (CSV)
+===================================================== */
+
+function exportarClientesCsv(){
+
+const tablas=document.querySelectorAll("#resultadoAdelante table");
+
+if(tablas.length===0){
+
+mostrarAviso("Primero busca una canal.","error");
+
+return;
+
+}
+
+const filas=[];
+
+tablas.forEach((tabla,i)=>{
+
+const tipo=i===0?"Directa":"Mezcla de lote (molida)";
+
+tabla.querySelectorAll("tr").forEach((tr,j)=>{
+
+if(j===0&&i>0)return;
+
+const celdas=Array.from(tr.children).map(c=>c.textContent.replace(/\s+/g," ").trim());
+
+filas.push([j===0?"Tipo":tipo].concat(celdas));
+
+});
+
+});
+
+const csv=filas
+.map(f=>f.map(c=>'"'+c.replace(/"/g,'""')+'"').join(","))
+.join("\r\n");
+
+const blob=new Blob(["﻿"+csv],{type:"text/csv;charset=utf-8"});
+
+const enlace=document.createElement("a");
+
+enlace.href=URL.createObjectURL(blob);
+
+enlace.download="retiro_"+(document.getElementById("codigoCanal").value.trim()||"canal")+".csv";
+
+document.body.appendChild(enlace);
+
+enlace.click();
+
+enlace.remove();
+
+setTimeout(()=>URL.revokeObjectURL(enlace.href),2000);
+
+mostrarAviso("Lista descargada: "+(filas.length-1)+" cajas.","ok");
+
+}
+
+new MutationObserver(()=>{
+
+document.getElementById("btnCsv").hidden=
+!document.querySelector("#resultadoAdelante table");
+
+}).observe(document.getElementById("resultadoAdelante"),{childList:true,subtree:true});
+
+/* =====================================================
+   AL CARGAR
+===================================================== */
+
+document.getElementById("enlaceConsulta").href=URL_CONSULTA;
+
+</script>
+
 
 
 

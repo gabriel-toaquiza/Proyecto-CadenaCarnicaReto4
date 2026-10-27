@@ -56,6 +56,23 @@ No bloquea ventas: el retiro automático es el Nivel 3.
 `consulta/datos_publicos.json` trae solo lo publicable (cortes, predios y lecturas de frío): ningún
 nombre de persona ni de cliente ni dirección.
 
+## Interfaz
+
+Tema negro y dorado "Camal Metropolitano". La **App Admin** (`app/index.html`) pide inicio de sesión del
+administrador y ofrece, además de los cinco criterios y el retiro sanitario:
+
+- **Buscador global** en la barra superior: entiende cajas (`CJ-…`), canales (`CN-…`), despachos (`DSP-…`)
+  y códigos de venta (`QR-…`) y lleva a la consulta correcta.
+- **Alertas del lote** (campana y panel de Inicio), calculadas desde los contratos: retiro vigente, ventas
+  posteriores a la orden, despachos con frío no demostrado y cajas rechazadas.
+- **Catálogo de cortes**: rendimiento de referencia de los 15 cortes frente al tope físico que calcula el contrato.
+- **Etiqueta y QR**: etiqueta de trazabilidad de una venta, imprimible, con el QR hacia la consulta pública.
+- **Lista de clientes a notificar** del retiro hacia adelante, descargable en CSV.
+- Tarjeta de **wallet** conectada y estado de Sepolia con el número de bloque.
+
+Si existe una foto de un corte (`app/corte.jpg`), se muestra sobre la portada. La consulta del consumidor
+(`consulta/`) usa el mismo tema y se adapta a celular y computadora.
+
 ## Cómo maneja la división y la mezcla
 
 - Una canal produce 15 piezas, una por corte: se registran juntas en el **desposte** de la canal, con su

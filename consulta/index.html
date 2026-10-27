@@ -7,7 +7,7 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Caveat:wght@600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Allura&family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Mulish:wght@400;500;600;700;800&display=swap">
 
 <script src="https://cdn.jsdelivr.net/npm/ethers@6.13.2/dist/ethers.umd.min.js"></script>
 <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
@@ -17,26 +17,37 @@
 
 /* =====================================================
    CAMAL METROPOLITANO · CONSULTA DEL CONSUMIDOR
-   Encabezado verde con foto, contenido claro, tarjetas blancas.
+   Tema negro y dorado: portada con la foto del hato, fondo
+   carbón y tarjetas claras. Verde, rojo y ámbar solo para
+   estados (cumple, retiro, aviso).
 ===================================================== */
 
 :root{
---verde-900:#0c2a20;
---verde-800:#123628;
+--carbon-950:#06090a;
+--carbon-900:#0a100d;
+--carbon-800:#0f1814;
+--carbon-700:#16231d;
+--oro:#d4a950;
+--oro-claro:#ecd08a;
+--oro-oscuro:#a8832f;
+--oro-fondo:#f7f0dd;
 --verde-700:#1d5a42;
---verde-600:#2a7552;
+--verde-600:#2f8a5f;
 --verde-300:#7ed39a;
---verde-100:#e7f4ec;
---fondo:#f2f5f3;
+--verde-100:#e6f3ea;
+--fondo:#eff1ee;
 --tarjeta:#ffffff;
---borde:#e1e9e4;
---texto:#14231d;
---tenue:#61756c;
+--borde:#e2e7e2;
+--texto:#14201a;
+--tenue:#5f7167;
 --rojo:#b8443a;
 --rojo-100:#fbeceb;
---fuente:"Poppins","Segoe UI",Arial,sans-serif;
+--ambar:#b7791f;
+--fuente:"Mulish","Segoe UI",Arial,sans-serif;
+--serif:"Cormorant Garamond",Georgia,"Times New Roman",serif;
+--script:"Allura","Segoe Script",cursive;
 --mono:Consolas,"Courier New",monospace;
---sombra:0 6px 22px rgba(16,42,32,.08);
+--sombra:0 8px 26px rgba(8,16,12,.10);
 }
 
 body{
@@ -48,6 +59,13 @@ min-height:100vh;
 padding:0 0 35px;
 }
 
+em{
+font-family:var(--serif);
+font-style:italic;
+color:var(--oro);
+font-weight:600;
+}
+
 .container{
 width:100%;
 max-width:560px;
@@ -55,86 +73,81 @@ margin:auto;
 padding:0 14px;
 }
 
-/* Encabezado con foto: encabezado.jpg en la misma carpeta.
-   Si no existe, queda el fondo verde. */
+/* ---------- Portada ---------- */
+
 .header{
+position:relative;
+isolation:isolate;
 margin:0 -14px 18px;
-padding:26px 22px 30px;
-color:#ffffff;
-background:
-linear-gradient(180deg,rgba(9,33,25,.55) 0%,rgba(9,33,25,.1) 22%,rgba(9,33,25,.15) 42%,rgba(9,33,25,.85) 66%,rgba(9,33,25,.96) 100%),
-url("encabezado.jpg") 68% 0%/cover no-repeat,
-linear-gradient(140deg,var(--verde-800),var(--verde-700));
-border-radius:0 0 24px 24px;
-min-height:400px;
+padding:24px 22px 28px;
+min-height:420px;
 display:flex;
 flex-direction:column;
-}
-
-.header h1{
-margin-top:auto;
+color:#ffffff;
+border-radius:0 0 26px 26px;
+border-bottom:1px solid rgba(212,169,80,.4);
+background:
+linear-gradient(180deg,rgba(6,9,10,.62) 0%,rgba(6,9,10,.08) 24%,rgba(6,9,10,.18) 42%,rgba(6,9,10,.88) 68%,rgba(6,9,10,.97) 100%),
+url("encabezado.jpg") 68% 0%/cover no-repeat,
+var(--carbon-800);
 }
 
 .marca{
 display:flex;
 align-items:center;
-gap:10px;
-margin-bottom:26px;
+gap:11px;
 }
 
 .marca-logo{
-width:40px;
-height:40px;
+width:46px;
+height:46px;
 flex-shrink:0;
 }
 
 .marca-nombre{
-font-size:16px;
-font-weight:700;
-line-height:1.1;
-}
-
-.marca-nombre span{
-color:var(--verde-300);
+font-family:var(--serif);
+font-size:23px;
+font-weight:600;
+line-height:1;
+letter-spacing:.2px;
 }
 
 .marca-sub{
 font-size:11px;
-color:#bcd5c8;
-margin-top:2px;
+color:#d6d0bc;
+margin-top:4px;
 }
 
 h1{
-font-size:27px;
-line-height:1.15;
-margin:0;
-font-weight:700;
+font-family:var(--serif);
+font-weight:600;
+font-size:38px;
+line-height:1.02;
+margin:auto 0 0;
 text-wrap:balance;
 }
 
-h1 span{
-color:var(--verde-300);
-}
-
 .subtitle{
-color:#d3e4da;
-font-size:13px;
+color:#d8d2bf;
+font-size:13.5px;
 margin:10px 0 0;
-line-height:1.55;
+line-height:1.6;
 }
 
 .network{
 display:inline-flex;
 align-self:flex-start;
 align-items:center;
-gap:7px;
+gap:8px;
 margin-top:16px;
 padding:7px 13px;
 border-radius:30px;
-background:rgba(255,255,255,.12);
-border:1px solid rgba(255,255,255,.25);
-font-size:11.5px;
-color:#ffffff;
+border:1px solid rgba(212,169,80,.55);
+background:rgba(212,169,80,.09);
+font-size:11px;
+font-weight:700;
+letter-spacing:.4px;
+color:var(--oro-claro);
 }
 
 .dot{
@@ -145,33 +158,37 @@ border-radius:50%;
 box-shadow:0 0 10px var(--verde-300);
 }
 
+/* ---------- Tarjetas y formularios ---------- */
+
 .card{
 background:var(--tarjeta);
 border:1px solid var(--borde);
 border-radius:18px;
-padding:20px;
+padding:22px;
 margin-bottom:14px;
 box-shadow:var(--sombra);
 }
 
 .card h2{
-font-size:18px;
+font-family:var(--serif);
+font-size:26px;
+font-weight:700;
 margin:0 0 6px;
-font-weight:600;
+line-height:1.1;
 }
 
 .card p{
-font-size:12.5px;
+font-size:13px;
 color:var(--tenue);
-line-height:1.55;
+line-height:1.6;
 margin:0 0 15px;
 }
 
 .section-label{
 font-size:10.5px;
-font-weight:600;
-letter-spacing:1.6px;
-color:var(--verde-600);
+font-weight:800;
+letter-spacing:1.8px;
+color:var(--oro-oscuro);
 margin-bottom:8px;
 }
 
@@ -180,13 +197,13 @@ display:block;
 font-size:12.5px;
 color:var(--texto);
 margin-bottom:7px;
-font-weight:600;
+font-weight:700;
 }
 
 input{
 width:100%;
-background:#fbfdfc;
-border:1px solid #d5e0da;
+background:#fbfcfa;
+border:1px solid #d6ddd6;
 border-radius:11px;
 padding:14px;
 font-size:16px;
@@ -196,12 +213,12 @@ font-family:inherit;
 }
 
 input::placeholder{
-color:#93a69c;
+color:#94a399;
 }
 
 input:focus{
-border-color:var(--verde-600);
-box-shadow:0 0 0 3px rgba(42,117,82,.15);
+border-color:var(--oro);
+box-shadow:0 0 0 3px rgba(212,169,80,.22);
 }
 
 .btn{
@@ -211,12 +228,12 @@ margin-top:11px;
 border:0;
 border-radius:11px;
 font-size:14px;
-font-weight:600;
+font-weight:800;
 font-family:inherit;
-color:white;
+color:#171204;
 cursor:pointer;
-background:linear-gradient(100deg,var(--verde-600),var(--verde-700));
-box-shadow:0 6px 16px rgba(29,90,66,.25);
+background:linear-gradient(100deg,#b8923d,#e0bb68 50%,#b08934);
+box-shadow:0 6px 16px rgba(168,131,47,.3);
 }
 
 .btn:active{
@@ -224,18 +241,21 @@ transform:scale(.99);
 }
 
 .btn:focus-visible{
-outline:3px solid var(--verde-300);
+outline:3px solid rgba(212,169,80,.5);
 outline-offset:2px;
 }
 
 .btn-green{
-background:linear-gradient(100deg,#3a8f66,var(--verde-600));
+background:#ffffff;
+color:var(--texto);
+border:1.5px solid var(--oro);
+box-shadow:none;
 }
 
 .btn-gray{
 background:#ffffff;
-color:var(--verde-700);
-border:1.5px solid var(--verde-700);
+color:var(--texto);
+border:1.5px solid #cfd6cf;
 box-shadow:none;
 }
 
@@ -271,9 +291,9 @@ color:#8d2f26;
 
 .info{
 display:block;
-background:#eef5fb;
-border:1px solid #bdd6ea;
-color:#285473;
+background:var(--oro-fondo);
+border:1px solid #e6d29b;
+color:#6b5416;
 }
 
 #reader{
@@ -281,7 +301,7 @@ width:100%;
 margin-top:14px;
 border-radius:12px;
 overflow:hidden;
-background:var(--verde-900);
+background:var(--carbon-900);
 }
 
 #reader video{
@@ -303,8 +323,9 @@ line-height:1.5;
 
 .alerta h3{
 margin:0 0 8px;
-font-size:18px;
-letter-spacing:.3px;
+font-family:var(--serif);
+font-size:25px;
+line-height:1.1;
 }
 
 .alerta p{
@@ -314,15 +335,15 @@ color:inherit;
 }
 
 .alerta.retiro{
-background:linear-gradient(140deg,#a63a2e,#7d2a22);
+background:linear-gradient(140deg,#a63a2e,#76271f);
 border:2px solid #e98b7f;
 color:#ffffff;
-box-shadow:0 10px 26px rgba(125,42,34,.3);
+box-shadow:0 10px 26px rgba(125,42,34,.32);
 }
 
 .alerta.retiro .grande{
 font-size:22px;
-font-weight:700;
+font-weight:800;
 }
 
 .alerta.sin-retiro{
@@ -332,19 +353,21 @@ color:#17583d;
 }
 
 .lote-info{
-background:#f8fbf9;
+background:#ffffff;
 border:1px solid var(--borde);
 border-radius:14px;
-padding:15px;
+padding:16px;
 margin-bottom:14px;
 overflow-wrap:anywhere;
+box-shadow:0 3px 14px rgba(8,16,12,.05);
 }
 
 .lote-info h3{
-font-size:13px;
-letter-spacing:1px;
+font-size:12px;
+font-weight:800;
+letter-spacing:1.4px;
 margin:0 0 11px;
-color:var(--verde-700);
+color:var(--oro-oscuro);
 }
 
 .lote-info p{
@@ -354,13 +377,9 @@ color:var(--texto);
 line-height:1.5;
 }
 
-.lote-info strong{
-color:var(--texto);
-}
-
 .evento{
-border-left:4px solid var(--verde-600);
-background:#ffffff;
+border-left:4px solid var(--oro);
+background:#fbfcfa;
 border-top:1px solid var(--borde);
 border-right:1px solid var(--borde);
 border-bottom:1px solid var(--borde);
@@ -377,7 +396,7 @@ display:inline-block;
 padding:2px 9px;
 border-radius:20px;
 font-size:11px;
-font-weight:600;
+font-weight:700;
 margin-left:4px;
 }
 
@@ -397,12 +416,12 @@ border:1px solid #e8b0aa;
 font-family:var(--mono);
 font-size:11px;
 word-break:break-all;
-color:#3e6b58;
+color:#6b5a2a;
 }
 
 .verificar a{
-color:var(--verde-600);
-font-weight:600;
+color:var(--oro-oscuro);
+font-weight:800;
 }
 
 .verificar ol{
@@ -422,9 +441,9 @@ padding:10px;
 }
 
 .lema{
-font-family:"Caveat","Segoe Script",cursive;
-font-size:22px;
-color:var(--verde-700);
+font-family:var(--script);
+font-size:30px;
+color:var(--oro-oscuro);
 margin-bottom:4px;
 }
 
@@ -445,8 +464,8 @@ display:inline-block;
 width:18px;
 height:18px;
 border-radius:50%;
-border:2.5px solid rgba(255,255,255,.45);
-border-top-color:#ffffff;
+border:2.5px solid rgba(23,18,4,.3);
+border-top-color:#171204;
 animation:girar .8s linear infinite;
 }
 
@@ -458,8 +477,8 @@ margin:-9px 0 0 -9px;
 }
 
 .giro{
-border-color:rgba(29,90,66,.2);
-border-top-color:var(--verde-700);
+border-color:rgba(168,131,47,.25);
+border-top-color:var(--oro-oscuro);
 flex-shrink:0;
 }
 
@@ -477,13 +496,13 @@ align-items:center;
 gap:12px;
 padding:18px;
 border-radius:14px;
-background:#f8fbf9;
-border:1px dashed #b9d9c6;
+background:var(--oro-fondo);
+border:1px dashed #d9c283;
 font-size:13px;
-color:var(--verde-700);
+color:#6b5416;
 }
 
-/* Diagrama de etapas */
+/* ---------- Diagrama de etapas ---------- */
 
 .etapas{
 list-style:none;
@@ -507,7 +526,7 @@ left:21px;
 top:50px;
 bottom:-10px;
 width:2px;
-background:#cfe5d8;
+background:#e3d6ac;
 }
 
 .etapa-icono{
@@ -519,9 +538,9 @@ border-radius:50%;
 display:flex;
 align-items:center;
 justify-content:center;
-background:var(--verde-100);
-border:2px solid #9fd8b4;
-color:var(--verde-700);
+background:var(--carbon-800);
+border:2px solid var(--oro);
+color:var(--oro);
 z-index:1;
 }
 
@@ -530,7 +549,7 @@ width:21px;
 height:21px;
 fill:none;
 stroke:currentColor;
-stroke-width:1.8;
+stroke-width:1.7;
 stroke-linecap:round;
 stroke-linejoin:round;
 }
@@ -546,7 +565,7 @@ display:flex;
 align-items:center;
 justify-content:center;
 font-size:11px;
-font-weight:700;
+font-weight:800;
 color:#ffffff;
 background:var(--verde-600);
 border:2px solid #ffffff;
@@ -554,7 +573,7 @@ border:2px solid #ffffff;
 
 .etapa.mal .etapa-icono{
 background:#fff6e6;
-border-color:#e9c17c;
+border-color:#e0b25e;
 color:#9a6612;
 }
 
@@ -591,10 +610,10 @@ color:var(--tenue);
 
 .etapa.aviso .etapa-texto span{
 color:var(--rojo);
-font-weight:600;
+font-weight:700;
 }
 
-/* Códigos explicados */
+/* ---------- Códigos explicados ---------- */
 
 .codigos{
 background:#ffffff;
@@ -607,8 +626,8 @@ font-size:12.5px;
 
 .codigos summary{
 cursor:pointer;
-font-weight:600;
-color:var(--verde-700);
+font-weight:800;
+color:var(--oro-oscuro);
 }
 
 .codigos dl{
@@ -621,7 +640,7 @@ margin:12px 0 8px;
 .codigos dt{
 font-family:var(--mono);
 font-weight:700;
-color:var(--verde-700);
+color:var(--oro-oscuro);
 }
 
 .codigos dd{
@@ -663,6 +682,9 @@ display:none;
 
 body{
 padding:24px 28px 40px;
+background:
+radial-gradient(ellipse at 90% 0%,rgba(212,169,80,.07),transparent 40%),
+var(--fondo);
 }
 
 .container{
@@ -673,22 +695,28 @@ padding:0;
 .header{
 margin:0 0 24px;
 border-radius:24px;
-min-height:340px;
-padding:34px 44px 38px;
+min-height:360px;
+padding:34px 46px 40px;
+border:1px solid rgba(212,169,80,.32);
 background:
-linear-gradient(90deg,rgba(9,33,25,.95) 0%,rgba(9,33,25,.82) 38%,rgba(9,33,25,.25) 72%,rgba(9,33,25,.1) 100%),
-url("encabezado.jpg") right 18%/cover no-repeat,
-linear-gradient(140deg,var(--verde-800),var(--verde-700));
+linear-gradient(90deg,rgba(6,9,10,.96) 0%,rgba(6,9,10,.84) 38%,rgba(6,9,10,.22) 72%,rgba(6,9,10,.08) 100%),
+url("encabezado.jpg") right 16%/cover no-repeat,
+var(--carbon-800);
 }
 
+.marca-nombre{font-size:27px}
+
+.marca-logo{width:54px;height:54px}
+
 .header h1{
-font-size:42px;
+font-size:60px;
 max-width:560px;
+margin-top:auto;
 }
 
 .header .subtitle{
 font-size:15px;
-max-width:520px;
+max-width:480px;
 }
 
 .disposicion{
@@ -709,11 +737,8 @@ margin-top:auto;
 }
 
 .zona-resultado{
-align-self:start;
-}
-
-.zona-resultado{
 min-width:0;
+align-self:start;
 }
 
 #resultado:not(:empty){
@@ -745,8 +770,8 @@ align-items:flex-start;
 gap:10px;
 padding:36px 40px;
 border-radius:18px;
-border:2px dashed #c6dccf;
-background:#f8fbf9;
+border:2px dashed #cdbf93;
+background:#f9f6ea;
 color:var(--tenue);
 }
 
@@ -754,15 +779,16 @@ color:var(--tenue);
 width:46px;
 height:46px;
 fill:none;
-stroke:var(--verde-600);
-stroke-width:1.6;
+stroke:var(--oro-oscuro);
+stroke-width:1.5;
 stroke-linecap:round;
 stroke-linejoin:round;
 }
 
 .resultado-vacio h2{
 margin:0;
-font-size:22px;
+font-family:var(--serif);
+font-size:28px;
 color:var(--texto);
 }
 
@@ -784,13 +810,6 @@ color:var(--texto);
 margin-top:20px;
 }
 }
-
-@media(min-width:1280px){
-
-#resultado:not(:empty){
-grid-template-columns:1fr 1fr;
-}
-}
 </style>
 </head>
 
@@ -801,17 +820,24 @@ grid-template-columns:1fr 1fr;
 <header class="header">
 
 <div class="marca">
-<svg class="marca-logo" viewBox="0 0 48 48" aria-hidden="true">
-<path d="M24 3l17 6.5v12.5c0 10.5-7.2 19-17 23C14.2 41 7 32.5 7 22V9.5z" fill="#1d5a42" stroke="#7ed39a" stroke-width="2"/>
-<path d="M16 24.5l6 6 11.5-12.5" fill="none" stroke="#ffffff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>
+<svg class="marca-logo" viewBox="0 0 48 48" aria-hidden="true" fill="none" stroke="#d4a950" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+<path d="M15 14.500C9 14.500 5.500 11 6 5c2.500 3.500 5.500 5 10 5.500"/>
+<path d="M33 14.500c6 0 9.500-3.500 9-9.500-2.500 3.500-5.500 5-10 5.500"/>
+<path d="M15 13h18c.8 8-.5 14.500-3 19.500-1.500 3-3.500 5.500-6 7-2.500-1.500-4.500-4-6-7-2.500-5-3.800-11.500-3-19.500z"/>
+<path d="M15.500 17 8.500 19.500 14 24"/>
+<path d="M32.500 17l7 2.500L34 24"/>
+<path d="M19.500 33.500c1.500 1.500 3 2 4.500 2s3-.5 4.500-2"/>
+<path d="M21 13.500Q24 18 27 13.500"/>
+<circle cx="19.500" cy="23" r="1" fill="#d4a950"/>
+<circle cx="28.500" cy="23" r="1" fill="#d4a950"/>
 </svg>
 <div>
-<div class="marca-nombre">Camal <span>Metropolitano</span></div>
-<div class="marca-sub">San Ramón de Altamira · del campo a tu mesa</div>
+<div class="marca-nombre">Camal Metropolitano</div>
+<div class="marca-sub">Del origen al corte perfecto</div>
 </div>
 </div>
 
-<h1>¿De dónde viene <span>tu carne?</span></h1>
+<h1>¿De dónde viene<br><em>tu carne?</em></h1>
 
 <p class="subtitle">
 Consulta pública del lote LF-2026-0188: origen, dictamen sanitario, fecha real
@@ -907,7 +933,7 @@ Detener cámara
 </div>
 
 <footer class="footer">
-<div class="lema">La confianza también se traza</div>
+<div class="lema">La trazabilidad también es calidad</div>
 Blockchain · Transparencia · Trazabilidad<br>
 Datos sintéticos de ejercicio · Reto 04 · Caso San Ramón de Altamira
 </footer>

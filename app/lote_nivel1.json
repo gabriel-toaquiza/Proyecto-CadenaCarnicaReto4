@@ -4,76 +4,91 @@
   "1": {
    "codigo": "CT-01",
    "nombre": "Lomo fino",
+   "categoria": "PREMIUM",
    "rendimientoPct": 1.6
   },
   "2": {
    "codigo": "CT-02",
    "nombre": "Lomo de falda",
+   "categoria": "PRIMERA",
    "rendimientoPct": 2.4
   },
   "3": {
    "codigo": "CT-03",
    "nombre": "Solomo",
+   "categoria": "PRIMERA",
    "rendimientoPct": 3.2
   },
   "4": {
    "codigo": "CT-04",
    "nombre": "Pulpa blanca",
+   "categoria": "PRIMERA",
    "rendimientoPct": 5.0
   },
   "5": {
    "codigo": "CT-05",
    "nombre": "Pulpa negra",
+   "categoria": "PRIMERA",
    "rendimientoPct": 4.6
   },
   "6": {
    "codigo": "CT-06",
    "nombre": "Bola de lomo",
+   "categoria": "PRIMERA",
    "rendimientoPct": 3.0
   },
   "7": {
    "codigo": "CT-07",
    "nombre": "Cadera",
+   "categoria": "PRIMERA",
    "rendimientoPct": 3.4
   },
   "8": {
    "codigo": "CT-08",
    "nombre": "Colita de cuadril",
+   "categoria": "PREMIUM",
    "rendimientoPct": 1.0
   },
   "9": {
    "codigo": "CT-09",
    "nombre": "Chuleta de costilla",
+   "categoria": "PRIMERA",
    "rendimientoPct": 4.2
   },
   "10": {
    "codigo": "CT-10",
    "nombre": "Costilla",
+   "categoria": "SEGUNDA",
    "rendimientoPct": 6.8
   },
   "11": {
    "codigo": "CT-11",
    "nombre": "Falda",
+   "categoria": "SEGUNDA",
    "rendimientoPct": 3.6
   },
   "12": {
    "codigo": "CT-12",
    "nombre": "Brazo o paleta",
+   "categoria": "SEGUNDA",
    "rendimientoPct": 5.4
   },
   "13": {
    "codigo": "CT-13",
    "nombre": "Osobuco",
+   "categoria": "SEGUNDA",
    "rendimientoPct": 2.8
   },
   "14": {
    "codigo": "CT-14",
    "nombre": "Pecho",
+   "categoria": "SEGUNDA",
    "rendimientoPct": 3.0
   },
   "15": {
    "codigo": "CT-15",
    "nombre": "Carne molida industrial",
+   "categoria": "INDUSTRIAL",
    "rendimientoPct": 11.0
   }
  },
