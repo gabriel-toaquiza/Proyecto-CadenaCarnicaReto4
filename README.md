@@ -66,6 +66,13 @@ administrador y ofrece, además de los cinco criterios y el retiro sanitario:
   y códigos de venta (`QR-…`) y lleva a la consulta correcta.
 - **Alertas del lote** (campana y panel de Inicio), calculadas desde los contratos: retiro vigente, ventas
   posteriores a la orden, despachos con frío no demostrado y cajas rechazadas.
+- **Hilo del lote** en Inicio, con el estado de cada etapa leído del contrato.
+- **Escáner de QR** (cámara o foto) para abrir la consulta de una caja, canal, despacho o venta.
+- **Hacia atrás:** factor de trazabilidad 7/7 según la sección 5 del manual.
+- **Hacia adelante:** ventas posteriores a la orden de retiro marcadas, filtros y clientes agrupados.
+- **Balance de masa:** simulador que pregunta al contrato si aceptaría una caja, sin escribir nada.
+- **Cadena de frío:** gráfico del trayecto de cada despacho con el tramo sin lecturas.
+- **Privacidad:** comparativa de lo que ve la cadena y lo que solo sabe el camal.
 - **Catálogo de cortes**: rendimiento de referencia de los 15 cortes frente al tope físico que calcula el contrato.
 - **Etiqueta y QR**: etiqueta de trazabilidad de una venta, imprimible, con el QR hacia la consulta pública.
 - **Lista de clientes a notificar** del retiro hacia adelante, descargable en CSV.

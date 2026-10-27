@@ -11,6 +11,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/ethers@6.13.2/dist/ethers.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 
 <style>
 *{box-sizing:border-box}
@@ -2794,6 +2795,877 @@ padding-bottom:8px;
 @media(max-width:380px){
 .dashboard-grid{grid-template-columns:1fr}
 }
+
+/* =====================================================
+   EL HILO DEL LOTE · siete etiquetas colgadas de una cuerda
+===================================================== */
+
+.hilo-card{
+overflow:hidden;
+}
+
+.hilo{
+overflow-x:auto;
+padding-bottom:6px;
+scrollbar-width:thin;
+scrollbar-color:var(--carbon-700) transparent;
+}
+
+.hilo-interior{
+position:relative;
+min-width:960px;
+}
+
+.hilo-cuerda{
+position:absolute;
+left:0;
+top:0;
+width:100%;
+height:64px;
+z-index:2;
+pointer-events:none;
+overflow:visible;
+}
+
+.hilo-cuerda path{
+fill:none;
+stroke:var(--oro-500);
+stroke-width:2;
+stroke-linecap:round;
+vector-effect:non-scaling-stroke;
+filter:drop-shadow(0 2px 3px rgba(0,0,0,.5));
+}
+
+.hilo-pista{
+list-style:none;
+margin:0;
+padding:22px 0 0;
+display:grid;
+grid-template-columns:repeat(7,minmax(0,1fr));
+gap:12px;
+}
+
+.hilo-paso{
+position:relative;
+filter:drop-shadow(0 10px 14px rgba(0,0,0,.45));
+}
+
+.hilo-paso .tag{
+position:relative;
+height:100%;
+padding:38px 10px 14px;
+display:flex;
+flex-direction:column;
+align-items:center;
+gap:6px;
+text-align:center;
+color:var(--n-900);
+background:linear-gradient(180deg,#faf4e2,var(--oro-100));
+border-radius:0 0 14px 14px;
+clip-path:polygon(18% 0,82% 0,100% 12%,100% 100%,0 100%,0 12%);
+}
+
+.hilo-paso .tag::before{
+content:"";
+position:absolute;
+top:10px;
+left:50%;
+width:12px;
+height:12px;
+margin-left:-6px;
+border-radius:50%;
+background:var(--carbon-800);
+box-shadow:inset 0 0 0 2px var(--oro-600);
+}
+
+.tag-icono{
+width:40px;
+height:40px;
+border-radius:50%;
+display:flex;
+align-items:center;
+justify-content:center;
+background:var(--carbon-800);
+color:var(--oro-300);
+}
+
+.tag-icono svg{
+width:20px;
+height:20px;
+fill:none;
+stroke:currentColor;
+stroke-width:1.7;
+stroke-linecap:round;
+stroke-linejoin:round;
+}
+
+.tag-etapa{
+font-size:var(--t-xs);
+font-weight:600;
+letter-spacing:.6px;
+text-transform:uppercase;
+line-height:1.25;
+color:var(--oro-800);
+}
+
+.tag-valor{
+font-family:var(--serif);
+font-size:var(--t-3xl);
+font-weight:600;
+line-height:1.1;
+font-variant-numeric:tabular-nums;
+color:var(--n-900);
+}
+
+.tag-nota{
+font-size:var(--t-xs);
+line-height:1.35;
+color:var(--n-600);
+min-height:2.7em;
+}
+
+.tag-estado{
+margin-top:auto;
+padding:3px 11px;
+border-radius:var(--r-pill);
+font-size:var(--t-xs);
+font-weight:600;
+background:var(--n-200);
+color:var(--n-600);
+}
+
+.hilo-paso.completo .tag-estado{
+background:var(--ok-100);
+color:var(--ok-800);
+box-shadow:inset 0 0 0 1px var(--ok-300);
+}
+
+.hilo-paso.parcial .tag-estado{
+background:var(--aviso-100);
+color:var(--aviso-800);
+box-shadow:inset 0 0 0 1px var(--aviso-300);
+}
+
+/* =====================================================
+   FICHAS RÁPIDAS, FILTROS Y CONTROLES COMUNES
+===================================================== */
+
+.chips{
+display:flex;
+align-items:center;
+gap:8px;
+flex-wrap:wrap;
+margin-top:14px;
+}
+
+.chips > span{
+font-size:var(--t-xs);
+font-weight:600;
+letter-spacing:.8px;
+text-transform:uppercase;
+color:var(--tenue);
+margin-right:2px;
+}
+
+.chip{
+padding:6px 12px;
+border:1px solid var(--n-300);
+border-radius:var(--r-pill);
+background:#ffffff;
+font-size:var(--t-sm);
+color:var(--texto);
+cursor:pointer;
+transition:border-color .15s,background .15s;
+}
+
+.chip:hover{
+border-color:var(--oro-500);
+background:var(--oro-100);
+}
+
+.chip small{
+color:var(--tenue);
+margin-left:4px;
+}
+
+.btn-icono{
+gap:8px;
+}
+
+.btn-icono svg{
+width:18px;
+height:18px;
+flex-shrink:0;
+fill:none;
+stroke:currentColor;
+stroke-width:1.8;
+stroke-linecap:round;
+stroke-linejoin:round;
+}
+
+.buscador .escanear{
+width:34px;
+height:34px;
+flex-shrink:0;
+border:0;
+border-radius:var(--r-sm);
+background:transparent;
+color:var(--tenue);
+display:flex;
+align-items:center;
+justify-content:center;
+cursor:pointer;
+}
+
+.buscador .escanear:hover{
+background:var(--oro-100);
+color:var(--oro-800);
+}
+
+.buscador .escanear svg{
+width:19px;
+height:19px;
+fill:none;
+stroke:currentColor;
+stroke-width:1.8;
+stroke-linecap:round;
+stroke-linejoin:round;
+}
+
+.check{
+display:inline-flex;
+align-items:center;
+gap:8px;
+font-size:var(--t-sm);
+font-weight:500;
+color:var(--texto);
+cursor:pointer;
+margin:0;
+}
+
+.check input{
+width:16px;
+height:16px;
+accent-color:var(--oro-600);
+}
+
+.filtro{
+display:flex;
+align-items:center;
+gap:16px;
+flex-wrap:wrap;
+margin:18px 0 0;
+}
+
+.filtro input[type=search]{
+flex:1 1 260px;
+max-width:420px;
+}
+
+.filtro .cuenta{
+margin-left:auto;
+font-size:var(--t-sm);
+color:var(--tenue);
+}
+
+/* =====================================================
+   ESCÁNER DE QR (ventana)
+===================================================== */
+
+.modal{
+position:fixed;
+inset:0;
+z-index:100;
+display:flex;
+align-items:center;
+justify-content:center;
+padding:20px;
+background:rgba(8,13,11,.72);
+backdrop-filter:blur(4px);
+}
+
+.modal[hidden]{
+display:none;
+}
+
+.modal-caja{
+width:min(460px,100%);
+max-height:calc(100vh - 40px);
+overflow-y:auto;
+padding:22px;
+border-radius:var(--r-lg);
+background:#ffffff;
+box-shadow:var(--sombra-2);
+}
+
+.modal-cab{
+display:flex;
+align-items:center;
+justify-content:space-between;
+gap:12px;
+margin-bottom:14px;
+}
+
+.modal-cab h2{
+font-family:var(--serif);
+font-size:var(--t-xl);
+font-weight:600;
+}
+
+.lector{
+min-height:240px;
+border-radius:var(--r-md);
+overflow:hidden;
+background:var(--carbon-900);
+}
+
+.subir-qr{
+width:100%;
+margin-top:12px;
+cursor:pointer;
+}
+
+/* =====================================================
+   1 · HACIA ATRÁS · FACTOR DE TRAZABILIDAD
+===================================================== */
+
+.factor{
+margin-top:16px;
+padding:18px 20px;
+border-radius:var(--r-md);
+border:1px solid var(--ok-300);
+background:linear-gradient(135deg,var(--ok-100),#f7fbf8);
+}
+
+.factor.incompleto{
+border-color:var(--alerta-300);
+background:linear-gradient(135deg,var(--alerta-100),#fdf6f5);
+}
+
+.factor-cab{
+display:flex;
+align-items:center;
+gap:14px;
+flex-wrap:wrap;
+margin-bottom:12px;
+}
+
+.factor-cab .cifra{
+font-family:var(--serif);
+font-size:var(--t-3xl);
+font-weight:600;
+line-height:1;
+color:var(--ok-800);
+}
+
+.factor.incompleto .cifra{
+color:var(--alerta-800);
+}
+
+.factor-cab p{
+flex:1 1 260px;
+margin:0 !important;
+font-size:var(--t-sm) !important;
+color:var(--texto) !important;
+}
+
+.factor-lista{
+list-style:none;
+margin:0;
+padding:0;
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(210px,1fr));
+gap:8px;
+}
+
+.factor-lista li{
+display:flex;
+align-items:flex-start;
+gap:10px;
+padding:9px 12px;
+border-radius:var(--r-sm);
+background:rgba(255,255,255,.75);
+border:1px solid rgba(0,0,0,.06);
+font-size:var(--t-sm);
+line-height:1.35;
+}
+
+.factor-lista .marca-ok{
+width:20px;
+height:20px;
+flex-shrink:0;
+border-radius:50%;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:var(--t-xs);
+font-weight:700;
+color:#ffffff;
+background:var(--ok-500);
+}
+
+.factor-lista li.falta .marca-ok{
+background:var(--alerta-500);
+}
+
+.factor-lista strong{
+display:block;
+font-weight:600;
+}
+
+.factor-lista span.detalle{
+color:var(--tenue);
+font-size:var(--t-xs);
+}
+
+/* =====================================================
+   2 · HACIA ADELANTE · CLIENTES Y VENTAS TRAS LA ORDEN
+===================================================== */
+
+tr.tras-orden td{
+background:var(--alerta-100);
+}
+
+tr.tras-orden td:first-child{
+box-shadow:inset 3px 0 0 var(--alerta-500);
+}
+
+td .badge.mal{
+margin-left:8px;
+}
+
+#resultadoAdelante .dashboard-grid{
+grid-template-columns:repeat(6,minmax(0,1fr));
+}
+
+#resultadoAdelante .metric-value{
+font-size:var(--t-2xl);
+white-space:nowrap;
+}
+
+@media(max-width:760px){
+
+.hilo-card .section-title{
+flex-wrap:wrap;
+}
+
+.hilo-card .section-title .btn-chico{
+margin-left:0 !important;
+width:100%;
+}
+
+.hilo-card .section-title > div:nth-child(2){
+flex:1 1 200px;
+min-width:0;
+}
+
+}
+
+@media(max-width:1280px){
+#resultadoAdelante .dashboard-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+
+@media(max-width:760px){
+#resultadoAdelante .dashboard-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+
+.clientes-grupos{
+align-items:start;
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+gap:16px;
+margin-top:6px;
+}
+
+.clientes-grupos > div{
+padding:14px 16px;
+border:1px solid var(--borde);
+border-radius:var(--r-md);
+background:var(--n-50);
+}
+
+.clientes-grupos h4{
+display:flex;
+align-items:center;
+justify-content:space-between;
+margin:0 0 10px;
+font-size:var(--t-xs);
+font-weight:600;
+letter-spacing:1px;
+text-transform:uppercase;
+color:var(--acento-texto);
+}
+
+.cliente-lista{
+display:flex;
+flex-wrap:wrap;
+gap:8px;
+}
+
+.cliente-chip{
+padding:6px 12px;
+border-radius:var(--r-pill);
+background:#ffffff;
+border:1px solid var(--n-300);
+font-size:var(--t-sm);
+}
+
+/* =====================================================
+   3 · BALANCE DE MASA · MEDIDOR Y SIMULADOR
+===================================================== */
+
+.medidor{
+margin-top:16px;
+padding:18px 20px;
+border:1px solid var(--borde);
+border-radius:var(--r-md);
+background:var(--n-50);
+}
+
+.medidor h3{
+margin:0 0 4px !important;
+}
+
+.medidor-barra{
+position:relative;
+height:34px;
+margin:30px 0 8px;
+border-radius:var(--r-sm);
+background:var(--n-200);
+overflow:visible;
+}
+
+.medidor-barra .tramo{
+position:absolute;
+top:0;
+bottom:0;
+}
+
+.medidor-barra .real{
+left:0;
+border-radius:var(--r-sm) 0 0 var(--r-sm);
+background:linear-gradient(90deg,var(--oro-600),var(--oro-300));
+}
+
+.medidor-barra .fantasma{
+background:repeating-linear-gradient(45deg,var(--alerta-500),var(--alerta-500) 6px,#d4776f 6px,#d4776f 12px);
+border-radius:0 var(--r-sm) var(--r-sm) 0;
+}
+
+.medidor-barra .tope{
+position:absolute;
+top:-14px;
+bottom:-14px;
+width:0;
+border-left:2px dashed var(--n-900);
+}
+
+.medidor-barra .tope span{
+position:absolute;
+top:-18px;
+left:50%;
+transform:translateX(-50%);
+font-size:var(--t-xs);
+font-weight:600;
+white-space:nowrap;
+color:var(--n-900);
+}
+
+.medidor-leyenda{
+display:flex;
+flex-wrap:wrap;
+gap:6px 20px;
+font-size:var(--t-sm);
+}
+
+.medidor-leyenda i{
+display:inline-block;
+width:12px;
+height:12px;
+border-radius:3px;
+margin-right:6px;
+vertical-align:-1px;
+}
+
+.form-grid.tres{
+grid-template-columns:repeat(3,minmax(0,1fr));
+}
+
+.veredicto{
+display:flex;
+align-items:flex-start;
+gap:14px;
+margin-top:16px;
+padding:16px 18px;
+border-radius:var(--r-md);
+border:1px solid var(--alerta-300);
+background:var(--alerta-100);
+}
+
+.veredicto.acepta{
+border-color:var(--ok-300);
+background:var(--ok-100);
+}
+
+.veredicto .sello{
+width:42px;
+height:42px;
+flex-shrink:0;
+border-radius:50%;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:var(--t-xl);
+font-weight:700;
+color:#ffffff;
+background:var(--alerta-500);
+}
+
+.veredicto.acepta .sello{
+background:var(--ok-500);
+}
+
+.veredicto strong{
+display:block;
+font-size:var(--t-lg);
+}
+
+.veredicto p{
+margin:4px 0 0 !important;
+font-size:var(--t-sm) !important;
+color:var(--texto) !important;
+}
+
+.veredicto code{
+font-family:var(--mono);
+font-size:var(--t-xs);
+padding:2px 7px;
+border-radius:6px;
+background:rgba(0,0,0,.07);
+}
+
+/* =====================================================
+   4 · CADENA DE FRÍO · TRAYECTO DE UN DESPACHO
+===================================================== */
+
+.frio-barra{
+display:flex;
+align-items:center;
+gap:16px;
+flex-wrap:wrap;
+margin-top:16px;
+}
+
+.frio-barra .sugerencia{
+font-size:var(--t-sm);
+color:var(--tenue);
+}
+
+#resultadoFrio tr[data-despacho]{
+cursor:pointer;
+}
+
+#resultadoFrio tr[data-despacho]:hover td{
+background:var(--oro-100);
+}
+
+#resultadoFrio tr.seleccionada td{
+box-shadow:inset 0 2px 0 var(--oro-500),inset 0 -2px 0 var(--oro-500);
+}
+
+.trayecto{
+margin-top:20px;
+padding:20px;
+border:1px solid var(--borde);
+border-radius:var(--r-md);
+background:#ffffff;
+}
+
+.trayecto h3{
+margin:0 0 4px !important;
+}
+
+.trayecto-datos{
+display:flex;
+flex-wrap:wrap;
+gap:8px 22px;
+margin-top:10px;
+font-size:var(--t-sm);
+}
+
+.trayecto-datos b{
+font-weight:600;
+}
+
+.grafico-frio{
+width:100%;
+height:auto;
+display:block;
+margin-top:8px;
+}
+
+.grafico-frio .rejilla{
+stroke:var(--borde);
+stroke-width:1;
+}
+
+.grafico-frio .eje{
+font-size:11px;
+fill:var(--tenue);
+font-family:var(--sans);
+}
+
+.grafico-frio .limite{
+stroke:var(--aviso-500);
+stroke-width:1.6;
+stroke-dasharray:6 4;
+}
+
+.grafico-frio .limite-texto{
+font-size:11px;
+font-weight:600;
+fill:var(--aviso-800);
+font-family:var(--sans);
+}
+
+.grafico-frio .linea{
+fill:none;
+stroke:var(--oro-600);
+stroke-width:2.2;
+stroke-linejoin:round;
+}
+
+.grafico-frio .hueco{
+fill:var(--alerta-500);
+fill-opacity:.14;
+stroke:var(--alerta-500);
+stroke-opacity:.5;
+stroke-dasharray:4 3;
+}
+
+.grafico-frio .hueco-texto{
+font-size:12px;
+font-weight:700;
+fill:var(--alerta-800);
+font-family:var(--sans);
+}
+
+.leyenda-frio{
+display:flex;
+flex-wrap:wrap;
+gap:6px 18px;
+margin-top:6px;
+font-size:var(--t-xs);
+color:var(--tenue);
+}
+
+.leyenda-frio i{
+display:inline-block;
+width:12px;
+height:12px;
+border-radius:3px;
+margin-right:6px;
+vertical-align:-2px;
+}
+
+/* =====================================================
+   5 · PRIVACIDAD · COMPARATIVA Y AUDITORÍA
+===================================================== */
+
+.comparativa{
+margin-top:16px;
+border:1px solid var(--borde);
+border-radius:var(--r-md);
+overflow:hidden;
+}
+
+.comparativa-fila{
+display:grid;
+grid-template-columns:minmax(140px,1fr) minmax(0,1.2fr) minmax(0,1.6fr);
+align-items:center;
+gap:12px;
+padding:11px 16px;
+border-bottom:1px solid var(--borde);
+font-size:var(--t-sm);
+}
+
+.comparativa-fila:last-child{
+border-bottom:0;
+}
+
+.comparativa-fila.cab{
+background:var(--n-50);
+font-size:var(--t-xs);
+font-weight:600;
+letter-spacing:.8px;
+text-transform:uppercase;
+color:var(--tenue);
+}
+
+.comparativa-fila .publico{
+font-family:var(--mono);
+font-size:var(--t-sm);
+}
+
+.comparativa-fila .interno{
+color:var(--tenue);
+font-style:italic;
+}
+
+.comparativa-fila .interno::before{
+content:"🔒 ";
+font-style:normal;
+}
+
+.auditoria-categorias{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+gap:14px;
+margin-top:16px;
+}
+
+.categoria-audit{
+padding:16px 18px;
+border:1px solid var(--ok-300);
+border-radius:var(--r-md);
+background:var(--ok-100);
+}
+
+.categoria-audit.hallazgo{
+border-color:var(--alerta-300);
+background:var(--alerta-100);
+}
+
+.categoria-audit h4{
+margin:0;
+font-size:var(--t-sm);
+font-weight:600;
+}
+
+.categoria-audit .cifra{
+font-family:var(--serif);
+font-size:var(--t-3xl);
+font-weight:600;
+line-height:1.1;
+margin:6px 0 2px;
+color:var(--ok-800);
+}
+
+.categoria-audit.hallazgo .cifra{
+color:var(--alerta-800);
+}
+
+.categoria-audit span{
+font-size:var(--t-xs);
+color:var(--tenue);
+}
+
+@media(max-width:760px){
+.form-grid.tres{grid-template-columns:1fr}
+.comparativa-fila{grid-template-columns:1fr;gap:4px}
+.comparativa-fila.cab{display:none}
+.filtro .cuenta{margin-left:0}
+}
 </style>
 </head>
 
@@ -2932,6 +3804,19 @@ Conectar con MetaMask
 
 </div>
 
+<div class="modal" id="modalEscaner" hidden role="dialog" aria-modal="true" aria-labelledby="tituloEscaner">
+<div class="modal-caja">
+<div class="modal-cab">
+<h2 id="tituloEscaner">Escanear QR de la etiqueta</h2>
+<button class="icono-btn" onclick="cerrarEscaner()" aria-label="Cerrar el escáner">✕</button>
+</div>
+<div id="lectorQr" class="lector"></div>
+<div id="estadoEscaner" class="estado"></div>
+<label class="btn btn-gray subir-qr" for="archivoQr">Subir una foto del QR</label>
+<input type="file" accept="image/*" id="archivoQr" onchange="escanearArchivo(event)" hidden>
+</div>
+</div>
+
 <div id="avisoFlotante" class="aviso-flotante" role="status" aria-live="polite"></div>
 
 <!-- =====================================================
@@ -3064,6 +3949,7 @@ Catálogo de cortes
 <form class="buscador" onsubmit="buscarGlobal(event)" role="search">
 <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.500-3.500"/></svg>
 <input id="buscadorGlobal" type="search" list="sugerenciasBusqueda" placeholder="Buscar caja, canal, despacho o código de venta…" autocomplete="off" aria-label="Buscar caja, canal, despacho o código de venta">
+<button type="button" class="escanear" onclick="abrirEscaner('buscar')" aria-label="Escanear un código QR" title="Escanear un QR"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3h-3zM18 18h3v3h-3zM14 20h2M20 14v2"/></svg></button>
 <kbd class="atajo" title="Atajo: pulsa / para buscar">/</kbd>
 <datalist id="sugerenciasBusqueda">
 <option value="CJ-0188-0294">Caja del criterio 1</option>
@@ -3237,75 +4123,88 @@ Explorar trazabilidad &nbsp;→
 
 </div>
 
-<div class="card oscura">
+<div class="card oscura hilo-card">
 
 <div class="section-title">
 <div class="number"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12h4l2-6 4 12 2-6h6"/></svg></div>
 <div>
-<h2>Cadena de trazabilidad</h2>
-<p>Del predio a tu mesa: cada paso es un registro en el contrato.</p>
+<h2>El hilo del lote LF-2026-0188</h2>
+<p>Cada etiqueta es una etapa registrada en el contrato. Los números salen de la cadena.</p>
+</div>
+<button class="btn btn-gray btn-chico" style="margin-left:auto" onclick="actualizarTotales()">⟳ &nbsp; Actualizar</button>
+</div>
+
+<div class="hilo" role="group" aria-label="Etapas del lote en la cadena">
+<div class="hilo-interior">
+
+<svg class="hilo-cuerda" viewBox="0 0 700 64" preserveAspectRatio="none" aria-hidden="true">
+<path d="M0,38 L50,38 Q100,54 150,38 Q200,54 250,38 Q300,54 350,38 Q400,54 450,38 Q500,54 550,38 Q600,54 650,38 L700,38"/>
+</svg>
+
+<ol class="hilo-pista">
+
+<li class="hilo-paso" id="hiloPaso1"><div class="tag">
+<span class="tag-icono"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/></svg></span>
+<span class="tag-etapa">Ingreso<br>del predio</span>
+<strong class="tag-valor" id="totAnimales">—</strong>
+<span class="tag-nota">animales ingresados</span>
+<span class="tag-estado">…</span>
+</div></li>
+
+<li class="hilo-paso" id="hiloPaso2"><div class="tag">
+<span class="tag-icono"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l8 3v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6z"/><path d="M9 12l2 2 4-4"/></svg></span>
+<span class="tag-etapa">Inspección<br>ante-mortem</span>
+<strong class="tag-valor" id="ptoAM">—</strong>
+<span class="tag-nota">dictámenes con su veterinario</span>
+<span class="tag-estado">…</span>
+</div></li>
+
+<li class="hilo-paso" id="hiloPaso3"><div class="tag">
+<span class="tag-icono"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4h10"/><path d="M12 4v4"/><path d="M8 8h8l-1 12H9z"/></svg></span>
+<span class="tag-etapa">Faena<br>y sello</span>
+<strong class="tag-valor" id="ptoCanales">—</strong>
+<span class="tag-nota">canales selladas</span>
+<span class="tag-estado">…</span>
+</div></li>
+
+<li class="hilo-paso" id="hiloPaso4"><div class="tag">
+<span class="tag-icono"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20L14 10"/><path d="M14 10l4-6 2 2-6 4"/><path d="M4 20l3-1"/></svg></span>
+<span class="tag-etapa">Desposte<br>15 cortes</span>
+<strong class="tag-valor" id="ptoDesposte">—</strong>
+<span class="tag-nota" id="notaDesposte">canales despostadas</span>
+<span class="tag-estado">…</span>
+</div></li>
+
+<li class="hilo-paso" id="hiloPaso5"><div class="tag">
+<span class="tag-icono"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="8" width="16" height="12" rx="1.5"/><path d="M4 12h16"/><path d="M10 8V4h4v4"/></svg></span>
+<span class="tag-etapa">Empaque<br>en cajas</span>
+<strong class="tag-valor" id="totCajas">—</strong>
+<span class="tag-nota" id="notaCajas">cajas registradas</span>
+<span class="tag-estado">…</span>
+</div></li>
+
+<li class="hilo-paso" id="hiloPaso6"><div class="tag">
+<span class="tag-icono"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 7h11v9H2z"/><path d="M13 10h4l3 3v3h-7"/><circle cx="6" cy="18" r="1.6"/><circle cx="17" cy="18" r="1.6"/></svg></span>
+<span class="tag-etapa">Despacho<br>en frío</span>
+<strong class="tag-valor" id="totDespachos">—</strong>
+<span class="tag-nota">despachos con su frío anclado</span>
+<span class="tag-estado">…</span>
+</div></li>
+
+<li class="hilo-paso" id="hiloPaso7"><div class="tag">
+<span class="tag-icono"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3v8"/><path d="M5 3v5a2 2 0 0 0 4 0V3"/><path d="M17 3c-2 2-2 6 0 8v10"/></svg></span>
+<span class="tag-etapa">Mesa del<br>consumidor</span>
+<strong class="tag-valor" id="totVentas">—</strong>
+<span class="tag-nota">ventas con código de consulta</span>
+<span class="tag-estado">…</span>
+</div></li>
+
+</ol>
+
 </div>
 </div>
 
-<div class="cadena-pasos">
-<div class="paso"><div class="paso-icono"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/></svg></div>Ingreso<br>del predio</div>
-<div class="paso-flecha">→</div>
-<div class="paso"><div class="paso-icono"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l8 3v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6z"/><path d="M9 12l2 2 4-4"/></svg></div>Inspección<br>ante-mortem</div>
-<div class="paso-flecha">→</div>
-<div class="paso"><div class="paso-icono"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4h10"/><path d="M12 4v4"/><path d="M8 8h8l-1 12H9z"/></svg></div>Faena<br>y sello</div>
-<div class="paso-flecha">→</div>
-<div class="paso"><div class="paso-icono"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20L14 10"/><path d="M14 10l4-6 2 2-6 4"/><path d="M4 20l3-1"/></svg></div>Desposte<br>15 cortes</div>
-<div class="paso-flecha">→</div>
-<div class="paso"><div class="paso-icono"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="8" width="16" height="12" rx="1.5"/><path d="M4 12h16"/><path d="M10 8V4h4v4"/></svg></div>Empaque<br>en cajas</div>
-<div class="paso-flecha">→</div>
-<div class="paso"><div class="paso-icono"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 7h11v9H2z"/><path d="M13 10h4l3 3v3h-7"/><circle cx="6" cy="18" r="1.6"/><circle cx="17" cy="18" r="1.6"/></svg></div>Despacho<br>en frío</div>
-<div class="paso-flecha">→</div>
-<div class="paso"><div class="paso-icono"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3v8"/><path d="M5 3v5a2 2 0 0 0 4 0V3"/><path d="M17 3c-2 2-2 6 0 8v10"/></svg></div>Mesa del<br>consumidor</div>
-</div>
-
-</div>
-
-<div class="card">
-
-<div class="section-title">
-<div class="number"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/></svg></div>
-<div>
-<h2>Estado del lote en la cadena</h2>
-<p>Lo que el contrato tiene registrado del lote LF-2026-0188.</p>
-</div>
-<button class="btn btn-gray btn-chico" style="margin-left:auto" onclick="actualizarTotales()">
-⟳ &nbsp; Actualizar
-</button>
-</div>
-
-<div class="dashboard-grid">
-
-<div class="metric blue">
-<div class="metric-label">ANIMALES</div>
-<div class="metric-value" id="totAnimales">—</div>
-</div>
-
-<div class="metric green">
-<div class="metric-label">CANALES / DESPOSTADAS</div>
-<div class="metric-value" id="totCanales">—</div>
-</div>
-
-<div class="metric red">
-<div class="metric-label">CAJAS</div>
-<div class="metric-value" id="totCajas">—</div>
-</div>
-
-<div class="metric blue">
-<div class="metric-label">DESPACHOS</div>
-<div class="metric-value" id="totDespachos">—</div>
-</div>
-
-<div class="metric green">
-<div class="metric-label">VENTAS</div>
-<div class="metric-value" id="totVentas">—</div>
-</div>
-
-</div>
+<span id="totCanales" hidden></span>
 
 <div id="estadoInicio" class="estado"></div>
 
@@ -3424,6 +4323,17 @@ Lo que el contrato rechaza queda anotado en rojo.
 <button class="btn" onclick="consultarHaciaAtras()">
 ← &nbsp; Reconstruir historia
 </button>
+
+<button class="btn btn-gray btn-icono" onclick="abrirEscaner('caja')">
+<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3h-3zM18 18h3v3h-3zM14 20h2M20 14v2"/></svg>Escanear QR de la etiqueta
+</button>
+</div>
+
+<div class="chips">
+<span>Ejemplos</span>
+<button class="chip" onclick="ejemploCaja('CJ-0188-0294')">CJ-0188-0294 <small>pecho · 3 animales</small></button>
+<button class="chip" onclick="ejemploCaja('CJ-0188-0003')">CJ-0188-0003 <small>lomo fino · 4 animales</small></button>
+<button class="chip" onclick="ejemploCaja('CJ-0188-0310')">CJ-0188-0310 <small>carne molida · mezcla de lote</small></button>
 </div>
 
 <div id="estadoAtras" class="estado"></div>
@@ -3459,6 +4369,13 @@ Lo que el contrato rechaza queda anotado en rojo.
 <button class="btn" onclick="consultarHaciaAdelante()">
 → &nbsp; Buscar cajas y clientes
 </button>
+</div>
+
+<div class="chips">
+<span>Ejemplos</span>
+<button class="chip" onclick="ejemploCanal('CN-0188-012')">CN-0188-012 <small>Salmonella · retiro</small></button>
+<button class="chip" onclick="ejemploCanal('CN-0188-004')">CN-0188-004 <small>E. coli negativa</small></button>
+<button class="chip" onclick="ejemploCanal('CN-0188-023')">CN-0188-023 <small>decomiso parcial</small></button>
 </div>
 
 <div id="estadoAdelante" class="estado"></div>
@@ -3512,6 +4429,45 @@ también en el explorador de bloques.
 
 </div>
 
+<div class="card">
+
+<h2>Simulador del contrato</h2>
+
+<p>Prueba una caja antes de registrarla. El contrato responde sin escribir nada ni gastar gas.</p>
+
+<div class="chips" style="margin-top:0">
+<span>Casos</span>
+<button class="chip" onclick="casoSimulador('sinpiezas')">Sin piezas</button>
+<button class="chip" onclick="casoSimulador('repetida')">Pieza ya empacada</button>
+<button class="chip" onclick="casoSimulador('exceso')">Más kilos que sus piezas</button>
+<button class="chip" onclick="casoSimulador('valida')">Una caja válida</button>
+</div>
+
+<div class="form-grid tres" style="margin-top:16px">
+<div class="field">
+<label for="simCorte">Corte</label>
+<select id="simCorte"></select>
+</div>
+<div class="field">
+<label for="simCanales">Canales de origen</label>
+<input id="simCanales" placeholder="Ej. 10, 11, 12">
+</div>
+<div class="field">
+<label for="simPeso">Peso de la caja (kg)</label>
+<input id="simPeso" type="number" step="0.01" min="0.01" value="15">
+</div>
+</div>
+
+<button class="btn" onclick="simularCaja()">
+⚖ &nbsp; Preguntar al contrato
+</button>
+
+<div id="estadoSimulador" class="estado"></div>
+
+<div id="resultadoSimulador"></div>
+
+</div>
+
 </section>
 
 <!-- =====================================================
@@ -3542,7 +4498,21 @@ trayecto fuera de rango o con minutos sin lectura.
 
 <div id="estadoFrio" class="estado"></div>
 
+<div id="frioExtra" hidden>
+<div class="dashboard-grid" id="kpisFrio"></div>
+<div class="frio-barra">
+<label class="check" for="soloProblemasFrio"><input type="checkbox" id="soloProblemasFrio" onchange="filtrarFrio()"> Mostrar solo despachos con problemas</label>
+<span class="sugerencia">Pulsa un despacho de la tabla para ver su trayecto.</span>
+</div>
+</div>
+
 <div id="resultadoFrio"></div>
+
+<div id="trayecto" class="trayecto" hidden>
+<h3>Trayecto del despacho <span id="trayectoTitulo"></span></h3>
+<div id="trayectoGrafico"></div>
+<div class="trayecto-datos" id="trayectoDatos"></div>
+</div>
 
 </div>
 
@@ -3581,11 +4551,13 @@ trayecto fuera de rango o con minutos sin lectura.
 
 <div id="resultadoCrudo"></div>
 
+<div id="comparativaPrivacidad"></div>
+
 <hr>
 
 <h3>b) Buscar nombres y direcciones en toda la cadena</h3>
 
-<button class="btn btn-gray" onclick="auditarPrivacidad()">
+<button class="btn btn-gray" onclick="auditarPrivacidadDetallada()">
 ⌕ &nbsp; Auditar todas las cajas registradas
 </button>
 
@@ -3605,6 +4577,10 @@ trayecto fuera de rango o con minutos sin lectura.
 
 <button class="btn" onclick="verificarCompraConsumidor()">
 ✓ &nbsp; Verificar compra
+</button>
+
+<button class="btn btn-gray btn-icono" onclick="abrirEscaner('compra')">
+<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3h-3zM18 18h3v3h-3zM14 20h2M20 14v2"/></svg>Escanear QR
 </button>
 </div>
 
@@ -7131,6 +8107,1301 @@ window.ethereum.request({method:"eth_accounts"})
 
 
 </script>
+
+<script>
+
+/* =====================================================
+   NIVEL 1 · MEJORAS DE LOS CINCO CRITERIOS
+   Capa sobre las funciones existentes: cada una se envuelve y
+   después añade su apoyo visual. No cambia qué se consulta ni
+   qué se registra en los contratos.
+===================================================== */
+
+const CERO_HASH="0x"+"0".repeat(64);
+
+/* =====================================================
+   EL HILO DEL LOTE (Inicio)
+===================================================== */
+
+const actualizarTotalesBase3=actualizarTotales;
+
+actualizarTotales=async function(...argumentos){
+
+await actualizarTotalesBase3.apply(this,argumentos);
+
+await pintarHilo();
+
+};
+
+async function pintarHilo(){
+
+try{
+
+await cargarDatosLote();
+
+const lectura=await obtenerContratoLectura();
+
+const t=await lectura.totales();
+
+const cajasValidas=lote.cajas.filter(c=>c.canales.length>0).length;
+
+const etapas=[
+[1,Number(t.nAnimales),lote.animales.length,"totAnimales"],
+[2,Number(t.nAnimales),lote.animales.length,"ptoAM"],
+[3,Number(t.nCanales),lote.canales.length,"ptoCanales"],
+[4,Number(t.nDespostadas),lote.despostes.length,"ptoDesposte"],
+[5,Number(t.nCajas),cajasValidas,"totCajas"],
+[6,Number(t.nDespachos),lote.despachos.length,"totDespachos"],
+[7,Number(t.nVentas),lote.ventas.length,"totVentas"]
+];
+
+etapas.forEach(([n,actual,esperado,id])=>{
+
+document.getElementById(id).innerText=actual.toLocaleString("es-EC");
+
+const estado=actual>=esperado?"completo":(actual>0?"parcial":"");
+
+const paso=document.getElementById("hiloPaso"+n);
+
+paso.className="hilo-paso "+estado;
+
+paso.querySelector(".tag-estado").innerText=
+estado==="completo"?"✓ Completo":(estado==="parcial"?actual+" de "+esperado:"Pendiente");
+
+});
+
+document.getElementById("notaDesposte").innerText=
+"canales despostadas · "+(Number(t.nDespostadas)*15).toLocaleString("es-EC")+" piezas";
+
+const rechazadas=lote.cajas.length-Number(t.nCajas);
+
+document.getElementById("notaCajas").innerText=
+Number(t.nCajas)>0&&rechazadas>0?"cajas · "+rechazadas+" rechazadas por el contrato":"cajas registradas";
+
+}catch(error){
+
+console.warn(error);
+
+}
+
+}
+
+/* =====================================================
+   ESCÁNER DE QR
+   Sirve para buscar: se lee la etiqueta (URL con ?codigo=) o
+   un código de caja, canal o despacho, y se abre su consulta.
+===================================================== */
+
+let escanerActivo=null;
+
+let escanerDestino="buscar";
+
+function abrirEscaner(destino){
+
+escanerDestino=destino||"buscar";
+
+document.getElementById("modalEscaner").hidden=false;
+
+document.getElementById("estadoEscaner").className="estado";
+
+iniciarCamara();
+
+}
+
+function mensajeCamara(error){
+
+const texto=typeof error==="string"?error:(error&&(error.name||error.message))||"";
+
+if(/NotAllowed|Permission/i.test(texto))return "No diste permiso para usar la cámara.";
+
+if(/NotFound|Requested device|NotReadable/i.test(texto))return "No se encontró una cámara disponible en este equipo.";
+
+if(typeof error==="string")return error;
+
+return obtenerMensajeError(error);
+
+}
+
+async function iniciarCamara(){
+
+try{
+
+if(typeof Html5Qrcode==="undefined"){
+
+throw new Error("No se cargó el lector de QR.");
+
+}
+
+if(!window.isSecureContext){
+
+throw new Error("La cámara necesita HTTPS o localhost.");
+
+}
+
+escanerActivo=new Html5Qrcode("lectorQr");
+
+await escanerActivo.start(
+{facingMode:"environment"},
+{fps:10,qrbox:{width:240,height:240}},
+texto=>procesarEscaneo(texto),
+()=>{}
+);
+
+mostrarEstado("estadoEscaner","Cámara activa. Apunta al código QR de la etiqueta.","info");
+
+}catch(error){
+
+escanerActivo=null;
+
+mostrarEstado("estadoEscaner",mensajeCamara(error)+"\nPuedes subir una foto del QR.","error");
+
+}
+
+}
+
+async function detenerCamara(){
+
+if(escanerActivo){
+
+try{
+
+await escanerActivo.stop();
+
+await escanerActivo.clear();
+
+}catch(error){
+
+console.warn(error);
+
+}
+
+escanerActivo=null;
+
+}
+
+}
+
+async function cerrarEscaner(){
+
+await detenerCamara();
+
+document.getElementById("modalEscaner").hidden=true;
+
+}
+
+async function escanearArchivo(evento){
+
+const archivo=evento.target.files&&evento.target.files[0];
+
+if(!archivo)return;
+
+try{
+
+if(typeof Html5Qrcode==="undefined")throw new Error("No se cargó el lector de QR.");
+
+await detenerCamara();
+
+const lector=new Html5Qrcode("lectorQr");
+
+const texto=await lector.scanFile(archivo,false);
+
+try{lector.clear();}catch(error){}
+
+await procesarEscaneo(texto);
+
+}catch(error){
+
+console.warn(error);
+
+mostrarEstado("estadoEscaner","No se encontró un código QR en esa imagen.","error");
+
+}
+
+evento.target.value="";
+
+}
+
+function extraerCodigo(texto){
+
+let codigo=String(texto).trim();
+
+try{
+
+const url=new URL(codigo);
+
+const parametro=url.searchParams.get("codigo")||url.searchParams.get("caja")||url.searchParams.get("lote");
+
+if(parametro)codigo=parametro;
+
+}catch(error){}
+
+return codigo.toUpperCase();
+
+}
+
+async function procesarEscaneo(texto){
+
+const codigo=extraerCodigo(texto);
+
+await cerrarEscaner();
+
+mostrarAviso("QR leído: "+codigo,"ok");
+
+await resolverCodigo(codigo,escanerDestino);
+
+}
+
+async function cajaDeVenta(codigo){
+
+const lectura=await obtenerContratoLectura();
+
+try{
+
+const venta=await lectura.verificarCompra(ethers.id(codigo));
+
+return Number(venta.caja);
+
+}catch(error){
+
+throw new Error("Ese código no corresponde a ninguna venta registrada.");
+
+}
+
+}
+
+async function resolverCodigo(codigo,destino){
+
+try{
+
+if(codigo.startsWith("QR")){
+
+if(destino==="compra"){
+
+document.getElementById("codigoConsulta").value=codigo;
+
+mostrarSeccion("privacidad");
+
+await verificarCompraConsumidor();
+
+return;
+
+}
+
+const numero=await cajaDeVenta(codigo);
+
+document.getElementById("codigoCaja").value=codigoCaja(numero);
+
+mostrarSeccion("atras");
+
+await consultarHaciaAtras();
+
+}else if(codigo.startsWith("CJ")){
+
+document.getElementById("codigoCaja").value=codigo;
+
+mostrarSeccion("atras");
+
+await consultarHaciaAtras();
+
+}else if(codigo.startsWith("CN")){
+
+document.getElementById("codigoCanal").value=codigo;
+
+mostrarSeccion("adelante");
+
+await consultarHaciaAdelante();
+
+}else if(codigo.startsWith("DSP")){
+
+mostrarSeccion("frio");
+
+await verificarFrio();
+
+}else{
+
+mostrarAviso("No reconozco el código «"+codigo+"».","error");
+
+}
+
+}catch(error){
+
+console.error(error);
+
+mostrarAviso(obtenerMensajeError(error),"error");
+
+}
+
+}
+
+document.getElementById("modalEscaner").addEventListener("click",evento=>{
+
+if(evento.target.id==="modalEscaner")cerrarEscaner();
+
+});
+
+document.addEventListener("keydown",evento=>{
+
+if(evento.key==="Escape"&&!document.getElementById("modalEscaner").hidden)cerrarEscaner();
+
+});
+
+/* =====================================================
+   1 · HACIA ATRÁS · FACTOR DE TRAZABILIDAD (manual, sección 5)
+===================================================== */
+
+function ejemploCaja(codigo){
+
+document.getElementById("codigoCaja").value=codigo;
+
+consultarHaciaAtras();
+
+}
+
+const consultarHaciaAtrasBase=consultarHaciaAtras;
+
+consultarHaciaAtras=async function(...argumentos){
+
+await consultarHaciaAtrasBase.apply(this,argumentos);
+
+await agregarFactor();
+
+};
+
+async function agregarFactor(){
+
+const contenedor=document.getElementById("resultadoAtras");
+
+if(!contenedor||contenedor.children.length===0)return;
+
+try{
+
+const numero=leerNumero(document.getElementById("codigoCaja").value);
+
+const lectura=await obtenerContratoLectura();
+
+const r=await lectura.trazarCaja(numero);
+
+const caja=r.caja;
+
+const despacho=r.despacho;
+
+const animales=Array.from(r.animalesOrigen);
+
+const canales=Array.from(r.canalesOrigen);
+
+const hayDespacho=Number(caja.despacho)>0;
+
+const pruebas=[
+["Identificación del animal","arete, predio, ingreso y peso vivo",
+animales.length>0&&animales.every(a=>Number(a.arete)>0&&Number(a.predio)>0&&Number(a.fechaIngreso)>0&&Number(a.pesoVivoG)>0)],
+["Estado sanitario de origen","ante-mortem, veterinario y documentos",
+animales.every(a=>Number(a.dictamenAM)>0&&Number(a.mviAM)>0&&a.hashDocumentos!==CERO_HASH)],
+["Canal y sello post-mortem","dictamen, veterinario y sello",
+canales.length>0&&canales.every(c=>Number(c.dictamenPM)>0&&Number(c.mviPM)>0&&Number(c.codigoSello)>0&&Number(c.fechaSello)>0)],
+["Historia térmica","curva de la cámara y trayecto en frío",
+canales.every(c=>Array.from(c.curvaDecimas).length===5)&&hayDespacho&&despacho.hashLecturas!==CERO_HASH],
+["Identificación del corte","peso y operario de cada pieza",
+Array.from(r.pesosPieza).every(p=>Number(p)>0)&&Array.from(r.operariosPieza).every(o=>Number(o)>0)],
+["Unidad de venta","caja, peso y fecha real de empaque",
+Number(caja.pesoG)>0&&Number(caja.fechaEmpaqueReal)>0],
+["Custodia comercial","despacho, cliente"+(Number(caja.minorista)>0?" y minorista":""),
+hayDespacho&&Number(despacho.cliente)>0]
+];
+
+const cumplidas=pruebas.filter(p=>p[2]).length;
+
+const completo=cumplidas===pruebas.length;
+
+contenedor.insertAdjacentHTML("afterbegin",`
+<div class="factor ${completo?"":"incompleto"}">
+<div class="factor-cab">
+<span class="cifra">${cumplidas}/${pruebas.length}</span>
+<p><strong>Factor de trazabilidad ${completo?"completo":"incompleto"}.</strong>
+${completo?"Esta unidad de venta se puede remontar hasta su animal y hasta su cliente.":"A esta unidad le falta información: no es trazable."}
+Es el conjunto mínimo de atributos de la sección 5 del manual MP-RAS-TRZ-001.</p>
+<span class="badge ${completo?"ok":"mal"}">${completo?"TRAZABLE":"NO TRAZABLE"}</span>
+</div>
+<ul class="factor-lista">
+${pruebas.map(p=>`
+<li class="${p[2]?"":"falta"}">
+<span class="marca-ok">${p[2]?"✓":"✕"}</span>
+<span><strong>${p[0]}</strong><span class="detalle">${p[1]}</span></span>
+</li>
+`).join("")}
+</ul>
+</div>
+`);
+
+}catch(error){
+
+console.warn(error);
+
+}
+
+}
+
+/* =====================================================
+   2 · HACIA ADELANTE · VENTAS TRAS LA ORDEN, FILTRO Y CLIENTES
+===================================================== */
+
+function ejemploCanal(codigo){
+
+document.getElementById("codigoCanal").value=codigo;
+
+consultarHaciaAdelante();
+
+}
+
+const consultarHaciaAdelanteBase=consultarHaciaAdelante;
+
+consultarHaciaAdelante=async function(...argumentos){
+
+await consultarHaciaAdelanteBase.apply(this,argumentos);
+
+await mejorarAdelante();
+
+};
+
+function filtrarAdelante(){
+
+const texto=(document.getElementById("filtroAdelante").value||"").trim().toLowerCase();
+
+const soloVentas=document.getElementById("soloTrasOrden").checked;
+
+let visibles=0;
+
+document.querySelectorAll("#resultadoAdelante table tr").forEach(tr=>{
+
+if(!tr.cells[0]||tr.cells[0].tagName==="TH")return;
+
+const coincide=!texto||tr.textContent.toLowerCase().includes(texto);
+
+const ventas=!soloVentas||tr.classList.contains("tras-orden");
+
+tr.hidden=!(coincide&&ventas);
+
+if(!tr.hidden)visibles++;
+
+});
+
+document.getElementById("cuentaFiltro").innerText=visibles+" cajas visibles";
+
+}
+
+async function mejorarAdelante(){
+
+const contenedor=document.getElementById("resultadoAdelante");
+
+if(!contenedor||!contenedor.querySelector("table"))return;
+
+try{
+
+await cargarDatosLote();
+
+const lectura=await obtenerContratoLectura();
+
+const numero=leerNumero(document.getElementById("codigoCanal").value);
+
+const r=await lectura.trazarCanal(numero);
+
+const todas=Array.from(r.directas).concat(Array.from(r.mezcla));
+
+const kgTotal=todas.reduce((suma,c)=>suma+Number(c.pesoG),0);
+
+let orden=0;
+
+try{
+
+const retiros=await contratoRetiros(lectura.runner).listarRetiros();
+
+const retiro=retiros.find(x=>Number(x.canal)===numero);
+
+if(retiro)orden=Number(retiro.fechaOrden);
+
+}catch(error){
+
+console.warn(error);
+
+}
+
+const tras=new Set();
+
+if(orden>0){
+
+lote.ventas.filter(v=>v.fecha>orden).forEach(v=>tras.add(v.caja));
+
+}
+
+const tablas=contenedor.querySelectorAll("table");
+
+let directasTras=0;
+
+let molidaTras=0;
+
+tablas.forEach((tabla,indice)=>{
+
+tabla.querySelectorAll("tr").forEach(tr=>{
+
+const celda=tr.cells[0];
+
+if(!celda||celda.tagName==="TH")return;
+
+const caja=parseInt(celda.textContent.trim().split("-").pop(),10);
+
+if(tras.has(caja)){
+
+tr.classList.add("tras-orden");
+
+celda.insertAdjacentHTML("beforeend",'<span class="badge mal">Vendida tras la orden</span>');
+
+if(indice===0)directasTras++;else molidaTras++;
+
+}
+
+});
+
+});
+
+const cuadricula=contenedor.querySelector(".dashboard-grid");
+
+if(cuadricula){
+
+cuadricula.insertAdjacentHTML("beforeend",`
+<div class="metric red">
+<div class="metric-label">KG ALCANZADOS</div>
+<div class="metric-value">${(kgTotal/1000).toLocaleString("es-EC",{maximumFractionDigits:0})} kg</div>
+</div>
+<div class="metric ${orden>0&&directasTras>0?"red":"green"}">
+<div class="metric-label">VENDIDAS TRAS LA ORDEN</div>
+<div class="metric-value">${orden>0?directasTras+" + "+molidaTras:"—"}</div>
+</div>
+`);
+
+}
+
+const titulo=Array.from(contenedor.querySelectorAll("h3")).find(h=>h.textContent.startsWith("Cajas con pieza"));
+
+if(titulo){
+
+titulo.insertAdjacentHTML("afterend",`
+<div class="filtro">
+<input id="filtroAdelante" type="search" placeholder="Filtrar por caja, corte o cliente…" aria-label="Filtrar las cajas" oninput="filtrarAdelante()">
+<label class="check" for="soloTrasOrden"><input type="checkbox" id="soloTrasOrden" onchange="filtrarAdelante()"> Solo vendidas tras la orden</label>
+<span class="cuenta" id="cuentaFiltro"></span>
+</div>
+`);
+
+filtrarAdelante();
+
+}
+
+const bloqueClientes=Array.from(contenedor.querySelectorAll("h3")).find(h=>h.textContent.startsWith("Clientes que recibieron"));
+
+const cajaClientes=bloqueClientes&&bloqueClientes.nextElementSibling;
+
+if(cajaClientes){
+
+const lista=Array.from(cajaClientes.querySelectorAll("p")).map(p=>p.innerHTML);
+
+const mayoristas=lista.filter(h=>h.includes("CL-M"));
+
+const minoristas=lista.filter(h=>h.includes("CL-R"));
+
+const grupo=(titulo,items)=>`
+<div>
+<h4>${titulo}<span>${items.length}</span></h4>
+<div class="cliente-lista">${items.map(h=>'<span class="cliente-chip">'+h+'</span>').join("")}</div>
+</div>
+`;
+
+cajaClientes.outerHTML='<div class="clientes-grupos">'+grupo("Mayoristas",mayoristas)+grupo("Minoristas y tercenas",minoristas)+"</div>";
+
+}
+
+}catch(error){
+
+console.warn(error);
+
+}
+
+}
+
+/* =====================================================
+   3 · BALANCE DE MASA · MEDIDOR Y SIMULADOR
+===================================================== */
+
+const probarCajasLomoBase=probarCajasLomo;
+
+probarCajasLomo=async function(...argumentos){
+
+await probarCajasLomoBase.apply(this,argumentos);
+
+await agregarMedidor();
+
+};
+
+async function agregarMedidor(){
+
+const contenedor=document.getElementById("resultadoBalance");
+
+if(!contenedor||contenedor.children.length===0)return;
+
+try{
+
+await cargarDatosLote();
+
+const lectura=await obtenerContratoLectura();
+
+const t=await lectura.topeCorte(1);
+
+const real=Number(t.empacado)/1000;
+
+const tope=Number(t.tope)/1000;
+
+const fantasma=cajasLomoSinPiezas().reduce((suma,c)=>suma+c.pesoG,0)/1000;
+
+const total=real+fantasma;
+
+const maximo=Math.max(total,tope)*1.06;
+
+const pct=valor=>(valor/maximo*100).toFixed(2)+"%";
+
+const exceso=Math.max(0,total-tope);
+
+contenedor.insertAdjacentHTML("afterbegin",`
+<div class="medidor">
+<h3>Lomo fino: lo que el lote puede rendir</h3>
+<div class="medidor-barra" role="img" aria-label="Lomo fino: ${real.toFixed(1)} kg con piezas, ${fantasma.toFixed(1)} kg sin piezas, tope físico ${tope.toFixed(1)} kg">
+<span class="tramo real" style="width:${pct(real)}"></span>
+<span class="tramo fantasma" style="left:${pct(real)};width:${pct(fantasma)}"></span>
+<span class="tope" style="left:${pct(tope)}"><span>Tope físico ${kg(tope*1000)}</span></span>
+</div>
+<div class="medidor-leyenda">
+<span><i style="background:var(--oro-500)"></i>Con piezas reales: <strong>${kg(real*1000)}</strong></span>
+<span><i style="background:var(--alerta-500)"></i>Cajas sin piezas: <strong>${kg(fantasma*1000)}</strong></span>
+</div>
+<p style="margin:10px 0 0">Si el contrato las aceptara habría ${kg(total*1000)} de lomo fino${exceso>0?": <strong>"+kg(exceso*1000)+" más de lo que el lote puede dar</strong>.":"."}</p>
+</div>
+`);
+
+}catch(error){
+
+console.warn(error);
+
+}
+
+}
+
+async function poblarSimulador(){
+
+const selector=document.getElementById("simCorte");
+
+if(!selector||selector.options.length>0)return;
+
+await cargarDatosLote();
+
+selector.innerHTML=Object.entries(lote.cortes)
+.map(([n,c])=>'<option value="'+n+'">'+escaparHTML(c.codigo+" · "+c.nombre)+"</option>")
+.join("");
+
+}
+
+const CASOS_SIMULADOR={
+sinpiezas:{corte:1,canales:"",peso:15.05},
+repetida:{corte:1,canales:"12",peso:5},
+exceso:{corte:1,canales:"54",peso:10},
+valida:{corte:1,canales:"54",peso:3.5}
+};
+
+const EXPLICACION_RECHAZO={
+"CAJA SIN PIEZAS":"No indica ninguna pieza de respaldo: la carne no puede aparecer de la nada.",
+"PIEZA NO EXISTE":"Una de las canales indicadas no fue despostada, así que no tiene pieza de ese corte.",
+"PIEZA YA EMPACADA":"Esa pieza ya está dentro de otra caja y no puede usarse dos veces.",
+"PESO EXCEDE PIEZAS":"La caja pesa más que la suma de sus piezas.",
+"EXCEDE RENDIMIENTO DEL LOTE":"Con esta caja el corte superaría lo que el lote puede rendir (rendimiento de referencia más 2 %).",
+"CORTE INVALIDO":"El corte indicado no existe en la carta.",
+"PESO VACIO":"El peso debe ser mayor que cero."
+};
+
+async function casoSimulador(clave){
+
+await poblarSimulador();
+
+const caso=CASOS_SIMULADOR[clave];
+
+document.getElementById("simCorte").value=String(caso.corte);
+
+document.getElementById("simCanales").value=caso.canales;
+
+document.getElementById("simPeso").value=caso.peso;
+
+await simularCaja();
+
+}
+
+async function simularCaja(){
+
+try{
+
+await poblarSimulador();
+
+const corte=Number(document.getElementById("simCorte").value);
+
+const texto=document.getElementById("simCanales").value.trim();
+
+const canales=texto?texto.split(/[\s,;]+/).filter(Boolean).map(Number):[];
+
+if(canales.some(n=>!Number.isInteger(n)||n<1||n>63)){
+
+mostrarEstado("estadoSimulador","Escribe los números de canal separados por coma, del 1 al 63.","error");
+
+return;
+
+}
+
+const peso=parseFloat(document.getElementById("simPeso").value);
+
+if(!(peso>0)){
+
+mostrarEstado("estadoSimulador","El peso debe ser mayor que cero.","error");
+
+return;
+
+}
+
+mostrarEstado("estadoSimulador","Preguntando al contrato...","info");
+
+const lectura=await obtenerContratoLectura();
+
+const caja=tuplaCaja({
+numero:65000,
+corte:corte,
+canales:canales,
+pesoG:Math.round(peso*1000),
+fechaEmpaqueReal:Math.floor(Date.now()/1000),
+operario:232
+});
+
+let motivo=null;
+
+try{
+
+await lectura.registrarCajas.staticCall([caja]);
+
+}catch(error){
+
+motivo=obtenerMensajeError(error);
+
+}
+
+const t=await lectura.topeCorte(corte);
+
+const nombre=lote.cortes[corte];
+
+const contexto=nombre.nombre+": "+kg(t.empacado)+" empacados de "+kg(t.tope)+" que el lote puede rendir.";
+
+document.getElementById("resultadoSimulador").innerHTML=motivo
+?`
+<div class="veredicto">
+<span class="sello">✕</span>
+<div>
+<strong>El contrato la rechaza</strong>
+<p><code>${escaparHTML(motivo)}</code></p>
+<p>${escaparHTML(EXPLICACION_RECHAZO[motivo]||"El contrato no aceptó la caja.")}</p>
+<p>${escaparHTML(contexto)}</p>
+</div>
+</div>
+`
+:`
+<div class="veredicto acepta">
+<span class="sello">✓</span>
+<div>
+<strong>El contrato la aceptaría</strong>
+<p>Tiene piezas de respaldo sin usar, pesa menos que ellas y el corte seguiría dentro de su tope.</p>
+<p>${escaparHTML(contexto)}</p>
+<p><em style="font-family:inherit;font-style:normal;color:var(--tenue)">Es una simulación: no se registró nada en la cadena.</em></p>
+</div>
+</div>
+`;
+
+mostrarEstado("estadoSimulador",motivo?"El contrato rechazó la caja.":"El contrato aceptaría la caja.",motivo?"error":"exito");
+
+}catch(error){
+
+console.error(error);
+
+mostrarEstado("estadoSimulador",obtenerMensajeError(error),"error");
+
+}
+
+}
+
+conIndicador("simularCaja");
+
+/* =====================================================
+   4 · CADENA DE FRÍO · TRAYECTO DE CADA DESPACHO
+===================================================== */
+
+const verificarFrioBase=verificarFrio;
+
+verificarFrio=async function(...argumentos){
+
+await verificarFrioBase.apply(this,argumentos);
+
+await mejorarFrio();
+
+};
+
+function filasFrio(){
+
+return Array.from(document.querySelectorAll("#resultadoFrio tr")).filter(tr=>tr.cells[0]&&tr.cells[0].tagName==="TD");
+
+}
+
+function filtrarFrio(){
+
+const soloProblemas=document.getElementById("soloProblemasFrio").checked;
+
+filasFrio().forEach(tr=>{
+
+tr.hidden=soloProblemas&&!tr.classList.contains("fila-roja");
+
+});
+
+}
+
+async function mejorarFrio(){
+
+const filas=filasFrio();
+
+if(filas.length===0)return;
+
+try{
+
+await cargarDatosLote();
+
+const rojas=filas.filter(tr=>tr.classList.contains("fila-roja"));
+
+const declaranYFallan=rojas.filter(tr=>tr.cells[7]&&tr.cells[7].textContent.trim()==="SÍ").length;
+
+document.getElementById("kpisFrio").innerHTML=`
+<div class="metric blue"><div class="metric-label">DESPACHOS REVISADOS</div><div class="metric-value">${filas.length}</div></div>
+<div class="metric green"><div class="metric-label">FRÍO DEMOSTRADO</div><div class="metric-value">${filas.length-rojas.length}</div></div>
+<div class="metric red"><div class="metric-label">SIN FRÍO DEMOSTRADO</div><div class="metric-value">${rojas.length}</div></div>
+<div class="metric red"><div class="metric-label">DECLARAN CUMPLIR Y NO LO DEMUESTRAN</div><div class="metric-value">${declaranYFallan}</div></div>
+`;
+
+document.getElementById("frioExtra").hidden=false;
+
+filas.forEach(tr=>{
+
+tr.dataset.despacho=tr.cells[0].textContent.trim();
+
+tr.tabIndex=0;
+
+tr.title="Ver el trayecto de este despacho";
+
+tr.addEventListener("click",()=>mostrarTrayecto(tr.dataset.despacho,true));
+
+tr.addEventListener("keydown",evento=>{
+
+if(evento.key==="Enter")mostrarTrayecto(tr.dataset.despacho,true);
+
+});
+
+});
+
+filtrarFrio();
+
+mostrarTrayecto((rojas[0]||filas[0]).dataset.despacho,false);
+
+}catch(error){
+
+console.warn(error);
+
+}
+
+}
+
+function horaCorta(segundos){
+
+return new Date(segundos*1000).toLocaleTimeString("es-EC",{timeZone:"America/Guayaquil",hour:"2-digit",minute:"2-digit"});
+
+}
+
+function graficoTrayecto(d){
+
+const W=720,H=280,izq=46,der=18,arr=22,aba=42;
+
+const t0=d.salida,t1=d.llegada,duracion=Math.max(1,t1-t0);
+
+const lecturas=d.lecturas
+.map(r=>({t:unix(r[1]),v:parseFloat(r[2]),limite:parseFloat(r[3])}))
+.sort((a,b)=>a.t-b.t);
+
+const limite=lecturas.length>0?lecturas[0].limite:4;
+
+const vmax=Math.ceil(Math.max(limite+1,...lecturas.map(l=>l.v+0.5)));
+
+const x=t=>izq+(t-t0)/duracion*(W-izq-der);
+
+const y=v=>arr+(vmax-v)/vmax*(H-arr-aba);
+
+const marcas=[t0].concat(lecturas.map(l=>l.t)).concat([t1]);
+
+let huecos="";
+
+let segmentos="";
+
+for(let i=0;i<marcas.length-1;i++){
+
+const minutos=Math.floor((marcas[i+1]-marcas[i])/60);
+
+if(minutos>15){
+
+huecos+=`<rect class="hueco" x="${x(marcas[i])}" y="${arr}" width="${x(marcas[i+1])-x(marcas[i])}" height="${H-arr-aba}"/>
+<text class="hueco-texto" x="${(x(marcas[i])+x(marcas[i+1]))/2}" y="${arr+22}" text-anchor="middle">${minutos-15} min sin lecturas</text>`;
+
+}
+
+}
+
+for(let i=0;i<lecturas.length-1;i++){
+
+const a=lecturas[i],b=lecturas[i+1];
+
+const salto=(b.t-a.t)/60>15;
+
+segmentos+=`<line x1="${x(a.t)}" y1="${y(a.v)}" x2="${x(b.t)}" y2="${y(b.v)}" class="linea" ${salto?'stroke-dasharray="3 5" stroke-opacity=".55"':""}/>`;
+
+}
+
+let rejilla="";
+
+for(let v=0;v<=vmax;v++){
+
+rejilla+=`<line class="rejilla" x1="${izq}" x2="${W-der}" y1="${y(v)}" y2="${y(v)}"/><text class="eje" x="${izq-8}" y="${y(v)+4}" text-anchor="end">${v}°</text>`;
+
+}
+
+for(let i=0;i<=4;i++){
+
+const t=t0+duracion*i/4;
+
+rejilla+=`<text class="eje" x="${x(t)}" y="${H-aba+22}" text-anchor="${i===0?"start":(i===4?"end":"middle")}">${horaCorta(t)}</text>`;
+
+}
+
+const puntos=lecturas.map(l=>{
+
+const fuera=l.v>l.limite;
+
+return `<circle cx="${x(l.t)}" cy="${y(l.v)}" r="4" fill="${fuera?"var(--alerta-500)":"#ffffff"}" stroke="${fuera?"var(--alerta-500)":"var(--oro-600)"}" stroke-width="2"><title>${horaCorta(l.t)} · ${l.v.toFixed(1)} °C</title></circle>`;
+
+}).join("");
+
+return `
+<svg class="grafico-frio" viewBox="0 0 ${W} ${H}" role="img" aria-label="Temperatura del trayecto de ${escaparHTML(d.codigo)} entre ${horaCorta(t0)} y ${horaCorta(t1)}">
+${rejilla}
+${huecos}
+<line class="limite" x1="${izq}" x2="${W-der}" y1="${y(limite)}" y2="${y(limite)}"/>
+<text class="limite-texto" x="${W-der}" y="${y(limite)-6}" text-anchor="end">límite ${limite} °C</text>
+${segmentos}
+${puntos}
+</svg>
+<div class="leyenda-frio">
+<span><i style="background:#ffffff;border:2px solid var(--oro-600);border-radius:50%"></i>Lectura del sensor</span>
+<span><i style="background:rgba(179,66,58,.25);border:1px dashed var(--alerta-500)"></i>Tramo sin lecturas (más de 15 min)</span>
+<span><i style="background:var(--aviso-500)"></i>Límite de temperatura</span>
+</div>
+`;
+
+}
+
+async function mostrarTrayecto(codigo,desplazar){
+
+try{
+
+await cargarDatosLote();
+
+const d=lote.despachos.find(x=>x.codigo===codigo);
+
+if(!d)return;
+
+filasFrio().forEach(tr=>tr.classList.toggle("seleccionada",tr.dataset.despacho===codigo));
+
+const lectura=await obtenerContratoLectura();
+
+const anclado=await lectura.obtenerDespacho(d.numero);
+
+const r=resumenFrio(d);
+
+const huellaOk=anclado.hashLecturas===r.hashLecturas;
+
+const problema=r.minutosFuera>0||r.minutosSinLectura>0||!huellaOk;
+
+document.getElementById("trayectoTitulo").innerText=codigo;
+
+document.getElementById("trayectoGrafico").innerHTML=graficoTrayecto(d);
+
+document.getElementById("trayectoDatos").innerHTML=`
+<span><b>Salida:</b> ${formatearFecha(d.salida)}</span>
+<span><b>Llegada:</b> ${formatearFecha(d.llegada)}</span>
+<span><b>Lecturas:</b> ${r.lecturas}</span>
+<span><b>Máxima:</b> ${grados(r.tempMaxDecimas)}</span>
+<span><b>Sin lectura:</b> ${r.minutosSinLectura} min</span>
+<span><b>Declaraba cumplir:</b> ${anclado.cumpleDeclarado?"sí":"no"}</span>
+<span class="badge ${huellaOk?"ok":"mal"}">Huella ${huellaOk?"coincide":"alterada"}</span>
+<span class="badge ${problema?"mal":"ok"}">${problema?"Frío no demostrado":"Frío demostrado"}</span>
+`;
+
+const panel=document.getElementById("trayecto");
+
+panel.hidden=false;
+
+if(desplazar)panel.scrollIntoView({behavior:"smooth",block:"nearest"});
+
+}catch(error){
+
+console.warn(error);
+
+}
+
+}
+
+/* =====================================================
+   5 · PRIVACIDAD · COMPARATIVA Y AUDITORÍA POR CATEGORÍA
+===================================================== */
+
+const verDatosCrudosBase=verDatosCrudos;
+
+verDatosCrudos=async function(...argumentos){
+
+await verDatosCrudosBase.apply(this,argumentos);
+
+await comparativaPrivacidad();
+
+};
+
+async function comparativaPrivacidad(){
+
+const destino=document.getElementById("comparativaPrivacidad");
+
+if(!destino||!document.getElementById("resultadoCrudo").innerHTML)return;
+
+try{
+
+await cargarDatosLote();
+
+const numero=leerNumero(document.getElementById("codigoCajaCruda").value);
+
+const lectura=await obtenerContratoLectura();
+
+const r=await lectura.trazarCaja(numero);
+
+const caja=r.caja;
+
+const despacho=r.despacho;
+
+const filas=[];
+
+const fuera=lote.fueraDeCadena;
+
+Array.from(r.animalesOrigen).forEach((animal,i)=>{
+
+const predio=fuera.predios[Number(animal.predio)];
+
+filas.push(["Predio de origen "+(i+1),codigoPredio(animal.predio),predio?predio.nombre+" · "+predio.ubicacion:"—"]);
+
+filas.push(["Veterinario ante-mortem",codigoActor(animal.mviAM),nombreInterno(Number(animal.mviAM))]);
+
+filas.push(["Veterinario que selló",codigoActor(r.canalesOrigen[i].mviPM),nombreInterno(Number(r.canalesOrigen[i].mviPM))]);
+
+filas.push(["Operario del desposte",codigoActor(r.operariosPieza[i]),nombreInterno(Number(r.operariosPieza[i]))]);
+
+});
+
+filas.push(["Operario de empaque",codigoActor(caja.operario),nombreInterno(Number(caja.operario))]);
+
+if(Number(caja.despacho)>0){
+
+filas.push(["Despachador",codigoActor(despacho.despachador),nombreInterno(Number(despacho.despachador))]);
+
+const cliente=fuera.clientes[Number(despacho.cliente)];
+
+filas.push(["Cliente mayorista",codigoActor(despacho.cliente),cliente?cliente.razonSocial+" · "+cliente.direccion:"—"]);
+
+}
+
+if(Number(caja.minorista)>0){
+
+const minorista=fuera.clientes[Number(caja.minorista)];
+
+filas.push(["Minorista",codigoActor(caja.minorista),minorista?minorista.razonSocial+" · "+minorista.direccion:"—"]);
+
+}
+
+destino.innerHTML=`
+<div class="comparativa" role="table" aria-label="Lo que ve la cadena frente a lo que solo sabe el camal">
+<div class="comparativa-fila cab" role="row"><span>Dato</span><span>La cadena (público)</span><span>Solo el camal (interno)</span></div>
+${filas.map(f=>`
+<div class="comparativa-fila" role="row">
+<span>${escaparHTML(f[0])}</span>
+<span class="publico">${escaparHTML(f[1])}</span>
+<span class="interno">${escaparHTML(f[2]||"—")}</span>
+</div>
+`).join("")}
+</div>
+`;
+
+}catch(error){
+
+console.warn(error);
+
+}
+
+}
+
+async function auditarPrivacidadDetallada(){
+
+try{
+
+mostrarEstado("estadoAuditoria","Leyendo la historia de todas las cajas desde la cadena...","info");
+
+document.getElementById("resultadoAuditoria").innerHTML="";
+
+await cargarDatosLote();
+
+const lectura=await obtenerContratoLectura();
+
+const interfaz=lectura.interface;
+
+const numeros=(await lectura.listarCajas()).map(Number);
+
+if(numeros.length===0){
+
+mostrarEstado("estadoAuditoria","No hay cajas registradas en la cadena. Carga el lote primero.","error");
+
+return;
+
+}
+
+let crudo="";
+
+for(let i=0;i<numeros.length;i+=10){
+
+const respuestas=await Promise.all(numeros.slice(i,i+10).map(n=>
+lectura.runner.provider.call({
+to:contratoDireccion,
+data:interfaz.encodeFunctionData("trazarCaja",[n])
+})
+));
+
+crudo+=respuestas.map(x=>x.slice(2)).join("");
+
+mostrarEstado("estadoAuditoria","Leídas "+Math.min(i+10,numeros.length)+" de "+numeros.length+" cajas...","info");
+
+}
+
+crudo=crudo.toLowerCase();
+
+const aHex=texto=>ethers.hexlify(ethers.toUtf8Bytes(texto)).slice(2).toLowerCase();
+
+const grupos=[
+["Personal del camal","personal"],
+["Clientes y direcciones","clientes"],
+["Predios e introductores","predios"],
+["Estaciones de trabajo","estaciones"]
+];
+
+let totalTextos=0;
+
+let totalHallazgos=0;
+
+const tarjetas=grupos.map(([titulo,clave])=>{
+
+const textos=[];
+
+Object.values(lote.fueraDeCadena[clave]||{}).forEach(registro=>{
+
+if(typeof registro==="string"){
+
+textos.push(registro);
+
+}else{
+
+Object.entries(registro).forEach(([campo,valor])=>{
+
+if(campo!=="codigo"&&typeof valor==="string")textos.push(valor);
+
+});
+
+}
+
+});
+
+const hallazgos=textos.filter(t=>crudo.includes(aHex(t)));
+
+totalTextos+=textos.length;
+
+totalHallazgos+=hallazgos.length;
+
+return `
+<div class="categoria-audit ${hallazgos.length>0?"hallazgo":""}">
+<h4>${titulo}</h4>
+<div class="cifra">${hallazgos.length}</div>
+<span>encontrados de ${textos.length} textos buscados</span>
+</div>
+`;
+
+}).join("");
+
+document.getElementById("resultadoAuditoria").innerHTML=`
+<div class="dashboard-grid">
+<div class="metric blue"><div class="metric-label">CAJAS LEÍDAS</div><div class="metric-value">${numeros.length}</div></div>
+<div class="metric green"><div class="metric-label">TEXTOS BUSCADOS</div><div class="metric-value">${totalTextos}</div></div>
+<div class="metric ${totalHallazgos>0?"red":"green"}"><div class="metric-label">ENCONTRADOS</div><div class="metric-value">${totalHallazgos}</div></div>
+<div class="metric blue"><div class="metric-label">BYTES LEÍDOS</div><div class="metric-value">${(crudo.length/2).toLocaleString("es-EC")}</div></div>
+</div>
+<div class="auditoria-categorias">${tarjetas}</div>
+`;
+
+mostrarEstado(
+"estadoAuditoria",
+totalHallazgos>0
+?"Se encontraron datos personales en la cadena."
+:"Ningún nombre de operario, cliente ni dirección aparece en los "+(crudo.length/2).toLocaleString("es-EC")+" bytes leídos de la cadena.",
+totalHallazgos>0?"error":"exito"
+);
+
+}catch(error){
+
+console.error(error);
+
+mostrarEstado("estadoAuditoria",obtenerMensajeError(error),"error");
+
+}
+
+}
+
+conIndicador("auditarPrivacidadDetallada");
+
+/* =====================================================
+   INICIO DE LAS MEJORAS
+===================================================== */
+
+const mostrarSeccionBase3=mostrarSeccion;
+
+mostrarSeccion=function(id,boton){
+
+mostrarSeccionBase3(id,boton);
+
+if(id==="balance")poblarSimulador();
+
+};
+
+</script>
+
 
 
 
