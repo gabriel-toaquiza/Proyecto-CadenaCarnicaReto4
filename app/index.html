@@ -2001,8 +2001,9 @@ border-radius:var(--r-lg);
 color:#ffffff;
 cursor:pointer;
 background:
-linear-gradient(180deg,rgba(8,13,11,.40) 0%,rgba(8,13,11,.93) 100%),
-url("encabezado.jpg") var(--pos,50%) 55%/cover no-repeat,
+linear-gradient(180deg,rgba(8,13,11,.05) 0%,rgba(8,13,11,.35) 45%,rgba(8,13,11,.92) 100%),
+var(--img,none) var(--pos,60%) 30%/cover no-repeat,
+url("encabezado.jpg") var(--pos,60%) 55%/cover no-repeat,
 var(--carbon-800);
 box-shadow:var(--sombra-1);
 transition:transform .15s,border-color .15s;
@@ -4093,28 +4094,28 @@ Explorar trazabilidad &nbsp;→
 
 <div class="accesos">
 
-<button class="acceso" style="--pos:8%" onclick="mostrarSeccion('cargar')">
+<button class="acceso" style="--img:url('acceso-cargar.jpg');--pos:70%" onclick="mostrarSeccion('cargar')">
 <span class="acceso-icono"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4"/><path d="M7 9l5-5 5 5"/><path d="M4 20h16"/></svg></span>
 <strong>Cargar lote</strong>
 <span class="desc">Añade el lote a la cadena de trazabilidad.</span>
 <span class="ir">→</span>
 </button>
 
-<button class="acceso" style="--pos:36%" onclick="mostrarSeccion('etiqueta')">
+<button class="acceso" style="--img:url('acceso-etiqueta.jpg');--pos:75%" onclick="mostrarSeccion('etiqueta')">
 <span class="acceso-icono"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3h-3zM18 18h3v3h-3zM14 20h2M20 14v2"/></svg></span>
 <strong>Etiqueta y QR</strong>
 <span class="desc">Crea el código de cada caja vendida.</span>
 <span class="ir">→</span>
 </button>
 
-<button class="acceso" style="--pos:64%" onclick="mostrarSeccion('cortes')">
+<button class="acceso" style="--img:url('acceso-cortes.jpg');--pos:78%" onclick="mostrarSeccion('cortes')">
 <span class="acceso-icono"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3v9h9"/><path d="M12 12l-6.500 6.500"/></svg></span>
 <strong>Catálogo de cortes</strong>
 <span class="desc">Rendimiento de cada corte y su tope físico.</span>
 <span class="ir">→</span>
 </button>
 
-<button class="acceso" style="--pos:92%" onclick="mostrarSeccion('adelante')">
+<button class="acceso" style="--img:url('acceso-retiro.jpg');--pos:70%" onclick="mostrarSeccion('adelante')">
 <span class="acceso-icono"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="7" width="9" height="10" rx="1.5"/><path d="M15 12h6"/><path d="M18 9l3 3-3 3"/></svg></span>
 <strong>Retiro hacia adelante</strong>
 <span class="desc">De una canal a todas sus cajas y clientes.</span>
