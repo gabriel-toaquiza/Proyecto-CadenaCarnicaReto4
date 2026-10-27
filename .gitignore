@@ -17,3 +17,6 @@ Thumbs.db
 
 # Originales de las imágenes generadas (sin optimizar)
 imagenes_originales/
+
+# Material de la presentación: las capturas se regeneran con el script; no se publican
+presentacion/imagenes/
